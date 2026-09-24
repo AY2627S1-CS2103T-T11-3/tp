@@ -10,6 +10,10 @@ title: Developer Guide
 ## **Acknowledgements**
 
 * _{List the sources of reused or adapted ideas, code, documentation, and third-party libraries here, with links to the originals.}_
+* Nathaniel Lim used OpenAI Codex extensively while completing the
+  [_Adding a Command_ tutorial](https://se-education.org/guides/tutorials/ab3AddRemark.html), including assistance
+  with implementing and debugging the `remark` command across the Logic, Model, UI, and Storage components.
+  Nathaniel reviewed and verified the resulting changes.
 
 --------------------------------------------------------------------------------------------------------------------
 
