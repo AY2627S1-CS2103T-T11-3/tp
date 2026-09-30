@@ -9,6 +9,12 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
+### Jyothsana Narendran
+
+<img src="images/jyothsana-narendran.png" width="200px">
+
+[[github](https://github.com/jyothsana-narendran)]
+
 ### So Jun Ming Randall
 
 <img src="images/randallsojm.png" width="200px">
