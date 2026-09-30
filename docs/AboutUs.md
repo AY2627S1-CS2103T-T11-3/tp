@@ -9,6 +9,12 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
+### So Jun Ming Randall
+
+<img src="images/randallsojm.png" width="200px">
+
+[[github](https://github.com/randallsojm)]
+
 ### Ryan Lee Wee Bin
 
 <img src="images/applehihi.png" width="200px">
