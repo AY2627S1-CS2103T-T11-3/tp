@@ -15,4 +15,10 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 [[github](https://github.com/randallsojm)]
 
+### Ryan Lee Wee Bin
+
+<img src="images/applehihi.png" width="200px">
+
+[[github](https://github.com/Applehihi)]
+
 * Role: Developer
