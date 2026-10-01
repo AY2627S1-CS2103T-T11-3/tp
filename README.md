@@ -1,6 +1,6 @@
-![codecov](https://codecov.io/gh/AY2627S1-CS2103T-T11-3/tp)
+[![codecov](https://codecov.io/gh/AY2627S1-CS2103T-T11-3/tp/graph/badge.svg?token=GAQJYYKUGJ)](https://codecov.io/gh/AY2627S1-CS2103T-T11-3/tp)
 
-!Ui
+![Ui](docs/images/Ui.png)
 
 # Feature List 
 
