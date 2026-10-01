@@ -16,3 +16,5 @@
 - For detailed documentation, see the **[CaNvUS Product Website](https://ay2627s1-cs2103t-t11-3.github.io/tp/)**.
 
 
+# Acknowledgements
+This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org).
