@@ -261,11 +261,11 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
-* prefers desktop apps over other types of applications
-* can type fast
-* prefers typing to mouse interactions
-* is reasonably comfortable using CLI apps
+* is a secondary school teacher
+* teaches multiple classes
+* prefers CLI applications
+* occasionally needs to contact the guardians of students
+* needs to contact colleagues
 
 **Value proposition**: Manage contacts faster than with a typical mouse-driven GUI application.
 
@@ -399,3 +399,4 @@ testers are expected to do more *exploratory* testing.
    1. _{Explain how to simulate missing or corrupted data files and state the expected behavior.}_
 
 1. _{ more test cases …​ }_
+**Value proposition**: CaNvUS keeps a teacher's students, guardians and colleagues in one place, with students grouped by class, guardians linked to their wards and colleagues linked to their departments. Teachers can find the right person quickly and conveniently.
