@@ -316,11 +316,16 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Non-Functional Requirements
 
-1.  Should work on any _mainstream OS_ as long as it has Java `25` or above installed.
-2.  Should be able to hold up to 1000 persons without noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-
-*{More to be added}*
+1. **Capacity:** The application shall support at least 200 contacts.
+2. **Performance:** The application shall complete each user command within one second when managing up to 200 contacts.
+3. **Usability:** All commands shall be executable using only keyboard input.
+4. **Learnability:** A first-time user who has read the Quick Start guide shall be able to add a student, guardian, or colleague without external assistance within five minutes.
+5. **Reliability:** An invalid command shall not modify existing data.
+6. **Product size:** The distributable JAR file shall not exceed 100 MB.
+7. **Display compatibility:** The GUI shall be usable at resolutions of 1280 × 720 or higher and at screen scaling of up to 150%.
+8. **Portability:** The application shall run on Windows, Linux, and macOS with Java `25` installed.
+9. **Offline availability:** All core features shall operate without internet access.
+10. **User capacity:** The application shall support a single user.q
 
 ### Glossary
 
