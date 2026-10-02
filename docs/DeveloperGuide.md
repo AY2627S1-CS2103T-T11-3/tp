@@ -306,32 +306,142 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is `CaNvUS` and the **Actor** is the `teacher`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC1 - Add a new contact**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
+1. Teacher requests to add a new contact with details.
+2. CaNvUS adds the new contact.
+3. CaNvUS displays a confirmation that contact was successfully added.
+   Use case ends.
+
+**Extensions**
+* 1a. CaNvUS detects an error or a missing field in the entered data.
+  * 1a1. CaNvUS displays an error and the expected input format. 
+    Use case ends.
+
+* 1b. Target ID entered is already assigned to an existing target 
+  * 1a1. CaNvUS informs the teacher that target ID must be unique
+    Use case ends.
+
+
+**Use Case: UC2 - Create a new group**
+
+**MSS**
+1. Teacher requests to create a new group
+2. CaNvUS validates group name and group type
+3. CaNvUS displays that new group was successfully created 
+ 
+   Use case ends.
+
+**Extensions**
+* 1a. Group name is invalid
+  * 1a1. CaNvUS shows an error message
 
     Use case ends.
 
+* 1b. Group type is invalid
+  * 1b1. CaNvUS shows an error message
+
+    Use case ends.
+
+
+**Use case: UC3 - Delete an existing contact**
+
+**MSS**
+
+1. Teacher requests to delete a contact.
+2. CaNvUS validates that the contact exists.
+3. CaNvUS deletes the contact, removing any links to it.
+4. CaNvUS displays that the contact was successfully deleted.
+   
+   Use case ends.
+
 **Extensions**
 
-* 2a. The list is empty.
+* 2a. Contact does not exist.
+  * 2a1. CaNvUS shows an error message.
+    
+    Use case ends.
 
-  Use case ends.
+**Use case: UC4 - Link guardian to student**
 
-* 3a. The given index is invalid.
+**MSS**
 
-    * 3a1. AddressBook shows an error message.
+1. Teacher requests to link a guardian to a student.
+2. CaNvUS validates that both the guardian and the student exist.
+3. CaNvUS links the contacts of the guardian and the student together.
+4. CaNvUS displays that the contacts of the guardian and the student were successfully linked.
 
-      Use case resumes at step 2.
+   Use case ends.
 
-*{More to be added}*
+**Extensions**
+* 2a. Contact of the guardian or the student does not exist.
+  * 2a1. CaNvUS shows an error message.
+    
+    Use case ends.
+
+**Use case: UC5 - Link colleague to department**
+
+1. Teacher requests to link a colleague to a department.
+2. CaNvUS validates that both the department and the colleague exist.
+3. CaNvUS links the contact of the colleague to the department.
+4. CaNvUS displays that the contact of the colleague and the department were successfully linked.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. Contact of the colleague or the department does not exist.
+  * 2a1. CaNvUS shows an error message.
+    Use case ends.
+
+**Use case: UC6 -  List all contacts**
+
+**MSS**
+
+1. Teacher requests to list all contacts.
+2. CaNvUS retrieves all contacts.
+3. CaNvUS displays the list of all contacts to the teacher.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. There are no contacts stored.
+  * 2a1. CaNvUS informs the teacher that there are no contacts stored.
+    Use case ends.
+
+**Use case: UC7 -  Filter contacts**
+
+**MSS**
+
+1. Teacher requests to filter contacts with a set of criteria.
+2. CaNvUS validates the criteria provided.
+3. CaNvUS retrieves contacts matching the criteria.
+4. CaNvUS displays the list of filtered contacts to the teacher.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. The criteria provided are not valid.
+  * 2a1. CaNvUS shows an error message.
+    
+    Use case ends.
+
+* 2b. No criteria was provided.
+  * 2b1. CaNvUS <u>lists all contacts (UC6)</u>.
+
+    Use case ends.
+
+* 3a. No contacts match the criteria.
+  * 3b1. CaNvUS informs the teacher that no contacts match the criteria.
+
+    Use case ends.
+
 
 ### Non-Functional Requirements
 
