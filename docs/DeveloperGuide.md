@@ -343,8 +343,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, or macOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Class**: A group of students that the user would need to teach
+* **Colleague**: Another teacher working in the same school as the user
+* **Department**: A group of colleagues which work together in the school
+* **Guardian**: A person legally in charge of taking care of the student, for example, their parent
+* **Student**: A person who is enrolled in a class which the user is teaching
 
 --------------------------------------------------------------------------------------------------------------------
 
