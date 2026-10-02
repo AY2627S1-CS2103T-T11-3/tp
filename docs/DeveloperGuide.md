@@ -267,4 +267,136 @@ _{Explain here how the data archiving feature will be implemented}_
 * occasionally needs to contact the guardians of students
 * needs to contact colleagues
 
+**Value proposition**: Manage contacts faster than with a typical mouse-driven GUI application.
+
+
+### User stories
+
+Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
+
+| Priority | As a …​ | I want to …​ | So that I can…​ |
+|---|---|---|---|
+| * * * | Teacher with many contacts | Add the name, phone number, email, and other relevant information for a contact | I can easily keep track of my contacts. |
+| * * * | Teacher with many contacts | Delete a contact | I can remove contacts that are no longer relevant |
+| * * | Teacher with many contacts | Edit a contact’s details | I can keep my records accurate when a contact’s information changes |
+| * * | Teacher with many contacts | Search for a contact by name | I can quickly find the contact I am looking for without scrolling through the entire address book |
+| * * | Teacher with many contacts | Filter contacts based on their details, e.g., name, class, relationship, etc. | I can easily search through my list of contacts to find the specific contacts I want. |
+| * * * | Teacher with many students | Assign a student to a class | I can organise students based on the classes I teach |
+| * * * | Teacher with many students | Add a student’s guardian’s name and relationship to student | I can easily find the contact information of a student’s guardian |
+| * * | Teacher with many students | Mark a guardian as the primary contact | I know which guardian I should contact first when necessary |
+| | Teacher who wants to tailor my teaching to each student | Notes for each student | I can more easily keep track of who needs more attention/anything to follow up |
+| * * * | Teacher who teaches multiple classes | Create a class | I can organise my students according to the classes I teach |
+| * * * | Teacher who teaches new classes every year | Delete a class | Remove classes that are wrong or no longer needed |
+| * | Teacher who teaches multiple classes | Import students' contact details based on nominal roll | I can easily add contacts of students when I start teaching a new class |
+| | Teacher whose classes change regularly | Timed batch delete function at the end of every semester | I can easily remove contacts of students who are no longer in my classes |
+| * * * | Teacher with many students | Assign a guardian’s student to the guardian | I can easily find the contact information of a guardian’s ward. |
+| * * | Teacher with multiple colleagues | Assign a colleague to a department | Tell which department my colleague belongs to |
+| * * * | Teacher with multiple colleagues | Create a department | I can organise my colleagues according to the classes I teach |
+| * * * | Teacher with multiple colleagues | Delete a department | I can remove classes that are wrong or no longer needed |
+| | Teacher with multiple colleagues | Import teachers’ contact details based on selected department | I can easily add contacts of colleagues when I join a new department |
+| * * * | Teacher who uses the app daily | Have my data saved automatically after every change | I can avoid losing my records once i close my app |
+| * | Teacher who emails classes and colleagues | Copy and export emails or numbers of filtered contacts | I can easily set up mailing lists or group chats quickly with my students or colleagues. |
+| * | Teacher | Export/reimport contact details to transfer data to another computer | I can easily transfer my data when I am issued a new laptop by my school's IT department |
+| * | Teacher who is a first time user | See a help page | I can know how to use the app |
+| * | Teacher who is an experienced user | Create new keybinds | I can more efficiently use this app in my workflow |
+| | Teacher | View a summary dashboard of total enrolled students and class counts | I can quickly verify overall roster completeness at a glance |
+
+
+*{More to be added}*
+
+### Use cases
+
+(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+
+**Use case: Delete a person**
+
+**MSS**
+
+1.  User requests to list persons
+2.  AddressBook shows a list of persons
+3.  User requests to delete a specific person in the list
+4.  AddressBook deletes the person
+
+    Use case ends.
+
+**Extensions**
+
+* 2a. The list is empty.
+
+  Use case ends.
+
+* 3a. The given index is invalid.
+
+    * 3a1. AddressBook shows an error message.
+
+      Use case resumes at step 2.
+
+*{More to be added}*
+
+### Non-Functional Requirements
+
+1.  Should work on any _mainstream OS_ as long as it has Java `25` or above installed.
+2.  Should be able to hold up to 1000 persons without noticeable sluggishness in performance for typical usage.
+3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+
+*{More to be added}*
+
+### Glossary
+
+* **Mainstream OS**: Windows, Linux, Unix, or macOS
+* **Private contact detail**: A contact detail that is not meant to be shared with others
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Instructions for manual testing**
+
+Given below are instructions to test the app manually.
+
+<div markdown="span" class="alert alert-info">:information_source: **Note:** These instructions only provide a starting point for testers to work on;
+testers are expected to do more *exploratory* testing.
+
+</div>
+
+### Launch and shutdown
+
+1. Initial launch
+
+   1. Download the JAR file and copy it into an empty folder.
+
+   1. Double-click the JAR file.<br>
+      Expected: The GUI opens with a set of sample contacts. The window size may not be optimal.
+
+1. Saving window preferences
+
+   1. Resize the window to an optimal size. Move the window to a different location. Close the window.
+
+   1. Relaunch the app by double-clicking the JAR file.<br>
+       Expected: The most recent window size and location are retained.
+
+1. _{ more test cases …​ }_
+
+### Deleting a person
+
+1. Deleting a person while all persons are being shown
+
+   1. Prerequisites: List all persons using the `list` command, with multiple persons in the list.
+
+   1. Test case: `delete 1`<br>
+      Expected: The first contact is deleted from the list. The status message shows the deleted contact's details.
+
+   1. Test case: `delete 0`<br>
+      Expected: No person is deleted. The status message shows error details.
+
+   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+      Expected: Similar to previous.
+
+1. _{ more test cases …​ }_
+
+### Saving data
+
+1. Dealing with missing/corrupted data files
+
+   1. _{Explain how to simulate missing or corrupted data files and state the expected behavior.}_
+
+1. _{ more test cases …​ }_
 **Value proposition**: CaNvUS keeps a teacher's students, guardians and colleagues in one place, with students grouped by class, guardians linked to their wards and colleagues linked to their departments. Teachers can find the right person quickly and conveniently.
