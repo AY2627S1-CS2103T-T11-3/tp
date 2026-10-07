@@ -12,7 +12,7 @@ public class CreateGroupCommand extends Command {
             + ": Creates a new group. Duplicate group names "
             + "are not allowed.\n"
             + "Parameters: GROUP_NAME gt/ [GROUP_TYPE]\n"
-            + "Example: " + COMMAND_WORD + "CS2103T-T01"
+            + "Example: " + COMMAND_WORD + " CS2103T-T01 "
             + "gt/ class";
 
     private final String groupName;
@@ -28,6 +28,9 @@ public class CreateGroupCommand extends Command {
 
         this.groupName = groupName;
         this.groupType = groupType;
+
+        System.out.println(groupName);
+        System.out.println(groupType);
     }
 
     @Override
