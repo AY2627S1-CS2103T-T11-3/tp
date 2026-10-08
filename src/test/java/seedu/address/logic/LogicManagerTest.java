@@ -8,7 +8,10 @@ import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.AMY;
+import static seedu.address.testutil.TypicalPersons.BOB;
+import static seedu.address.testutil.TypicalPersons.CARL;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
@@ -85,6 +88,32 @@ public class LogicManagerTest {
     @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredPersonList().remove(0));
+    }
+
+    @Test
+    public void getGuardianNames_linkEditDelete_returnsCurrentNames() throws Exception {
+        model.addPerson(ALICE);
+        model.addPerson(CARL);
+        model.addPerson(BOB);
+        assertEquals("", logic.getGuardianNames(ALICE));
+
+        logic.execute("link-guardian s/1 g/2");
+        logic.execute("link-guardian s/1 g/3");
+        assertEquals(BOB.getName().fullName + ", " + CARL.getName().fullName,
+                logic.getGuardianNames(ALICE));
+
+        // A guardian outside the filtered list must still appear on the student card.
+        model.updateFilteredPersonList(person -> person.equals(ALICE));
+        assertEquals(BOB.getName().fullName + ", " + CARL.getName().fullName,
+                logic.getGuardianNames(ALICE));
+        model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
+
+        logic.execute("edit 3 n/Aaron Guardian");
+        assertEquals("Aaron Guardian, " + CARL.getName().fullName, logic.getGuardianNames(ALICE));
+        logic.execute("delete 3");
+        assertEquals(CARL.getName().fullName, logic.getGuardianNames(ALICE));
+        logic.execute("delete 2");
+        assertEquals("", logic.getGuardianNames(ALICE));
     }
 
     /**

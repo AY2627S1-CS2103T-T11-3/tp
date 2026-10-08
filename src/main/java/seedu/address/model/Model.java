@@ -68,4 +68,7 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /** Links an existing guardian contact to an existing student contact. */
+    void linkGuardianToStudent(Person guardian, Person student);
 }

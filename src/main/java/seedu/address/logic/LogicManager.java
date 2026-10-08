@@ -3,6 +3,7 @@ package seedu.address.logic;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
@@ -62,6 +63,15 @@ public class LogicManager implements Logic {
     @Override
     public ObservableList<Person> getFilteredPersonList() {
         return model.getFilteredPersonList();
+    }
+
+    @Override
+    public String getGuardianNames(Person student) {
+        return model.getAddressBook().getGuardianStudents().entrySet().stream()
+                .filter(entry -> entry.getValue().contains(student))
+                .map(entry -> entry.getKey().getName().fullName)
+                .sorted()
+                .collect(Collectors.joining(", "));
     }
 
     @Override

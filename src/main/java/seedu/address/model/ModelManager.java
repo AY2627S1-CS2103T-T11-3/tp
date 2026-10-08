@@ -126,4 +126,9 @@ public class ModelManager implements Model {
                 && filteredPersons.equals(otherModelManager.filteredPersons);
     }
 
+    @Override
+    public void linkGuardianToStudent(Person guardian, Person student) {
+        addressBook.linkGuardianToStudent(guardian, student);
+    }
+
 }

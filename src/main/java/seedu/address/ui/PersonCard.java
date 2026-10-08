@@ -39,12 +39,21 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label email;
     @FXML
+    private Label guardians;
+    @FXML
     private FlowPane tags;
 
     /**
      * Creates a {@code PersonCard} with the given {@code Person} and index to display.
      */
     public PersonCard(Person person, int displayedIndex) {
+        this(person, displayedIndex, "");
+    }
+
+    /**
+     * Creates a contact card with the names of linked guardians.
+     */
+    public PersonCard(Person person, int displayedIndex, String guardianNames) {
         super(FXML);
         this.person = person;
         id.setText(displayedIndex + ". ");
@@ -55,5 +64,8 @@ public class PersonCard extends UiPart<Region> {
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        guardians.setText("Guardians: " + guardianNames);
+        guardians.setVisible(!guardianNames.isEmpty());
+        guardians.setManaged(!guardianNames.isEmpty());
     }
 }
