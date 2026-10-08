@@ -15,6 +15,8 @@ public class CreateGroupCommand extends Command {
             + "Example: " + COMMAND_WORD + " CS2103T-T01 "
             + "gt/ class";
 
+    public static final String MESSAGE_SUCCESS = "create_group command executed successfully";
+
     private final String groupName;
     private final String groupType;
 
@@ -28,14 +30,11 @@ public class CreateGroupCommand extends Command {
 
         this.groupName = groupName;
         this.groupType = groupType;
-
-        System.out.println(groupName);
-        System.out.println(groupType);
     }
 
     @Override
     public CommandResult execute(Model model) {
-        return new CommandResult("create_group command executed successfully");
+        return new CommandResult(MESSAGE_SUCCESS);
     }
 
     @Override
