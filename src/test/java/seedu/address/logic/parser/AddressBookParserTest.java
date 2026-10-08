@@ -4,26 +4,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.ColleagueToDepartmentCommand;
+import seedu.address.logic.commands.CreateGroupCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonFilterCriteria;
+import seedu.address.model.person.PersonMatchesFilterPredicate;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -43,6 +54,18 @@ public class AddressBookParserTest {
     public void parseCommand_clear() throws Exception {
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD) instanceof ClearCommand);
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD + " 3") instanceof ClearCommand);
+    }
+
+    @Test
+    public void parseCommand_link() throws Exception {
+        final String colleagueName = "Alice Pauline";
+        final String department = "Computer Science";
+        ColleagueToDepartmentCommand command = (ColleagueToDepartmentCommand) parser.parseCommand(
+                ColleagueToDepartmentCommand.COMMAND_WORD + " "
+                + CliSyntax.PREFIX_NAME + colleagueName + " "
+                + CliSyntax.PREFIX_DEPARTMENT + department
+        );
+        assertEquals(new ColleagueToDepartmentCommand(colleagueName, department), command);
     }
 
     @Test
@@ -76,6 +99,53 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_filterWithoutCriteria_returnsFilterCommand() throws Exception {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Set.of());
+        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertEquals(expectedCommand, parser.parseCommand(FilterCommand.COMMAND_WORD));
+        assertEquals(expectedCommand, parser.parseCommand("  " + FilterCommand.COMMAND_WORD + "  "));
+    }
+
+    @Test
+    public void parseCommand_filterByAddress_returnsFilterCommand() throws Exception {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("Clementi Ave"), Set.of());
+        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertEquals(expectedCommand, parser.parseCommand(FilterCommand.COMMAND_WORD + " a/Clementi Ave"));
+    }
+
+    @Test
+    public void parseCommand_filterByTags_returnsFilterCommand() throws Exception {
+        PersonFilterCriteria criteria =
+                new PersonFilterCriteria(Optional.empty(), Set.of(new Tag("Student"), new Tag("student")));
+        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertEquals(expectedCommand, parser.parseCommand(FilterCommand.COMMAND_WORD + " t/Student t/student"));
+    }
+
+    @Test
+    public void parseCommand_filterByCombinedCriteria_returnsFilterCommand() throws Exception {
+        PersonFilterCriteria criteria =
+                new PersonFilterCriteria(Optional.of("Clementi Ave"), Set.of(new Tag("Student"), new Tag("Year2")));
+        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertEquals(expectedCommand,
+                parser.parseCommand(FilterCommand.COMMAND_WORD + " a/Clementi Ave t/Student t/Year2"));
+    }
+
+    @Test
+    public void parseCommand_filterWithInvalidCriteria_throwsParseException() {
+        String expectedFormatMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE);
+
+        assertThrows(ParseException.class, expectedFormatMessage, () -> parser.parseCommand("filter a/"));
+        assertThrows(ParseException.class, expectedFormatMessage, () -> parser.parseCommand("filter Clementi"));
+        assertThrows(ParseException.class, Tag.MESSAGE_CONSTRAINTS, () -> parser.parseCommand("filter t/Student t/"));
+        assertThrows(ParseException.class, Messages.getErrorMessageForDuplicatePrefixes(PREFIX_ADDRESS), () ->
+                parser.parseCommand("filter a/Clementi a/Bugis"));
+    }
+
+    @Test
     public void parseCommand_help() throws Exception {
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + " 3") instanceof HelpCommand);
@@ -85,6 +155,17 @@ public class AddressBookParserTest {
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+    }
+
+    @Test
+    public void parseCommand_createGroup() throws Exception {
+        final String groupName = "CS2103T-T01";
+        final String groupType = "class";
+        CreateGroupCommand command = (CreateGroupCommand) parser.parseCommand(
+                CreateGroupCommand.COMMAND_WORD + " "
+                + groupName + " " + PREFIX_GROUP_TYPE + groupType
+        );
+        assertEquals(new CreateGroupCommand(groupName, groupType), command);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package seedu.address.testutil;
 
+import static seedu.address.logic.commands.CommandTestUtil.CONTACT_TYPE_STUDENT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
@@ -22,7 +23,9 @@ public class PersonUtil {
      * Returns an add command string for adding the {@code person}.
      */
     public static String getAddCommand(Person person) {
-        return AddCommand.COMMAND_WORD + " " + getPersonDetails(person);
+        // TODO: Remove concatenation of CONTACT_TYPE_STUDENT when contact type
+        //       field is added to person and is available in details
+        return AddCommand.COMMAND_WORD + " " + getPersonDetails(person) + CONTACT_TYPE_STUDENT;
     }
 
     /**

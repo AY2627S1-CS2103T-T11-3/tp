@@ -28,19 +28,25 @@ class JsonAdaptedPerson {
     private final String phone;
     private final String email;
     private final String address;
+    private final String department;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
 
+    public JsonAdaptedPerson(String name, String phone, String email, String address,
+            List<JsonAdaptedTag> tags) {
+        this(name, phone, email, address, tags, null);
+    }
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("department") String department) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
+        this.department = department;
         if (tags != null) {
             this.tags.addAll(tags);
         }
@@ -54,6 +60,7 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().value;
         address = source.getAddress().value;
+        department = source.getDepartment();
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
@@ -103,7 +110,7 @@ class JsonAdaptedPerson {
         final Address modelAddress = new Address(address);
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags);
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, department);
     }
 
 }
