@@ -26,7 +26,8 @@ public class ColleagueToDepartmentCommandTest {
         expectedModel.setPerson(original, updated);
 
         assertCommandSuccess(command, model,
-                String.format(ColleagueToDepartmentCommand.MESSAGE_SUCCESS, "Computer Science"), expectedModel);
+                String.format(ColleagueToDepartmentCommand.MESSAGE_SUCCESS, "Alice Pauline", "Computer Science"),
+                expectedModel);
         assertEquals("Computer Science", model.getAddressBook().getPersonList().get(0).getDepartment());
     }
 

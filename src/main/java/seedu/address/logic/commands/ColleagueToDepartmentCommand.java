@@ -13,7 +13,7 @@ public class ColleagueToDepartmentCommand extends Command {
     public static final String COMMAND_WORD = "link";
     public static final String MESSAGE_USAGE = "link: Links a colleague to a department. "
             + "Parameters: n/NAME d/DEPARTMENT";
-    public static final String MESSAGE_SUCCESS = "Colleague linked to department: %s";
+    public static final String MESSAGE_SUCCESS = "%s linked to department: %s";
     public static final String MESSAGE_NOT_FOUND = "Colleague not found: %s";
     private final String colleagueName;
     private final String department;
@@ -34,7 +34,7 @@ public class ColleagueToDepartmentCommand extends Command {
         Person linked = new Person(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
                 colleague.getAddress(), colleague.getTags(), department);
         model.setPerson(colleague, linked);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, department));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName, department));
     }
 
     @Override
