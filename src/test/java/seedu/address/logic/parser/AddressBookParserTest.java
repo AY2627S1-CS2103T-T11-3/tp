@@ -91,13 +91,13 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_createGroup() throws Exception {
-        final String group_name = "CS2103T-T01";
-        final String group_type = "class";
+        final String groupName = "CS2103T-T01";
+        final String groupType = "class";
         CreateGroupCommand command = (CreateGroupCommand) parser.parseCommand(
                 CreateGroupCommand.COMMAND_WORD + " "
-                + group_name + " " + PREFIX_GROUP_TYPE + group_type
+                + groupName + " " + PREFIX_GROUP_TYPE + groupType
         );
-        assertEquals(new CreateGroupCommand(group_name, group_type), command);
+        assertEquals(new CreateGroupCommand(groupName, groupType), command);
     }
 
     @Test

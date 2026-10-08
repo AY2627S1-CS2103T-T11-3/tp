@@ -4,6 +4,10 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import seedu.address.model.Model;
 
+/**
+ * Creates a group in the address book.
+ * A group can be either a class or a department.
+ */
 public class CreateGroupCommand extends Command {
 
     public static final String COMMAND_WORD = "create_group";
