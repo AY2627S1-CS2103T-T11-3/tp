@@ -33,6 +33,7 @@ public class Person {
         this(name, phone, email, address, tags, null);
     }
 
+    /** Creates a person with an optional department. */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, String department) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;

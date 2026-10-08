@@ -29,13 +29,12 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final String department;
+    private final List<JsonAdaptedTag> tags = new ArrayList<>();
 
     public JsonAdaptedPerson(String name, String phone, String email, String address,
             List<JsonAdaptedTag> tags) {
         this(name, phone, email, address, tags, null);
     }
-    private final List<JsonAdaptedTag> tags = new ArrayList<>();
-
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
