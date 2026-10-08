@@ -11,6 +11,8 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -95,6 +97,11 @@ public class AddressBookTest {
 
         AddressBookStub(Collection<Person> persons) {
             this.persons.setAll(persons);
+        }
+
+        @Override
+        public Map<Person, Set<Person>> getGuardianStudents() {
+            return Map.of();
         }
 
         @Override

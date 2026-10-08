@@ -23,6 +23,9 @@ public interface Logic {
     /** Returns an unmodifiable view of the filtered list of persons */
     ObservableList<Person> getFilteredPersonList();
 
+    /** Returns the names of guardians linked to the given student. */
+    String getGuardianNames(Person student);
+
     /**
      * Returns the user prefs' GUI settings.
      */

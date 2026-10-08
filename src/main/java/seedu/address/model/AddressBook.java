@@ -2,7 +2,12 @@ package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
@@ -16,6 +21,9 @@ import seedu.address.model.person.UniquePersonList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons = new UniquePersonList();
+
+    // Each guardian maps to the students linked to that guardian.
+    private final Map<Person, Set<Person>> guardianStudents = new HashMap<>();
 
     public AddressBook() {}
 
@@ -35,6 +43,8 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void setPersons(List<Person> persons) {
         this.persons.setPersons(persons);
+        // Replacing all contacts invalidates the existing relationships.
+        guardianStudents.clear();
     }
 
     /**
@@ -43,7 +53,12 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void resetData(ReadOnlyAddressBook newData) {
         requireNonNull(newData);
 
-        setPersons(newData.getPersonList());
+        // Capture links before replacing data, including when newData is this object.
+        Map<Person, Set<Person>> links = newData.getGuardianStudents();
+        setPersons(List.copyOf(newData.getPersonList()));
+
+        links.forEach((guardian, students) ->
+                guardianStudents.put(guardian, new HashSet<>(students)));
     }
 
     //// person-level operations
@@ -73,6 +88,17 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(editedPerson);
 
         persons.setPerson(target, editedPerson);
+        // Replace references because editing creates a new Person object.
+        Set<Person> students = guardianStudents.remove(target);
+        if (students != null) {
+            guardianStudents.put(editedPerson, students);
+        }
+
+        for (Set<Person> linkedStudents : guardianStudents.values()) {
+            if (linkedStudents.remove(target)) {
+                linkedStudents.add(editedPerson);
+            }
+        }
     }
 
     /**
@@ -81,6 +107,10 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removePerson(Person key) {
         persons.remove(key);
+        // Remove links involving the deleted contact.
+        guardianStudents.remove(key);
+        guardianStudents.values().forEach(students -> students.remove(key));
+        guardianStudents.values().removeIf(Set::isEmpty);
     }
 
     //// util methods
@@ -98,6 +128,14 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     @Override
+    public Map<Person, Set<Person>> getGuardianStudents() {
+        Map<Person, Set<Person>> snapshot = new HashMap<>();
+        guardianStudents.forEach((guardian, students) ->
+                snapshot.put(guardian, Set.copyOf(students)));
+        return Map.copyOf(snapshot);
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (other == this) {
             return true;
@@ -108,11 +146,33 @@ public class AddressBook implements ReadOnlyAddressBook {
             return false;
         }
 
-        return persons.equals(otherAddressBook.persons);
+        return persons.equals(otherAddressBook.persons)
+                && guardianStudents.equals(otherAddressBook.guardianStudents);
     }
 
     @Override
     public int hashCode() {
-        return persons.hashCode();
+        return Objects.hash(persons, guardianStudents);
+    }
+
+    /** Links existing contacts without modifying their contact details. */
+    public void linkGuardianToStudent(Person guardian, Person student) {
+        requireNonNull(guardian);
+        requireNonNull(student);
+
+        if (!hasPerson(guardian) || !hasPerson(student)) {
+            throw new IllegalArgumentException("Both contacts must exist.");
+        }
+        if (guardian.equals(student)) {
+            throw new IllegalArgumentException("A contact cannot be linked to itself.");
+        }
+
+        Set<Person> students =
+                guardianStudents.computeIfAbsent(guardian, unused -> new HashSet<>());
+
+        if (!students.add(student)) {
+            throw new IllegalArgumentException("These contacts are already linked.");
+        }
     }
 }
+
