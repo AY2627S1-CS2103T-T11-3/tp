@@ -1,8 +1,10 @@
 package seedu.address.model.person;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Iterator;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,7 +12,7 @@ import seedu.address.model.person.exceptions.DuplicateGroupException;
 import seedu.address.model.person.exceptions.GroupNotFoundException;
 
 /**
- * A list of persons that enforces uniqueness between its elements and does not allow nulls.
+ * A list of groups that enforces uniqueness between its elements and does not allow nulls.
  * A group is considered unique by comparing using {@code Group#equals(Group)}.
  */
 public class UniqueGroupList implements Iterable<Group> {
@@ -50,6 +52,27 @@ public class UniqueGroupList implements Iterable<Group> {
         }
     }
 
+    /**
+     * Replaces the contents of this list with {@code replacement}.
+     */
+    public void setGroups(UniqueGroupList replacement) {
+        requireNonNull(replacement);
+        internalList.setAll(replacement.internalList);
+    }
+
+    /**
+     * Replaces the contents of this list with {@code groups}.
+     * {@code groups} must not contain duplicate groups.
+     */
+    public void setGroups(List<Group> groups) {
+        requireAllNonNull(groups);
+        if (!groupsAreUnique(groups)) {
+            throw new DuplicateGroupException();
+        }
+
+        internalList.setAll(groups);
+    }
+
     public ObservableList<Group> asUnmodifiableObservableList() {
         return internalUnmodifiableList;
     }
@@ -81,6 +104,20 @@ public class UniqueGroupList implements Iterable<Group> {
     @Override
     public String toString() {
         return internalList.toString();
+    }
+
+    /**
+     * Returns true if {@code groups} contains only unique groups.
+     */
+    private boolean groupsAreUnique(List<Group> groups) {
+        for (int i = 0; i < groups.size() - 1; i++) {
+            for (int j = i + 1; j < groups.size(); j++) {
+                if (groups.get(i).equals(groups.get(j))) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }
