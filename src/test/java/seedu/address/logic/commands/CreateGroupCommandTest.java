@@ -7,7 +7,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_NAME_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_TYPE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_TYPE_BOB;
-import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalAddressBook.getTypicalAddressBook;
 
 import org.junit.jupiter.api.Test;
 
