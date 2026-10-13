@@ -15,6 +15,10 @@ public class UniqueGroupList implements Iterable<Group> {
     private final ObservableList<Group> internalUnmodifiableList =
             FXCollections.unmodifiableObservableList(internalList);
 
+    public ObservableList<Group> asUnmodifiableObservableList() {
+        return internalUnmodifiableList;
+    }
+
     @Override
     public Iterator<Group> iterator() {
         return internalList.iterator();

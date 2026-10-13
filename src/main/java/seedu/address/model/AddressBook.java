@@ -11,7 +11,9 @@ import java.util.Set;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.Group;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.UniqueGroupList;
 import seedu.address.model.person.UniquePersonList;
 
 /**
@@ -21,6 +23,7 @@ import seedu.address.model.person.UniquePersonList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons = new UniquePersonList();
+    private final UniqueGroupList groups = new UniqueGroupList();
 
     // Each guardian maps to the students linked to that guardian.
     private final Map<Person, Set<Person>> guardianStudents = new HashMap<>();
@@ -125,6 +128,11 @@ public class AddressBook implements ReadOnlyAddressBook {
     @Override
     public ObservableList<Person> getPersonList() {
         return persons.asUnmodifiableObservableList();
+    }
+
+    @Override
+    public ObservableList<Group> getGroupList() {
+        return groups.asUnmodifiableObservableList();
     }
 
     @Override
