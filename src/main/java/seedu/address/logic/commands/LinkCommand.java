@@ -8,6 +8,8 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Guardian;
+import seedu.address.model.person.Role;
 
 /** Links contacts selected from the currently displayed list. */
 public class LinkCommand extends Command {
@@ -42,8 +44,17 @@ public class LinkCommand extends Command {
             throw new CommandException("Student contact does not exist.");
         }
 
-        Person guardian = contacts.get(guardianIndex.getZeroBased());
+        Person selectedGuardian = contacts.get(guardianIndex.getZeroBased());
         Person student = contacts.get(studentIndex.getZeroBased());
+
+        if (!(selectedGuardian instanceof Guardian)
+                || selectedGuardian.getRole() != Role.GUARDIAN) {
+            throw new CommandException("Selected contact is not a guardian.");
+        }
+        if (student.getRole() != Role.STUDENT) {
+            throw new CommandException("Selected contact is not a student.");
+        }
+        Guardian guardian = (Guardian) selectedGuardian;
 
         try {
             model.linkGuardianToStudent(guardian, student);

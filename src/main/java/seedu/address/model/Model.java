@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Guardian;
 
 /**
  * The API of the Model component.
@@ -70,5 +71,5 @@ public interface Model {
     void updateFilteredPersonList(Predicate<Person> predicate);
 
     /** Links an existing guardian contact to an existing student contact. */
-    void linkGuardianToStudent(Person guardian, Person student);
+    void linkGuardianToStudent(Guardian guardian, Person student);
 }

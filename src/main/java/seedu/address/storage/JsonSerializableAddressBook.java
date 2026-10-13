@@ -12,6 +12,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Guardian;
 
 /**
  * An Immutable AddressBook that is serializable to JSON format.
@@ -95,8 +96,12 @@ class JsonSerializableAddressBook {
             }
 
             try {
+                Person guardian = contacts.get(guardianPosition);
+                if (!(guardian instanceof Guardian)) {
+                    throw new IllegalArgumentException("Guardian link refers to a non-guardian.");
+                }
                 addressBook.linkGuardianToStudent(
-                        contacts.get(guardianPosition),
+                        (Guardian) guardian,
                         contacts.get(studentPosition));
             } catch (IllegalArgumentException e) {
                 // Self-links and duplicate links are invalid stored data.

@@ -32,6 +32,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Guardian;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
@@ -94,18 +95,22 @@ public class LogicManagerTest {
     @Test
     public void getGuardianNames_linkEditDelete_returnsCurrentNames() throws Exception {
         model.addPerson(ALICE);
-        model.addPerson(CARL);
-        model.addPerson(BOB);
+        Guardian carlGuardian = new Guardian(CARL.getName(), CARL.getPhone(), CARL.getEmail(),
+                CARL.getAddress(), CARL.getTags());
+        Guardian bobGuardian = new Guardian(BOB.getName(), BOB.getPhone(), BOB.getEmail(),
+                BOB.getAddress(), BOB.getTags());
+        model.addPerson(carlGuardian);
+        model.addPerson(bobGuardian);
         assertEquals("", logic.getGuardianNames(ALICE));
 
         logic.execute("link-guardian s/1 g/2");
         logic.execute("link-guardian s/1 g/3");
-        assertEquals(BOB.getName().fullName + ", " + CARL.getName().fullName,
+        assertEquals(bobGuardian.getName().fullName + ", " + carlGuardian.getName().fullName,
                 logic.getGuardianNames(ALICE));
 
         // A guardian outside the filtered list must still appear on the student card.
         model.updateFilteredPersonList(person -> person.equals(ALICE));
-        assertEquals(BOB.getName().fullName + ", " + CARL.getName().fullName,
+        assertEquals(bobGuardian.getName().fullName + ", " + carlGuardian.getName().fullName,
                 logic.getGuardianNames(ALICE));
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 

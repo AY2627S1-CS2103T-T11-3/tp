@@ -20,35 +20,40 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Guardian;
 import seedu.address.testutil.PersonBuilder;
 
 public class GuardianLinkTest {
     @Test
     public void link_saveLoadEditDelete_preservesRelationships() throws Exception {
         AddressBook book = new AddressBook();
-        book.setPersons(List.of(ALICE, BOB));
+        Guardian bobGuardian = new Guardian(BOB.getName(), BOB.getPhone(), BOB.getEmail(),
+                BOB.getAddress(), BOB.getTags());
+        book.setPersons(List.of(ALICE, bobGuardian));
         ModelManager model = new ModelManager(book, new UserPrefs());
         AddressBookParser parser = new AddressBookParser();
         parser.parseCommand("link-guardian s/1 g/2").execute(model);
-        assertEquals(Map.of(BOB, Set.of(ALICE)), model.getAddressBook().getGuardianStudents());
+        assertEquals(Map.of(bobGuardian, Set.of(ALICE)), model.getAddressBook().getGuardianStudents());
 
         String json = JsonUtil.toJsonString(new JsonSerializableAddressBook(model.getAddressBook()));
         AddressBook restored = JsonUtil.fromJsonString(json, JsonSerializableAddressBook.class).toModelType();
         assertEquals(model.getAddressBook(), new ModelManager(restored, new UserPrefs()).getAddressBook());
         restored.resetData(restored);
-        assertEquals(Map.of(BOB, Set.of(ALICE)), restored.getGuardianStudents());
+        assertEquals(Map.of(bobGuardian, Set.of(ALICE)), restored.getGuardianStudents());
 
         Person edited = new PersonBuilder(ALICE).withName("Edited Alice").build();
         restored.setPerson(ALICE, edited);
-        assertEquals(Map.of(BOB, Set.of(edited)), restored.getGuardianStudents());
-        restored.removePerson(BOB);
+        assertEquals(Map.of(bobGuardian, Set.of(edited)), restored.getGuardianStudents());
+        restored.removePerson(bobGuardian);
         assertEquals(Map.of(), restored.getGuardianStudents());
     }
 
     @Test
     public void link_invalidInput_reportsErrors() throws Exception {
         AddressBook book = new AddressBook();
-        book.setPersons(List.of(ALICE, BOB));
+        Guardian bobGuardian = new Guardian(BOB.getName(), BOB.getPhone(), BOB.getEmail(),
+                BOB.getAddress(), BOB.getTags());
+        book.setPersons(List.of(ALICE, bobGuardian));
         ModelManager model = new ModelManager(book, new UserPrefs());
         AddressBookParser parser = new AddressBookParser();
         for (String args : List.of("s/1", "s/0 g/2", "s/1 g/2 g/1", "s/x g/2")) {
@@ -66,11 +71,13 @@ public class GuardianLinkTest {
     @Test
     public void storage_oldAndInvalidLinks_handlesData() throws Exception {
         AddressBook book = new AddressBook();
-        book.setPersons(List.of(ALICE, BOB));
+        Guardian bobGuardian = new Guardian(BOB.getName(), BOB.getPhone(), BOB.getEmail(),
+                BOB.getAddress(), BOB.getTags());
+        book.setPersons(List.of(ALICE, bobGuardian));
         String json = JsonUtil.toJsonString(new JsonSerializableAddressBook(book));
         String oldJson = json.replaceAll("(?s),\\s*\"guardianLinks\"\\s*:\\s*\\[\\s*\\]", "");
         assertEquals(book, JsonUtil.fromJsonString(oldJson, JsonSerializableAddressBook.class).toModelType());
-        List<JsonAdaptedPerson> persons = List.of(new JsonAdaptedPerson(ALICE), new JsonAdaptedPerson(BOB));
+        List<JsonAdaptedPerson> persons = List.of(new JsonAdaptedPerson(ALICE), new JsonAdaptedPerson(bobGuardian));
         for (List<List<Integer>> links : List.of(List.of(List.of(2, 0)), List.of(List.of(0, 0)),
                 List.of(List.of(1, 0), List.of(1, 0)), List.of(List.of(1)))) {
             assertThrows(IllegalValueException.class, () ->

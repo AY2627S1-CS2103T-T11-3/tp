@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Guardian;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.testutil.PersonBuilder;
 
@@ -100,7 +101,7 @@ public class AddressBookTest {
         }
 
         @Override
-        public Map<Person, Set<Person>> getGuardianStudents() {
+        public Map<Guardian, Set<Person>> getGuardianStudents() {
             return Map.of();
         }
 

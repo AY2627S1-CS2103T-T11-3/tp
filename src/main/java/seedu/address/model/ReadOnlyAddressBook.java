@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javafx.collections.ObservableList;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Guardian;
 
 /**
  * Unmodifiable view of an address book
@@ -20,6 +21,6 @@ public interface ReadOnlyAddressBook {
     /**
      * Returns an immutable snapshot of guardian-to-student relationships.
      */
-    Map<Person, Set<Person>> getGuardianStudents();
+    Map<Guardian, Set<Person>> getGuardianStudents();
 
 }
