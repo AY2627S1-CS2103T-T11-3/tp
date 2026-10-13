@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javafx.collections.ObservableList;
-import seedu.address.model.person.Person;
 import seedu.address.model.person.Guardian;
+import seedu.address.model.person.Person;
 
 /**
  * Unmodifiable view of an address book

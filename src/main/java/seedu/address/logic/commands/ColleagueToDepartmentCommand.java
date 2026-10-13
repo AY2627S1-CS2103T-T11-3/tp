@@ -6,8 +6,8 @@ import java.util.Objects;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Person;
 import seedu.address.model.person.Guardian;
+import seedu.address.model.person.Person;
 
 /** Links an existing colleague to a department. */
 public class ColleagueToDepartmentCommand extends Command {
