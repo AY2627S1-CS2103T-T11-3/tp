@@ -1,4 +1,4 @@
-package seedu.address.model.person;
+package seedu.address.model.group;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
@@ -8,8 +8,8 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import seedu.address.model.person.exceptions.DuplicateGroupException;
-import seedu.address.model.person.exceptions.GroupNotFoundException;
+import seedu.address.model.group.exceptions.DuplicateGroupException;
+import seedu.address.model.group.exceptions.GroupNotFoundException;
 
 /**
  * A list of groups that enforces uniqueness between its elements and does not allow nulls.

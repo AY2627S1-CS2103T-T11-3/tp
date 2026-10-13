@@ -11,9 +11,9 @@ import java.util.Set;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.person.Group;
+import seedu.address.model.group.Group;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.UniqueGroupList;
+import seedu.address.model.group.UniqueGroupList;
 import seedu.address.model.person.UniquePersonList;
 
 /**

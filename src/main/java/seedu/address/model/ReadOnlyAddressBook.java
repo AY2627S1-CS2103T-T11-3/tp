@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javafx.collections.ObservableList;
-import seedu.address.model.person.Group;
+import seedu.address.model.group.Group;
 import seedu.address.model.person.Person;
 
 /**
