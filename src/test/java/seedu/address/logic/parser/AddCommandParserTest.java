@@ -96,6 +96,21 @@ public class AddCommandParserTest {
     }
 
     @Test
+    public void parse_invalidContactType_failure() {
+        // The parser should reject contact types that are not represented by the Role enum.
+        String invalidContactType = " ct/parent";
+
+        assertParseFailure(
+                parser,
+                NAME_DESC_BOB
+                        + PHONE_DESC_BOB
+                        + EMAIL_DESC_BOB
+                        + ADDRESS_DESC_BOB
+                        + invalidContactType,
+                "Contact type must be student, guardian, or colleague.");
+    }
+
+    @Test
     public void parse_repeatedNonTagValue_failure() {
         String validExpectedPersonString = NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
                 + ADDRESS_DESC_BOB + CONTACT_TYPE_GUARDIAN + TAG_DESC_FRIEND;

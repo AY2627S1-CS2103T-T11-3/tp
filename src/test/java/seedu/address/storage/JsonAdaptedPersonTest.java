@@ -16,6 +16,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Role;
 
 public class JsonAdaptedPersonTest {
     private static final String INVALID_NAME = "R@chel";
@@ -36,6 +37,24 @@ public class JsonAdaptedPersonTest {
     public void toModelType_validPersonDetails_returnsPerson() throws Exception {
         JsonAdaptedPerson person = new JsonAdaptedPerson(BENSON);
         assertEquals(BENSON, person.toModelType());
+    }
+
+    @Test
+    public void toModelType_nullRole_throwsIllegalValueException() {
+        // A saved contact without a role is invalid because role is compulsory.
+        JsonAdaptedPerson person = new JsonAdaptedPerson(
+                VALID_NAME,
+                VALID_PHONE,
+                VALID_EMAIL,
+                VALID_ADDRESS,
+                VALID_TAGS,
+                null,
+                null);
+        String expectedMessage = String.format(
+                MISSING_FIELD_MESSAGE_FORMAT,
+                Role.class.getSimpleName());
+
+        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
     }
 
     @Test
