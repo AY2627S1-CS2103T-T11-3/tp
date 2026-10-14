@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.UniquePersonList;
 
 /**
@@ -166,8 +167,8 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(guardian);
         requireNonNull(student);
 
-        if (guardian.getRole() != seedu.address.model.person.Role.GUARDIAN
-                || student.getRole() != seedu.address.model.person.Role.STUDENT) {
+        if (guardian.getRole() != Role.GUARDIAN
+                || student.getRole() != Role.STUDENT) {
             throw new IllegalArgumentException("Contacts have incompatible roles.");
         }
 
