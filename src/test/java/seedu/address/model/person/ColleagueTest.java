@@ -40,7 +40,7 @@ public class ColleagueTest {
 
         // different person -> returns false
         assertFalse(alice.equals(bob));
-        
+
         // TODO: Add more tests for each field when PersonBuilder is updated
     }
 }
