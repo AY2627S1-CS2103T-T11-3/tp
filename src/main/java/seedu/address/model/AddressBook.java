@@ -11,6 +11,8 @@ import java.util.Set;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.UniqueGroupList;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
@@ -23,6 +25,7 @@ import seedu.address.model.person.UniquePersonList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons = new UniquePersonList();
+    private final UniqueGroupList groups = new UniqueGroupList();
 
     // Each guardian maps to the students linked to that guardian.
     private final Map<Guardian, Set<Person>> guardianStudents = new HashMap<>();
@@ -50,6 +53,14 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Replaces the contents of the group list with {@code groups}.
+     * {@code groups} must not contain duplicate groups.
+     */
+    public void setGroups(List<Group> groups) {
+        this.groups.setGroups(groups);
+    }
+
+    /**
      * Resets the existing data of this {@code AddressBook} with {@code newData}.
      */
     public void resetData(ReadOnlyAddressBook newData) {
@@ -61,6 +72,8 @@ public class AddressBook implements ReadOnlyAddressBook {
 
         links.forEach((guardian, students) ->
                 guardianStudents.put(guardian, new HashSet<>(students)));
+
+        setGroups(List.copyOf(newData.getGroupList()));
     }
 
     //// person-level operations
@@ -120,12 +133,39 @@ public class AddressBook implements ReadOnlyAddressBook {
         guardianStudents.values().removeIf(Set::isEmpty);
     }
 
+    //// group-level operations
+
+    /**
+     * Returns true if a group with the same identity as {@code group} exists in the address book.
+     */
+    public boolean hasGroup(Group group) {
+        requireNonNull(group);
+        return groups.contains(group);
+    }
+
+    /**
+     * Adds a group to the address book.
+     * The group must not already exist in the address book.
+     */
+    public void addGroup(Group g) {
+        groups.add(g);
+    }
+
+    /**
+     * Removes {@code key} from this {@code AddressBook}.
+     * {@code key} must exist in the address book.
+     */
+    public void removeGroup(Group key) {
+        groups.remove(key);
+    }
+
     //// util methods
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("persons", persons)
+                .add("groups", groups)
                 .toString();
     }
 
