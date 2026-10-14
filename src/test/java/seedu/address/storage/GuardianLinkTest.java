@@ -109,6 +109,38 @@ public class GuardianLinkTest {
     }
 
     @Test
+    public void linkGuardianToStudent_nonGuardianSelected_throwsCommandException() {
+        // ALICE and BOB are ordinary Person objects, so BOB cannot be selected as a Guardian.
+        AddressBook addressBook = new AddressBook();
+        addressBook.setPersons(List.of(ALICE, BOB));
+        ModelManager model = new ModelManager(addressBook, new UserPrefs());
+        AddressBookParser parser = new AddressBookParser();
+
+        assertThrows(CommandException.class, () ->
+                parser.parseCommand("link-guardian s/1 g/2").execute(model));
+    }
+
+    @Test
+    public void editLinkedStudent_preservesGuardianRelationship() throws Exception {
+        // Set up a student and Guardian in the displayed order used by s/1 g/2.
+        AddressBook addressBook = new AddressBook();
+        addressBook.setPersons(List.of(ALICE, BOB_GUARDIAN));
+        ModelManager model = new ModelManager(addressBook, new UserPrefs());
+        AddressBookParser parser = new AddressBookParser();
+        parser.parseCommand("link-guardian s/1 g/2").execute(model);
+
+        // Editing replaces the student object, so the relationship must point to the replacement.
+        Person editedStudent = new PersonBuilder(ALICE)
+                .withName("Edited Alice")
+                .build();
+        model.setPerson(ALICE, editedStudent);
+
+        assertEquals(
+                Map.of(BOB_GUARDIAN, Set.of(editedStudent)),
+                model.getAddressBook().getGuardianStudents());
+    }
+
+    @Test
     public void storage_oldAndInvalidLinks_handlesData() throws Exception {
         // Older files without guardianLinks should still load successfully.
         AddressBook book = new AddressBook();
