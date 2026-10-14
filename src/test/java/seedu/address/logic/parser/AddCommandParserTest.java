@@ -44,6 +44,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -70,6 +71,26 @@ public class AddCommandParserTest {
                 NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB + CONTACT_TYPE_COLLEAGUE
                         + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
                 new AddCommand(expectedPersonMultipleTags));
+    }
+
+    @Test
+    public void parse_guardianContact_createsGuardian() {
+        Guardian expectedGuardian = new Guardian(
+                BOB.getName(),
+                BOB.getPhone(),
+                BOB.getEmail(),
+                BOB.getAddress(),
+                BOB.getTags());
+
+        // This verifies that ct/guardian creates a Guardian
+        assertParseSuccess(
+                parser,
+                NAME_DESC_BOB
+                        + PHONE_DESC_BOB
+                        + EMAIL_DESC_BOB
+                        + ADDRESS_DESC_BOB
+                        + CONTACT_TYPE_GUARDIAN,
+                new AddCommand(expectedGuardian));
     }
 
     @Test
