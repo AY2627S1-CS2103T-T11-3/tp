@@ -23,6 +23,7 @@ public class Person {
 
     // Data fields
     private final Address address;
+    private final String groupId;
     private final String department;
     private final Role role;
     private final Set<Tag> tags = new HashSet<>();
@@ -47,6 +48,7 @@ public class Person {
         this.phone = phone;
         this.email = email;
         this.address = address;
+        this.groupId = department;
         this.department = department;
         this.role = role;
         this.tags.addAll(tags);
@@ -70,6 +72,11 @@ public class Person {
 
     public String getDepartment() {
         return department;
+    }
+
+    /** Returns the identifier of the group this person belongs to, if any. */
+    public String getGroupId() {
+        return groupId;
     }
 
     public Role getRole() {
@@ -116,6 +123,7 @@ public class Person {
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
+                && Objects.equals(groupId, otherPerson.groupId)
                 && Objects.equals(department, otherPerson.department)
                 && role == otherPerson.role
                 && tags.equals(otherPerson.tags);
@@ -124,7 +132,7 @@ public class Person {
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, department, role);
+        return Objects.hash(name, phone, email, address, groupId, department, tags, role);
     }
 
     @Override
