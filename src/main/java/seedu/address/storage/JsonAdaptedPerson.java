@@ -12,9 +12,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -29,11 +31,12 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final String department;
+    private final Role role;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
 
     public JsonAdaptedPerson(String name, String phone, String email, String address,
             List<JsonAdaptedTag> tags) {
-        this(name, phone, email, address, tags, null);
+        this(name, phone, email, address, tags, Role.STUDENT, null);
     }
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -41,12 +44,14 @@ class JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("department") String department) {
+            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("role") Role role,
+            @JsonProperty("department") String department) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.department = department;
+        this.role = role;
         if (tags != null) {
             this.tags.addAll(tags);
         }
@@ -61,6 +66,7 @@ class JsonAdaptedPerson {
         email = source.getEmail().value;
         address = source.getAddress().value;
         department = source.getDepartment();
+        role = source.getRole();
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
@@ -109,8 +115,15 @@ class JsonAdaptedPerson {
         }
         final Address modelAddress = new Address(address);
 
+        if (role == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Role.class.getSimpleName()));
+        }
+
         final Set<Tag> modelTags = new HashSet<>(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, department);
+        if (role == Role.GUARDIAN) {
+            return new Guardian(modelName, modelPhone, modelEmail, modelAddress, modelTags);
+        }
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, role, department);
     }
 
 }

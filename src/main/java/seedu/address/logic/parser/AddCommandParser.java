@@ -15,9 +15,11 @@ import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -48,9 +50,17 @@ public class AddCommandParser implements Parser<AddCommand> {
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
-        String contactType = argMultimap.getValue(PREFIX_CONTACT_TYPE).get();
-        // TODO: Pass contactType to Person constructor when the field is added to Person
-        Person person = new Person(name, phone, email, address, tagList);
+        String contactType = argMultimap.getValue(PREFIX_CONTACT_TYPE).get().trim().toUpperCase();
+        Role role;
+        try {
+            role = Role.valueOf(contactType);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException("Contact type must be student, guardian, or colleague.");
+        }
+
+        Person person = role == Role.GUARDIAN
+                ? new Guardian(name, phone, email, address, tagList)
+                : new Person(name, phone, email, address, tagList, role, null);
 
         return new AddCommand(person);
     }

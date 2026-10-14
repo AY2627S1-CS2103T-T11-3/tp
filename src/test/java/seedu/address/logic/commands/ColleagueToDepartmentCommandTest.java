@@ -11,6 +11,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Role;
 
 public class ColleagueToDepartmentCommandTest {
 
@@ -22,7 +23,7 @@ public class ColleagueToDepartmentCommandTest {
         Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         Person original = expectedModel.getAddressBook().getPersonList().get(0);
         Person updated = new Person(original.getName(), original.getPhone(), original.getEmail(),
-                original.getAddress(), original.getTags(), "Computer Science");
+                original.getAddress(), original.getTags(), Role.STUDENT, "Computer Science");
         expectedModel.setPerson(original, updated);
 
         assertCommandSuccess(command, model,

@@ -13,7 +13,9 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.UniqueGroupList;
+import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.UniquePersonList;
 
 /**
@@ -26,7 +28,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     private final UniqueGroupList groups = new UniqueGroupList();
 
     // Each guardian maps to the students linked to that guardian.
-    private final Map<Person, Set<Person>> guardianStudents = new HashMap<>();
+    private final Map<Guardian, Set<Person>> guardianStudents = new HashMap<>();
 
     public AddressBook() {}
 
@@ -65,7 +67,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(newData);
 
         // Capture links before replacing data, including when newData is this object.
-        Map<Person, Set<Person>> links = newData.getGuardianStudents();
+        Map<Guardian, Set<Person>> links = newData.getGuardianStudents();
         setPersons(List.copyOf(newData.getPersonList()));
 
         links.forEach((guardian, students) ->
@@ -102,9 +104,12 @@ public class AddressBook implements ReadOnlyAddressBook {
 
         persons.setPerson(target, editedPerson);
         // Replace references because editing creates a new Person object.
-        Set<Person> students = guardianStudents.remove(target);
-        if (students != null) {
-            guardianStudents.put(editedPerson, students);
+        Set<Person> students = null;
+        if (target instanceof Guardian guardian) {
+            students = guardianStudents.remove(guardian);
+        }
+        if (students != null && editedPerson instanceof Guardian editedGuardian) {
+            guardianStudents.put(editedGuardian, students);
         }
 
         for (Set<Person> linkedStudents : guardianStudents.values()) {
@@ -121,7 +126,9 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void removePerson(Person key) {
         persons.remove(key);
         // Remove links involving the deleted contact.
-        guardianStudents.remove(key);
+        if (key instanceof Guardian guardian) {
+            guardianStudents.remove(guardian);
+        }
         guardianStudents.values().forEach(students -> students.remove(key));
         guardianStudents.values().removeIf(Set::isEmpty);
     }
@@ -168,13 +175,8 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     @Override
-    public ObservableList<Group> getGroupList() {
-        return groups.asUnmodifiableObservableList();
-    }
-
-    @Override
-    public Map<Person, Set<Person>> getGuardianStudents() {
-        Map<Person, Set<Person>> snapshot = new HashMap<>();
+    public Map<Guardian, Set<Person>> getGuardianStudents() {
+        Map<Guardian, Set<Person>> snapshot = new HashMap<>();
         guardianStudents.forEach((guardian, students) ->
                 snapshot.put(guardian, Set.copyOf(students)));
         return Map.copyOf(snapshot);
@@ -201,9 +203,14 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /** Links existing contacts without modifying their contact details. */
-    public void linkGuardianToStudent(Person guardian, Person student) {
+    public void linkGuardianToStudent(Guardian guardian, Person student) {
         requireNonNull(guardian);
         requireNonNull(student);
+
+        if (guardian.getRole() != Role.GUARDIAN
+                || student.getRole() != Role.STUDENT) {
+            throw new IllegalArgumentException("Contacts have incompatible roles.");
+        }
 
         if (!hasPerson(guardian) || !hasPerson(student)) {
             throw new IllegalArgumentException("Both contacts must exist.");

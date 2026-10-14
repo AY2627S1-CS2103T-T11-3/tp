@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 
 /** Links an existing colleague to a department. */
@@ -31,8 +32,11 @@ public class ColleagueToDepartmentCommand extends Command {
                 .filter(person -> person.getName().fullName.equalsIgnoreCase(colleagueName))
                 .findFirst()
                 .orElseThrow(() -> new CommandException(String.format(MESSAGE_NOT_FOUND, colleagueName)));
-        Person linked = new Person(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
-                colleague.getAddress(), colleague.getTags(), department);
+        Person linked = colleague instanceof Guardian
+                ? new Guardian(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
+                        colleague.getAddress(), colleague.getTags())
+                : new Person(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
+                        colleague.getAddress(), colleague.getTags(), colleague.getRole(), department);
         model.setPerson(colleague, linked);
         return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName, department));
     }

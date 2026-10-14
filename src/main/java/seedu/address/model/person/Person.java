@@ -24,6 +24,7 @@ public class Person {
     // Data fields
     private final Address address;
     private final String department;
+    private final Role role;
     private final Set<Tag> tags = new HashSet<>();
 
     /**
@@ -35,12 +36,19 @@ public class Person {
 
     /** Creates a person with an optional department. */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, String department) {
+        this(name, phone, email, address, tags, Role.STUDENT, department);
+    }
+
+    /** Creates a person with an optional department and role. */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+            Role role, String department) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.department = department;
+        this.role = role;
         this.tags.addAll(tags);
     }
 
@@ -62,6 +70,10 @@ public class Person {
 
     public String getDepartment() {
         return department;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     /**
@@ -105,13 +117,14 @@ public class Person {
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
                 && Objects.equals(department, otherPerson.department)
+                && role == otherPerson.role
                 && tags.equals(otherPerson.tags);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, department);
+        return Objects.hash(name, phone, email, address, tags, department, role);
     }
 
     @Override
