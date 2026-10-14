@@ -89,7 +89,9 @@ public class AddCommandParserTest {
                         + PHONE_DESC_BOB
                         + EMAIL_DESC_BOB
                         + ADDRESS_DESC_BOB
-                        + CONTACT_TYPE_GUARDIAN,
+                        + CONTACT_TYPE_GUARDIAN
+                        + TAG_DESC_HUSBAND
+                        + TAG_DESC_FRIEND,
                 new AddCommand(expectedGuardian));
     }
 
