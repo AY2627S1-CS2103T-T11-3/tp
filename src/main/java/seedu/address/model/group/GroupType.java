@@ -24,7 +24,7 @@ public class GroupType {
     /**
      * Maps a String to the GType enum
      */
-    private GType mapStringToGType(String groupTypeString) throws IllegalArgumentException {
+    public static GType mapStringToGType(String groupTypeString) throws IllegalArgumentException {
         return switch (groupTypeString) {
             case "class" -> GType.CLASS;
             case "department" -> GType.DEPARTMENT;
