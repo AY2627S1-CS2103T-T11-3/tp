@@ -39,10 +39,10 @@ public class ColleagueToDepartmentCommandTest {
                 original.getAddress(), original.getTags(), "Computer Science");
         expectedModel.setPerson(original, updated);
 
-        assertCommandSuccess(command, model,
+        assertCommandSuccess(command, expectedModel,
                 String.format(ColleagueToDepartmentCommand.MESSAGE_SUCCESS, "Alice Pauline", "Computer Science"),
                 expectedModel);
-        Person firstPerson = model.getAddressBook().getPersonList().getFirst();
+        Person firstPerson = expectedModel.getAddressBook().getPersonList().getFirst();
         assertInstanceOf(Colleague.class, firstPerson);
         assertEquals("Computer Science", ((Colleague) firstPerson).getDepartment());
     }
