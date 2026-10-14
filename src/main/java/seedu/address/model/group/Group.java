@@ -14,6 +14,9 @@ public class Group {
     private final GroupName groupName;
     private final GroupType groupType;
 
+    /**
+     * Constructs a {@code Group}.
+     */
     public Group(GroupName groupName, GroupType groupType) {
         requireAllNonNull(groupName, groupType);
         this.groupName = groupName;

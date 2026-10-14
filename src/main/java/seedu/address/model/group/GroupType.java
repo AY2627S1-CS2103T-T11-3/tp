@@ -7,6 +7,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class GroupType {
 
+    /**
+     * Possible group types.
+     */
     public enum GType {
         CLASS,
         DEPARTMENT
@@ -16,6 +19,9 @@ public class GroupType {
             "Phone numbers should only contain digits, and should be at least 3 digits long";
     public final GType groupType;
 
+    /**
+     * Constructs a {@code GroupType}.
+     */
     public GroupType(String groupTypeString) {
         requireNonNull(groupTypeString);
         groupType = mapStringToGType(groupTypeString);

@@ -10,7 +10,6 @@ import seedu.address.model.group.Group;
  * A utility class containing a list of {@code Group} objects to be used in tests.
  */
 public class TypicalGroups {
-    
     public static final Group RESPECT_5 = new GroupBuilder()
             .withName("Respect 5")
             .withType("class")
@@ -25,5 +24,4 @@ public class TypicalGroups {
     public static List<Group> getTypicalGroups() {
         return new ArrayList<>(Arrays.asList(RESPECT_5, MATH_DPT));
     }
-    
 }

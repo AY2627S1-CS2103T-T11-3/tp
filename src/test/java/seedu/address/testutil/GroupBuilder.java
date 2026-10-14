@@ -1,12 +1,8 @@
 package seedu.address.testutil;
 
-import java.util.HashSet;
-
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
-import seedu.address.model.person.Name;
-import seedu.address.model.person.Person;
 
 /**
  * A utility class to help with building Group objects.

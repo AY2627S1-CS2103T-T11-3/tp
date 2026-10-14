@@ -7,6 +7,9 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.group.Group;
 import seedu.address.model.person.Person;
 
+/**
+ * A utility class which creates an {@code AddressBook} object to be used in tests.
+ */
 public class TypicalAddressBook {
 
     /**

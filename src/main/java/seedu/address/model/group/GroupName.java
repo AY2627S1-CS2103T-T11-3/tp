@@ -19,6 +19,9 @@ public class GroupName {
 
     public final String groupName;
 
+    /**
+     * Constructs a {@code GroupName}.
+     */
     public GroupName(String groupName) {
         requireNonNull(groupName);
         checkArgument(isValidGroupName(groupName), MESSAGE_CONSTRAINTS);

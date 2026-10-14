@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalAddressBook.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalPersons.ALICE;
 
 import java.util.Collection;
 import java.util.List;
@@ -110,10 +110,6 @@ public class AddressBookTest {
 
         public static AddressBookStub fromGroupList(Collection<Group> groups) {
             return new AddressBookStub(FXCollections.observableArrayList(), groups);
-        }
-
-        AddressBookStub(Collection<Group> groups) {
-            this.groups.setAll(groups);
         }
 
         @Override
