@@ -7,7 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import seedu.address.logic.commands.ColleagueToDepartmentCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
-/** Parses the link command. */
+/** Parses the link-colleague command. */
 public class ColleagueToDepartmentCommandParser implements Parser<ColleagueToDepartmentCommand> {
     @Override
     public ColleagueToDepartmentCommand parse(String args) throws ParseException {

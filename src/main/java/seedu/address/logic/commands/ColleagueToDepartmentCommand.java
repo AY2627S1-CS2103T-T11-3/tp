@@ -14,8 +14,8 @@ import seedu.address.model.group.GroupType;
 
 /** Links an existing colleague to a department. */
 public class ColleagueToDepartmentCommand extends Command {
-    public static final String COMMAND_WORD = "link";
-    public static final String MESSAGE_USAGE = "link: Links a colleague to a department. "
+    public static final String COMMAND_WORD = "link-colleague";
+    public static final String MESSAGE_USAGE = "link-colleague: Links a colleague to a department. "
             + "Parameters: n/NAME d/DEPARTMENT";
     public static final String MESSAGE_SUCCESS = "%s linked to department: %s";
     public static final String MESSAGE_NOT_FOUND = "Colleague not found: %s";
