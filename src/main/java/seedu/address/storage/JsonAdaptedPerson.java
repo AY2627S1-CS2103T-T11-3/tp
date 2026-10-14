@@ -36,7 +36,7 @@ class JsonAdaptedPerson {
 
     public JsonAdaptedPerson(String name, String phone, String email, String address,
             List<JsonAdaptedTag> tags) {
-        this(name, phone, email, address, tags, null, Role.STUDENT);
+        this(name, phone, email, address, tags, Role.STUDENT, null);
     }
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -44,8 +44,8 @@ class JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("department") String department,
-            @JsonProperty("role") Role role) {
+            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("role") Role role,
+            @JsonProperty("department") String department) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -123,7 +123,7 @@ class JsonAdaptedPerson {
         if (role == Role.GUARDIAN) {
             return new Guardian(modelName, modelPhone, modelEmail, modelAddress, modelTags);
         }
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, department, role);
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, role, department);
     }
 
 }

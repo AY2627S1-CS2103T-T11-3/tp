@@ -36,7 +36,7 @@ public class ColleagueToDepartmentCommand extends Command {
                 ? new Guardian(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
                         colleague.getAddress(), colleague.getTags())
                 : new Person(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
-                        colleague.getAddress(), colleague.getTags(), department, colleague.getRole());
+                        colleague.getAddress(), colleague.getTags(), colleague.getRole(), department);
         model.setPerson(colleague, linked);
         return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName, department));
     }

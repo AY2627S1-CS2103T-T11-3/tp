@@ -60,7 +60,7 @@ public class AddCommandParser implements Parser<AddCommand> {
 
         Person person = role == Role.GUARDIAN
                 ? new Guardian(name, phone, email, address, tagList)
-                : new Person(name, phone, email, address, tagList, null, role);
+                : new Person(name, phone, email, address, tagList, role, null);
 
         return new AddCommand(person);
     }

@@ -36,12 +36,12 @@ public class Person {
 
     /** Creates a person with an optional department. */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, String department) {
-        this(name, phone, email, address, tags, department, Role.STUDENT);
+        this(name, phone, email, address, tags, Role.STUDENT, department);
     }
 
     /** Creates a person with an optional department and role. */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
-            String department, Role role) {
+            Role role, String department) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;

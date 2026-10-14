@@ -106,7 +106,7 @@ public class EditCommand extends Command {
             return new Guardian(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
         }
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                personToEdit.getDepartment(), personToEdit.getRole());
+                personToEdit.getRole(), personToEdit.getDepartment());
     }
 
     @Override
