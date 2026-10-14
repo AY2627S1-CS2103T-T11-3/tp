@@ -107,10 +107,10 @@ public class EditCommand extends Command {
             return new Guardian(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
         }
 
-        if (personToEdit instanceof Colleague) {
+        if (personToEdit instanceof Colleague personToEditColleague) {
             // TODO: Integrate department into EditPersonDescriptor and EditCommand
             return new Colleague(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                    ((Colleague) personToEdit).getDepartment());
+                    personToEditColleague.getDepartment());
         }
 
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,

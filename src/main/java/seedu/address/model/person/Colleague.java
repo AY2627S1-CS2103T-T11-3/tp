@@ -27,8 +27,14 @@ public class Colleague extends Person {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        if (!super.equals(o)) {
+            return false;
+        }
+
         Colleague otherColleague = (Colleague) o;
         return Objects.equals(department, otherColleague.department);
     }
