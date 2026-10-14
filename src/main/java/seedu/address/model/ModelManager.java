@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 
 /**
@@ -127,7 +128,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void linkGuardianToStudent(Person guardian, Person student) {
+    public void linkGuardianToStudent(Guardian guardian, Person student) {
         addressBook.linkGuardianToStudent(guardian, student);
     }
 
