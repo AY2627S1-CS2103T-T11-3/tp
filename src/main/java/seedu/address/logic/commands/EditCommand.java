@@ -22,6 +22,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Name;
@@ -105,8 +106,15 @@ public class EditCommand extends Command {
         if (personToEdit instanceof Guardian) {
             return new Guardian(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
         }
+
+        if (personToEdit instanceof Colleague) {
+            // TODO: Integrate department into EditPersonDescriptor and EditCommand
+            return new Colleague(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
+                    ((Colleague) personToEdit).getDepartment());
+        }
+
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                personToEdit.getRole(), personToEdit.getDepartment());
+                personToEdit.getRole());
     }
 
     @Override
