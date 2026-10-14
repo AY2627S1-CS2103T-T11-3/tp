@@ -175,6 +175,11 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     @Override
+    public ObservableList<Group> getGroupList() {
+        return groups.asUnmodifiableObservableList();
+    }
+
+    @Override
     public Map<Guardian, Set<Person>> getGuardianStudents() {
         Map<Guardian, Set<Person>> snapshot = new HashMap<>();
         guardianStudents.forEach((guardian, students) ->
