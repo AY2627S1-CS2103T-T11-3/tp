@@ -6,8 +6,8 @@ import java.util.Objects;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Role;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
@@ -43,13 +43,11 @@ public class ColleagueToDepartmentCommand extends Command {
         }
         Person colleague = model.getAddressBook().getPersonList().stream()
                 .filter(person -> person.getName().fullName.equalsIgnoreCase(colleagueName))
+                .filter(person -> person.getRole() == Role.COLLEAGUE)
                 .findFirst()
                 .orElseThrow(() -> new CommandException(String.format(MESSAGE_NOT_FOUND, colleagueName)));
-        Person linked = colleague instanceof Guardian
-                ? new Guardian(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
-                        colleague.getAddress(), colleague.getTags())
-                : new Person(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
-                        colleague.getAddress(), colleague.getTags(), colleague.getRole(), department);
+        Person linked = new Person(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
+                colleague.getAddress(), colleague.getTags(), colleague.getRole(), department);
         model.setPerson(colleague, linked);
         return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName, department));
     }
