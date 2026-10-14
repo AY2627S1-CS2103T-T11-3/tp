@@ -51,7 +51,7 @@ class JsonAdaptedPerson {
         this.email = email;
         this.address = address;
         this.department = department;
-        this.role = role == null ? Role.STUDENT : role;
+        this.role = role;
         if (tags != null) {
             this.tags.addAll(tags);
         }
@@ -114,6 +114,10 @@ class JsonAdaptedPerson {
             throw new IllegalValueException(Address.MESSAGE_CONSTRAINTS);
         }
         final Address modelAddress = new Address(address);
+
+        if (role == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Role.class.getSimpleName()));
+        }
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
         if (role == Role.GUARDIAN) {
