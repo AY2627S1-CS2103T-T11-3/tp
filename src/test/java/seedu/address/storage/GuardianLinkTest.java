@@ -24,40 +24,43 @@ import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 
 public class GuardianLinkTest {
+    private static final Guardian BOB_GUARDIAN = new Guardian(
+            BOB.getName(),
+            BOB.getPhone(),
+            BOB.getEmail(),
+            BOB.getAddress(),
+            BOB.getTags());
+
     @Test
     public void link_saveLoadEditDelete_preservesRelationships() throws Exception {
         // The displayed list is [Alice (student), Bob (guardian)], so s/1 g/2 links Bob to Alice.
         AddressBook book = new AddressBook();
-        Guardian bobGuardian = new Guardian(BOB.getName(), BOB.getPhone(), BOB.getEmail(),
-                BOB.getAddress(), BOB.getTags());
-        book.setPersons(List.of(ALICE, bobGuardian));
+        book.setPersons(List.of(ALICE, BOB_GUARDIAN));
         ModelManager model = new ModelManager(book, new UserPrefs());
         AddressBookParser parser = new AddressBookParser();
         parser.parseCommand("link-guardian s/1 g/2").execute(model);
-        assertEquals(Map.of(bobGuardian, Set.of(ALICE)), model.getAddressBook().getGuardianStudents());
+        assertEquals(Map.of(BOB_GUARDIAN, Set.of(ALICE)), model.getAddressBook().getGuardianStudents());
 
         // Serialising and deserialising should preserve both contacts and their relationship.
         String json = JsonUtil.toJsonString(new JsonSerializableAddressBook(model.getAddressBook()));
         AddressBook restored = JsonUtil.fromJsonString(json, JsonSerializableAddressBook.class).toModelType();
         assertEquals(model.getAddressBook(), new ModelManager(restored, new UserPrefs()).getAddressBook());
         restored.resetData(restored);
-        assertEquals(Map.of(bobGuardian, Set.of(ALICE)), restored.getGuardianStudents());
+        assertEquals(Map.of(BOB_GUARDIAN, Set.of(ALICE)), restored.getGuardianStudents());
 
         // Editing a linked contact should update the relationship reference.
         Person edited = new PersonBuilder(ALICE).withName("Edited Alice").build();
         restored.setPerson(ALICE, edited);
-        assertEquals(Map.of(bobGuardian, Set.of(edited)), restored.getGuardianStudents());
+        assertEquals(Map.of(BOB_GUARDIAN, Set.of(edited)), restored.getGuardianStudents());
         // Deleting the guardian should remove the relationship completely.
-        restored.removePerson(bobGuardian);
+        restored.removePerson(BOB_GUARDIAN);
         assertEquals(Map.of(), restored.getGuardianStudents());
     }
 
     @Test
     public void link_invalidInput_reportsErrors() throws Exception {
         AddressBook book = new AddressBook();
-        Guardian bobGuardian = new Guardian(BOB.getName(), BOB.getPhone(), BOB.getEmail(),
-                BOB.getAddress(), BOB.getTags());
-        book.setPersons(List.of(ALICE, bobGuardian));
+        book.setPersons(List.of(ALICE, BOB_GUARDIAN));
         ModelManager model = new ModelManager(book, new UserPrefs());
         AddressBookParser parser = new AddressBookParser();
 
@@ -109,13 +112,11 @@ public class GuardianLinkTest {
     public void storage_oldAndInvalidLinks_handlesData() throws Exception {
         // Older files without guardianLinks should still load successfully.
         AddressBook book = new AddressBook();
-        Guardian bobGuardian = new Guardian(BOB.getName(), BOB.getPhone(), BOB.getEmail(),
-                BOB.getAddress(), BOB.getTags());
-        book.setPersons(List.of(ALICE, bobGuardian));
+        book.setPersons(List.of(ALICE, BOB_GUARDIAN));
         String json = JsonUtil.toJsonString(new JsonSerializableAddressBook(book));
         String oldJson = json.replaceAll("(?s),\\s*\"guardianLinks\"\\s*:\\s*\\[\\s*\\]", "");
         assertEquals(book, JsonUtil.fromJsonString(oldJson, JsonSerializableAddressBook.class).toModelType());
-        List<JsonAdaptedPerson> persons = List.of(new JsonAdaptedPerson(ALICE), new JsonAdaptedPerson(bobGuardian));
+        List<JsonAdaptedPerson> persons = List.of(new JsonAdaptedPerson(ALICE), new JsonAdaptedPerson(BOB_GUARDIAN));
         // Stored links must have two valid positions and must not be self-links or duplicates.
         for (List<List<Integer>> links : List.of(List.of(List.of(2, 0)), List.of(List.of(0, 0)),
                 List.of(List.of(1, 0), List.of(1, 0)), List.of(List.of(1)))) {
