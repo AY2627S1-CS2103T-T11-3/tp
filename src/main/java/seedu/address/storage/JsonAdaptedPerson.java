@@ -40,6 +40,13 @@ class JsonAdaptedPerson {
             List<JsonAdaptedTag> tags) {
         this(name, phone, email, address, tags, Role.STUDENT, null, null);
     }
+
+    /** Backwards-compatible constructor for data without an explicit group ID. */
+    public JsonAdaptedPerson(String name, String phone, String email, String address,
+            List<JsonAdaptedTag> tags, Role role, String department) {
+        this(name, phone, email, address, tags, role, department, null);
+    }
+
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */

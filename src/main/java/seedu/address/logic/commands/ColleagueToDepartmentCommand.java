@@ -32,15 +32,6 @@ public class ColleagueToDepartmentCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        Group departmentGroup;
-        try {
-            departmentGroup = new Group(new GroupName(department), new GroupType("department"));
-        } catch (IllegalArgumentException e) {
-            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
-        }
-        if (!model.getAddressBook().getGroupList().contains(departmentGroup)) {
-            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
-        }
         Person colleague = model.getAddressBook().getPersonList().stream()
                 .filter(person -> person.getName().fullName.equalsIgnoreCase(colleagueName))
                 .findFirst()
@@ -50,6 +41,15 @@ public class ColleagueToDepartmentCommand extends Command {
             throw new CommandException("Selected contact is not a colleague.");
         }
 
+        Group departmentGroup;
+        try {
+            departmentGroup = new Group(new GroupName(department), new GroupType("department"));
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
+        }
+        if (!model.getAddressBook().getGroupList().contains(departmentGroup)) {
+            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
+        }
         Colleague linked = new Colleague(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
                 colleague.getAddress(), colleague.getTags(), department);
 
