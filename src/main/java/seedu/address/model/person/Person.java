@@ -23,33 +23,35 @@ public class Person {
 
     // Data fields
     private final Address address;
+<<<<<<< HEAD
     private final String groupId;
     private final String department;
+=======
+>>>>>>> 48572617d8cec197d4d453942455e7073b6fc20a
     private final Role role;
     private final Set<Tag> tags = new HashSet<>();
 
     /**
-     * Every field must be present and not null.
+     * Create a person with default role student.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        this(name, phone, email, address, tags, null);
+        this(name, phone, email, address, tags, Role.STUDENT);
     }
 
-    /** Creates a person with an optional department. */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, String department) {
-        this(name, phone, email, address, tags, Role.STUDENT, department);
-    }
-
-    /** Creates a person with an optional department and role. */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
-            Role role, String department) {
-        requireAllNonNull(name, phone, email, address, tags);
+    /**
+     * Every field must be present and not null.
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Role role) {
+        requireAllNonNull(name, phone, email, address, tags, role);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
+<<<<<<< HEAD
         this.groupId = department;
         this.department = department;
+=======
+>>>>>>> 48572617d8cec197d4d453942455e7073b6fc20a
         this.role = role;
         this.tags.addAll(tags);
     }
@@ -70,6 +72,7 @@ public class Person {
         return address;
     }
 
+<<<<<<< HEAD
     public String getDepartment() {
         return department;
     }
@@ -79,6 +82,8 @@ public class Person {
         return groupId;
     }
 
+=======
+>>>>>>> 48572617d8cec197d4d453942455e7073b6fc20a
     public Role getRole() {
         return role;
     }
@@ -123,8 +128,11 @@ public class Person {
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
+<<<<<<< HEAD
                 && Objects.equals(groupId, otherPerson.groupId)
                 && Objects.equals(department, otherPerson.department)
+=======
+>>>>>>> 48572617d8cec197d4d453942455e7073b6fc20a
                 && role == otherPerson.role
                 && tags.equals(otherPerson.tags);
     }
@@ -132,7 +140,11 @@ public class Person {
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
+<<<<<<< HEAD
         return Objects.hash(name, phone, email, address, groupId, department, tags, role);
+=======
+        return Objects.hash(name, phone, email, address, tags, role);
+>>>>>>> 48572617d8cec197d4d453942455e7073b6fc20a
     }
 
     @Override

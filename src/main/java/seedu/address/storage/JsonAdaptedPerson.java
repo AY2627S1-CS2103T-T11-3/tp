@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Name;
@@ -65,7 +66,11 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().value;
         address = source.getAddress().value;
-        department = source.getDepartment();
+        if (source instanceof Colleague sourceColleague) {
+            department = sourceColleague.getDepartment();
+        } else {
+            department = null;
+        }
         role = source.getRole();
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
@@ -123,7 +128,11 @@ class JsonAdaptedPerson {
         if (role == Role.GUARDIAN) {
             return new Guardian(modelName, modelPhone, modelEmail, modelAddress, modelTags);
         }
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, role, department);
+
+        if (role == Role.COLLEAGUE) {
+            return new Colleague(modelName, modelPhone, modelEmail, modelAddress, modelTags, department);
+        }
+        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, role);
     }
 
 }

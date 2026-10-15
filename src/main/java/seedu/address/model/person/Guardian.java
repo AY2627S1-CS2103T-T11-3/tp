@@ -8,6 +8,6 @@ import seedu.address.model.tag.Tag;
 public class Guardian extends Person {
 
     public Guardian(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        super(name, phone, email, address, tags, Role.GUARDIAN, null);
+        super(name, phone, email, address, tags, Role.GUARDIAN);
     }
 }
