@@ -132,6 +132,16 @@
     -fx-text-fill: #010504;
 }
 
+.role_badge {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-text-fill: #010504;
+    -fx-border-radius: 5, 5;
+    -fx-background-radius: 5, 5;
+    -fx-padding: 2px;
+    -fx-background-color: derive(#024402, 80%);
+}
+
 .stack-pane {
      -fx-background-color: derive(#1d1d1d, 20%);
 }
