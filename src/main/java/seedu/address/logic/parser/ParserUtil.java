@@ -131,11 +131,11 @@ public class ParserUtil {
      */
     public static Role parseContactType(String contactType) throws ParseException {
         requireNonNull(contactType);
-        String trimmedEmail = contactType.trim().toUpperCase();
+        String trimmedContactType = contactType.trim().toUpperCase();
 
         Role role;
         try {
-            role = Role.valueOf(contactType);
+            role = Role.valueOf(trimmedContactType);
         } catch (IllegalArgumentException e) {
             throw new ParseException("Contact type must be student, guardian, or colleague.");
         }

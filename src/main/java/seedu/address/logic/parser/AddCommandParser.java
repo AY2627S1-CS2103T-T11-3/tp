@@ -55,6 +55,7 @@ public class AddCommandParser implements Parser<AddCommand> {
         Role role = ParserUtil.parseContactType(argMultimap.getValue(PREFIX_CONTACT_TYPE).get());
 
         Person person = switch (role) {
+            // TODO: Handle parsing for department
             case Role.COLLEAGUE -> new Colleague(name, phone, email, address, tagList, null);
             case Role.GUARDIAN -> new Guardian(name, phone, email, address, tagList);
             case Role.STUDENT -> new Student(name, phone, email, address, tagList);
