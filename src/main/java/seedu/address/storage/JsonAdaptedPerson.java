@@ -32,13 +32,13 @@ class JsonAdaptedPerson {
     private final String phone;
     private final String email;
     private final String address;
-    private final String department;
+    private final String groupId;
     private final Role role;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
 
     public JsonAdaptedPerson(String name, String phone, String email, String address,
             List<JsonAdaptedTag> tags) {
-        this(name, phone, email, address, tags, Role.STUDENT, null);
+        this(name, phone, email, address, tags, Role.STUDENT, null, null);
     }
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -47,12 +47,13 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("role") Role role,
-            @JsonProperty("department") String department) {
+            @JsonProperty("department") String department, @JsonProperty("groupId") String groupId) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
-        this.department = department;
+        // department is retained as a backwards-compatible name for older data files.
+        this.groupId = groupId != null ? groupId : department;
         this.role = role;
         if (tags != null) {
             this.tags.addAll(tags);
@@ -68,9 +69,9 @@ class JsonAdaptedPerson {
         email = source.getEmail().value;
         address = source.getAddress().value;
         if (source instanceof Colleague sourceColleague) {
-            department = sourceColleague.getDepartment();
+            groupId = sourceColleague.getGroupId();
         } else {
-            department = null;
+            groupId = source.getGroupId();
         }
         role = source.getRole();
         tags.addAll(source.getTags().stream()
@@ -131,7 +132,7 @@ class JsonAdaptedPerson {
         }
 
         if (role == Role.COLLEAGUE) {
-            return new Colleague(modelName, modelPhone, modelEmail, modelAddress, modelTags, department);
+            return new Colleague(modelName, modelPhone, modelEmail, modelAddress, modelTags, groupId);
         }
 
         // Default is student

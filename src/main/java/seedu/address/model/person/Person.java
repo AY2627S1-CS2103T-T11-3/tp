@@ -74,6 +74,7 @@ public class Person {
     public String getGroupId() {
         return groupId;
     }
+
     public Role getRole() {
         return role;
     }
