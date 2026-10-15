@@ -36,7 +36,7 @@ public class GuardianLinkTest {
     public void link_saveLoadEditDelete_preservesRelationships() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
                 ALICE.getTags());
-        
+
         // The displayed list is [aliceStudent (student), Bob (guardian)], so s/1 g/2 links Bob to aliceStudent.
         AddressBook book = new AddressBook();
         book.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
@@ -65,7 +65,7 @@ public class GuardianLinkTest {
     public void link_invalidInput_reportsErrors() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
                 ALICE.getTags());
-        
+
         AddressBook book = new AddressBook();
         book.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
         ModelManager model = new ModelManager(book, new UserPrefs());
@@ -91,7 +91,7 @@ public class GuardianLinkTest {
             throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
                 ALICE.getTags());
-        
+
         // Create a real Guardian and place it after the student in the displayed list.
         Guardian guardian = new Guardian(
                 BOB.getName(),
@@ -134,7 +134,7 @@ public class GuardianLinkTest {
     public void editLinkedStudent_preservesGuardianRelationship() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
                 ALICE.getTags());
-        
+
         // Set up a student and Guardian in the displayed order used by s/1 g/2.
         AddressBook addressBook = new AddressBook();
         addressBook.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
@@ -157,14 +157,15 @@ public class GuardianLinkTest {
     public void storage_oldAndInvalidLinks_handlesData() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
                 ALICE.getTags());
-        
+
         // Older files without guardianLinks should still load successfully.
         AddressBook book = new AddressBook();
         book.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
         String json = JsonUtil.toJsonString(new JsonSerializableAddressBook(book));
         String oldJson = json.replaceAll("(?s),\\s*\"guardianLinks\"\\s*:\\s*\\[\\s*\\]", "");
         assertEquals(book, JsonUtil.fromJsonString(oldJson, JsonSerializableAddressBook.class).toModelType());
-        List<JsonAdaptedPerson> persons = List.of(new JsonAdaptedPerson(aliceStudent), new JsonAdaptedPerson(BOB_GUARDIAN));
+        List<JsonAdaptedPerson> persons = List.of(new JsonAdaptedPerson(aliceStudent),
+                new JsonAdaptedPerson(BOB_GUARDIAN));
         // Stored links must have two valid positions and must not be self-links or duplicates.
         for (List<List<Integer>> links : List.of(List.of(List.of(2, 0)), List.of(List.of(0, 0)),
                 List.of(List.of(1, 0), List.of(1, 0)), List.of(List.of(1)))) {
