@@ -33,6 +33,7 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
@@ -101,30 +102,32 @@ public class LogicManagerTest {
 
     @Test
     public void getGuardianNames_linkEditDelete_returnsCurrentNames() throws Exception {
-        model.addPerson(ALICE);
+        Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
+                ALICE.getTags());
+        model.addPerson(aliceStudent);
         Guardian bobGuardian = new Guardian(BOB.getName(), BOB.getPhone(), BOB.getEmail(),
                 BOB.getAddress(), BOB.getTags());
         model.addPerson(CARL_GUARDIAN);
         model.addPerson(bobGuardian);
-        assertEquals("", logic.getGuardianNames(ALICE));
+        assertEquals("", logic.getGuardianNames(aliceStudent));
 
         logic.execute("link-guardian s/1 g/2");
         logic.execute("link-guardian s/1 g/3");
         assertEquals(bobGuardian.getName().fullName + ", " + CARL_GUARDIAN.getName().fullName,
-                logic.getGuardianNames(ALICE));
+                logic.getGuardianNames(aliceStudent));
 
         // A guardian outside the filtered list must still appear on the student card.
-        model.updateFilteredPersonList(person -> person.equals(ALICE));
+        model.updateFilteredPersonList(person -> person.equals(aliceStudent));
         assertEquals(bobGuardian.getName().fullName + ", " + CARL_GUARDIAN.getName().fullName,
-                logic.getGuardianNames(ALICE));
+                logic.getGuardianNames(aliceStudent));
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 
         logic.execute("edit 3 n/Aaron Guardian");
-        assertEquals("Aaron Guardian, " + CARL.getName().fullName, logic.getGuardianNames(ALICE));
+        assertEquals("Aaron Guardian, " + CARL.getName().fullName, logic.getGuardianNames(aliceStudent));
         logic.execute("delete 3");
-        assertEquals(CARL.getName().fullName, logic.getGuardianNames(ALICE));
+        assertEquals(CARL.getName().fullName, logic.getGuardianNames(aliceStudent));
         logic.execute("delete 2");
-        assertEquals("", logic.getGuardianNames(ALICE));
+        assertEquals("", logic.getGuardianNames(aliceStudent));
     }
 
     /**

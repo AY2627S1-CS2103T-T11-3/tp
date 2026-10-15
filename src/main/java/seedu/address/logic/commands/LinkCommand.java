@@ -10,6 +10,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Student;
 
 /** Links contacts selected from the currently displayed list. */
 public class LinkCommand extends Command {
@@ -45,16 +46,19 @@ public class LinkCommand extends Command {
         }
 
         Person selectedGuardian = contacts.get(guardianIndex.getZeroBased());
-        Person student = contacts.get(studentIndex.getZeroBased());
+        Person selectedStudent = contacts.get(studentIndex.getZeroBased());
 
         if (!(selectedGuardian instanceof Guardian)
                 || selectedGuardian.getRole() != Role.GUARDIAN) {
             throw new CommandException("Selected contact is not a guardian.");
         }
-        if (student.getRole() != Role.STUDENT) {
+
+        if (!(selectedStudent instanceof Student)) {
             throw new CommandException("Selected contact is not a student.");
         }
+
         Guardian guardian = (Guardian) selectedGuardian;
+        Student student = (Student) selectedStudent;
 
         try {
             model.linkGuardianToStudent(guardian, student);

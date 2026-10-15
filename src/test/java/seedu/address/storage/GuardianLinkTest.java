@@ -21,6 +21,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 import seedu.address.testutil.PersonBuilder;
 
 public class GuardianLinkTest {
@@ -33,24 +34,27 @@ public class GuardianLinkTest {
 
     @Test
     public void link_saveLoadEditDelete_preservesRelationships() throws Exception {
-        // The displayed list is [Alice (student), Bob (guardian)], so s/1 g/2 links Bob to Alice.
+        Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
+                ALICE.getTags());
+
+        // The displayed list is [aliceStudent (student), Bob (guardian)], so s/1 g/2 links Bob to aliceStudent.
         AddressBook book = new AddressBook();
-        book.setPersons(List.of(ALICE, BOB_GUARDIAN));
+        book.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
         ModelManager model = new ModelManager(book, new UserPrefs());
         AddressBookParser parser = new AddressBookParser();
         parser.parseCommand("link-guardian s/1 g/2").execute(model);
-        assertEquals(Map.of(BOB_GUARDIAN, Set.of(ALICE)), model.getAddressBook().getGuardianStudents());
+        assertEquals(Map.of(BOB_GUARDIAN, Set.of(aliceStudent)), model.getAddressBook().getGuardianStudents());
 
         // Serialising and deserialising should preserve both contacts and their relationship.
         String json = JsonUtil.toJsonString(new JsonSerializableAddressBook(model.getAddressBook()));
         AddressBook restored = JsonUtil.fromJsonString(json, JsonSerializableAddressBook.class).toModelType();
         assertEquals(model.getAddressBook(), new ModelManager(restored, new UserPrefs()).getAddressBook());
         restored.resetData(restored);
-        assertEquals(Map.of(BOB_GUARDIAN, Set.of(ALICE)), restored.getGuardianStudents());
+        assertEquals(Map.of(BOB_GUARDIAN, Set.of(aliceStudent)), restored.getGuardianStudents());
 
         // Editing a linked contact should update the relationship reference.
-        Person edited = new PersonBuilder(ALICE).withName("Edited Alice").build();
-        restored.setPerson(ALICE, edited);
+        Person edited = new PersonBuilder(aliceStudent).withName("Edited aliceStudent").build();
+        restored.setPerson(aliceStudent, edited);
         assertEquals(Map.of(BOB_GUARDIAN, Set.of(edited)), restored.getGuardianStudents());
         // Deleting the guardian should remove the relationship completely.
         restored.removePerson(BOB_GUARDIAN);
@@ -59,8 +63,11 @@ public class GuardianLinkTest {
 
     @Test
     public void link_invalidInput_reportsErrors() throws Exception {
+        Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
+                ALICE.getTags());
+
         AddressBook book = new AddressBook();
-        book.setPersons(List.of(ALICE, BOB_GUARDIAN));
+        book.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
         ModelManager model = new ModelManager(book, new UserPrefs());
         AddressBookParser parser = new AddressBookParser();
 
@@ -82,6 +89,9 @@ public class GuardianLinkTest {
     @Test
     public void linkGuardianToStudent_validContacts_createsRelationship()
             throws Exception {
+        Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
+                ALICE.getTags());
+
         // Create a real Guardian and place it after the student in the displayed list.
         Guardian guardian = new Guardian(
                 BOB.getName(),
@@ -91,7 +101,7 @@ public class GuardianLinkTest {
                 BOB.getTags());
 
         AddressBook addressBook = new AddressBook();
-        addressBook.setPersons(List.of(ALICE, guardian));
+        addressBook.setPersons(List.of(aliceStudent, guardian));
 
         ModelManager model = new ModelManager(
                 addressBook,
@@ -104,7 +114,7 @@ public class GuardianLinkTest {
                 .execute(model);
 
         assertEquals(
-                Map.of(guardian, Set.of(ALICE)),
+                Map.of(guardian, Set.of(aliceStudent)),
                 model.getAddressBook().getGuardianStudents());
     }
 
@@ -122,18 +132,21 @@ public class GuardianLinkTest {
 
     @Test
     public void editLinkedStudent_preservesGuardianRelationship() throws Exception {
+        Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
+                ALICE.getTags());
+
         // Set up a student and Guardian in the displayed order used by s/1 g/2.
         AddressBook addressBook = new AddressBook();
-        addressBook.setPersons(List.of(ALICE, BOB_GUARDIAN));
+        addressBook.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
         ModelManager model = new ModelManager(addressBook, new UserPrefs());
         AddressBookParser parser = new AddressBookParser();
         parser.parseCommand("link-guardian s/1 g/2").execute(model);
 
         // Editing replaces the student object, so the relationship must point to the replacement.
-        Person editedStudent = new PersonBuilder(ALICE)
-                .withName("Edited Alice")
+        Person editedStudent = new PersonBuilder(aliceStudent)
+                .withName("Edited aliceStudent")
                 .build();
-        model.setPerson(ALICE, editedStudent);
+        model.setPerson(aliceStudent, editedStudent);
 
         assertEquals(
                 Map.of(BOB_GUARDIAN, Set.of(editedStudent)),
@@ -142,13 +155,17 @@ public class GuardianLinkTest {
 
     @Test
     public void storage_oldAndInvalidLinks_handlesData() throws Exception {
+        Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
+                ALICE.getTags());
+
         // Older files without guardianLinks should still load successfully.
         AddressBook book = new AddressBook();
-        book.setPersons(List.of(ALICE, BOB_GUARDIAN));
+        book.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
         String json = JsonUtil.toJsonString(new JsonSerializableAddressBook(book));
         String oldJson = json.replaceAll("(?s),\\s*\"guardianLinks\"\\s*:\\s*\\[\\s*\\]", "");
         assertEquals(book, JsonUtil.fromJsonString(oldJson, JsonSerializableAddressBook.class).toModelType());
-        List<JsonAdaptedPerson> persons = List.of(new JsonAdaptedPerson(ALICE), new JsonAdaptedPerson(BOB_GUARDIAN));
+        List<JsonAdaptedPerson> persons = List.of(new JsonAdaptedPerson(aliceStudent),
+                new JsonAdaptedPerson(BOB_GUARDIAN));
         // Stored links must have two valid positions and must not be self-links or duplicates.
         for (List<List<Integer>> links : List.of(List.of(List.of(2, 0)), List.of(List.of(0, 0)),
                 List.of(List.of(1, 0), List.of(1, 0)), List.of(List.of(1)))) {

@@ -7,6 +7,8 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.group.Group;
+import seedu.address.model.person.Student;
+
 
 /**
  * The API of the Model component.
@@ -75,5 +77,5 @@ public interface Model {
     void updateFilteredPersonList(Predicate<Person> predicate);
 
     /** Links an existing guardian contact to an existing student contact. */
-    void linkGuardianToStudent(Guardian guardian, Person student);
+    void linkGuardianToStudent(Guardian guardian, Student student);
 }

@@ -18,6 +18,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Student;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -132,7 +133,9 @@ class JsonAdaptedPerson {
         if (role == Role.COLLEAGUE) {
             return new Colleague(modelName, modelPhone, modelEmail, modelAddress, modelTags, department);
         }
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, role);
+
+        // Default is student
+        return new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags);
     }
 
 }
