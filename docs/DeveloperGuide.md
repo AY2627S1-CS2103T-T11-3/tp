@@ -157,15 +157,17 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Contact filtering
 
-The command syntax is `filter [n/NAME] [ct/CONTACT_TYPE] [a/ADDRESS] [t/TAG]...`.
+The command syntax is `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`.
 
 The filtering flow is:
 
-1. `FilterCommandParser` tokenizes the four supported prefixes. It rejects an unexpected preamble, empty values, and duplicate `n/`, `ct/`, or `a/` prefixes. Repeated `t/` prefixes are permitted.
+1. `FilterCommandParser` tokenizes the five supported prefixes. It rejects an unexpected preamble, empty values, and duplicate `n/`, `ct/`, `d/`, or `a/` prefixes. Repeated `t/` prefixes are permitted.
 2. Contact-type input is resolved to one `Role` using case-insensitive prefix matching. Full role names are accepted, and unknown or ambiguous prefixes cause a `ParseException`. This validation is specific to filtering; adding contacts still requires a full type.
-3. `PersonFilterCriteria` holds the optional name, role, and address criteria and a defensive copy of the required tags. Its original address-and-tags constructor remains available.
-4. `PersonMatchesFilterPredicate` combines all supplied criteria with `AND`. Names and addresses use contiguous substring matching with `Locale.ROOT` for case conversion. Roles use enum equality, and tags use exact, case-sensitive set membership. All required tags must be present.
+3. `PersonFilterCriteria` holds the optional name, role, department, and address criteria and a defensive copy of the required tags. Its original address-and-tags constructor remains available.
+4. `PersonMatchesFilterPredicate` combines all supplied criteria with `AND`. Names, departments, and addresses use contiguous substring matching with `Locale.ROOT` for case conversion. Roles use enum equality, and tags use exact, case-sensitive set membership. All required tags must be present.
 5. `FilterCommand` installs the predicate through `Model#updateFilteredPersonList` and reports the result count. It replaces the previous predicate and filters the full contact list. Absent criteria impose no restrictions, so bare `filter` shows every contact.
+
+Department matching checks `instanceof Colleague` and a non-null department before reading the department text. A supplied department criterion excludes students, guardians, and colleagues without a department. Combining incompatible criteria, such as `ct/student d/Science`, produces an empty list rather than an exception.
 
 `find NAME` remains a compatibility alias. `FindCommandParser` creates the same name criteria and `PersonMatchesFilterPredicate` as `filter n/NAME`. The full supplied name phrase is preserved; the legacy whole-word, multi-keyword `OR` behaviour is no longer used by parsed `find` commands.
 

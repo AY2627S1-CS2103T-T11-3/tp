@@ -31,7 +31,7 @@ public class FindCommandParser implements Parser<FindCommand> {
         }
 
         PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of(trimmedArgs), Optional.empty(),
-                Optional.empty(), Set.of());
+                Optional.empty(), Optional.empty(), Set.of());
         return new FindCommand(new PersonMatchesFilterPredicate(criteria));
     }
 

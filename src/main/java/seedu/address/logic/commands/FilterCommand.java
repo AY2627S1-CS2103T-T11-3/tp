@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACT_TYPE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPARTMENT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
@@ -24,18 +25,20 @@ public class FilterCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Lists persons who satisfy all supplied filter criteria.\n"
-            + "Names and addresses use case-insensitive substring matching.\n"
+            + "Names, addresses, and departments use case-insensitive substring matching.\n"
             + "Contact types accept a full value or unambiguous prefix of student, guardian, or colleague "
             + "(case-insensitive). Tags use case-sensitive exact matching.\n"
             + "All criteria must match. Omit all criteria to list all persons.\n"
+            + "Department criteria only match colleagues with a department.\n"
             + "Each prefix except " + PREFIX_TAG + " may appear at most once; repeat " + PREFIX_TAG
             + " to require multiple tags. Supplied values must not be empty.\n"
             + "Parameters: [" + PREFIX_NAME + "NAME] [" + PREFIX_CONTACT_TYPE + "CONTACT_TYPE] ["
-            + PREFIX_ADDRESS + "ADDRESS] [" + PREFIX_TAG + "TAG]...\n"
+            + PREFIX_DEPARTMENT + "DEPARTMENT] [" + PREFIX_ADDRESS + "ADDRESS] [" + PREFIX_TAG + "TAG]...\n"
             + "Examples:\n"
             + COMMAND_WORD + "\n"
             + COMMAND_WORD + " " + PREFIX_NAME + "ali\n"
             + COMMAND_WORD + " " + PREFIX_CONTACT_TYPE + "stu\n"
+            + COMMAND_WORD + " " + PREFIX_CONTACT_TYPE + "col " + PREFIX_DEPARTMENT + "food sci\n"
             + COMMAND_WORD + " " + PREFIX_ADDRESS + "Clementi\n"
             + COMMAND_WORD + " " + PREFIX_TAG + "Student\n"
             + COMMAND_WORD + " " + PREFIX_TAG + "Student " + PREFIX_TAG + "Year2\n"

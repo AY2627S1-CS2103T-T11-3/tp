@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACT_TYPE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPARTMENT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
@@ -22,12 +23,12 @@ import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 
 /**
- * Parses optional name, contact type, address, and tag filter criteria.
+ * Parses optional name, contact type, department, address, and tag filter criteria.
  */
 public class FilterCommandParser implements Parser<FilterCommand> {
 
     // Normalize only separators before prefixes, preserving whitespace inside text phrases.
-    private static final Pattern PREFIX_SEPARATOR_PATTERN = Pattern.compile("\\s+(?=(n/|ct/|a/|t/))");
+    private static final Pattern PREFIX_SEPARATOR_PATTERN = Pattern.compile("\\s+(?=(n/|ct/|d/|a/|t/))");
 
     /**
      * Parses optional criteria into a {@code FilterCommand}.
@@ -40,21 +41,22 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         requireNonNull(args);
         String normalizedArgs = " " + PREFIX_SEPARATOR_PATTERN.matcher(args).replaceAll(" ");
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(normalizedArgs,
-                PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_ADDRESS, PREFIX_TAG);
+                PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_ADDRESS, PREFIX_TAG);
 
         if (!argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_ADDRESS);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_ADDRESS);
         Optional<String> nameKeyword = parseTextCriterion(argMultimap, PREFIX_NAME);
         Optional<String> contactTypeKeyword = parseTextCriterion(argMultimap, PREFIX_CONTACT_TYPE);
+        Optional<String> departmentKeyword = parseTextCriterion(argMultimap, PREFIX_DEPARTMENT);
         Optional<String> addressKeyword = parseTextCriterion(argMultimap, PREFIX_ADDRESS);
         Optional<Role> contactType = parseContactType(contactTypeKeyword);
         Set<Tag> requiredTags = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
         PersonFilterCriteria criteria = new PersonFilterCriteria(nameKeyword, contactType,
-                addressKeyword, requiredTags);
+                departmentKeyword, addressKeyword, requiredTags);
         PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(criteria);
         return new FilterCommand(predicate);
     }
