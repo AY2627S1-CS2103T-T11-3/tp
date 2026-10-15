@@ -13,6 +13,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 
 /**
  * An Immutable AddressBook that is serializable to JSON format.
@@ -102,7 +103,7 @@ class JsonSerializableAddressBook {
                 }
                 addressBook.linkGuardianToStudent(
                         (Guardian) guardian,
-                        contacts.get(studentPosition));
+                        (Student) contacts.get(studentPosition));
             } catch (IllegalArgumentException e) {
                 // Self-links and duplicate links are invalid stored data.
                 throw new IllegalValueException(e.getMessage());

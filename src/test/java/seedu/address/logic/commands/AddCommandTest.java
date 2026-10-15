@@ -23,6 +23,7 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
@@ -89,7 +90,7 @@ public class AddCommandTest {
      */
     private class ModelStub implements Model {
         @Override
-        public void linkGuardianToStudent(Guardian guardian, Person student) {
+        public void linkGuardianToStudent(Guardian guardian, Student student) {
             throw new AssertionError("This method should not be called.");
         }
 

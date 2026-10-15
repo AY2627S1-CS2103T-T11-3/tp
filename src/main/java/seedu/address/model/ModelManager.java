@@ -12,6 +12,7 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -128,7 +129,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void linkGuardianToStudent(Guardian guardian, Person student) {
+    public void linkGuardianToStudent(Guardian guardian, Student student) {
         addressBook.linkGuardianToStudent(guardian, student);
     }
 
