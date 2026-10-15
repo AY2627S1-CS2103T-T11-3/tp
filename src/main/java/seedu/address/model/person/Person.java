@@ -27,7 +27,7 @@ public class Person {
     private final Set<Tag> tags = new HashSet<>();
 
     /**
-     * Create a person with default role student.
+     * Creates a person with default role student.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
         this(name, phone, email, address, tags, Role.STUDENT);

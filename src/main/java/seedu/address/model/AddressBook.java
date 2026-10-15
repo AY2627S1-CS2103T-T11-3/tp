@@ -16,6 +16,7 @@ import seedu.address.model.group.UniqueGroupList;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Student;
 import seedu.address.model.person.UniquePersonList;
 
 /**
@@ -208,7 +209,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /** Links existing contacts without modifying their contact details. */
-    public void linkGuardianToStudent(Guardian guardian, Person student) {
+    public void linkGuardianToStudent(Guardian guardian, Student student) {
         requireNonNull(guardian);
         requireNonNull(student);
 
@@ -220,6 +221,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         if (!hasPerson(guardian) || !hasPerson(student)) {
             throw new IllegalArgumentException("Both contacts must exist.");
         }
+
         if (guardian.equals(student)) {
             throw new IllegalArgumentException("A contact cannot be linked to itself.");
         }
