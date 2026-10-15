@@ -30,6 +30,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
+import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
@@ -99,6 +100,43 @@ public class AddressBookParserTest {
 
         assertEquals(expectedCommand, parser.parseCommand(FilterCommand.COMMAND_WORD));
         assertEquals(expectedCommand, parser.parseCommand("  " + FilterCommand.COMMAND_WORD + "  "));
+    }
+
+    @Test
+    public void parseCommand_filterByName_returnsFilterCommand() throws Exception {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("ali"), Optional.empty(),
+                Optional.empty(), Optional.empty(), Set.of());
+        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertEquals(expectedCommand, parser.parseCommand("filter n/ali"));
+    }
+
+    @Test
+    public void parseCommand_filterByContactType_returnsFilterCommand() throws Exception {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Optional.of(Role.STUDENT),
+                Optional.empty(), Optional.empty(), Set.of());
+        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertEquals(expectedCommand, parser.parseCommand("filter ct/stu"));
+    }
+
+    @Test
+    public void parseCommand_filterByDepartment_returnsFilterCommand() throws Exception {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Optional.empty(),
+                Optional.of("science"), Optional.empty(), Set.of());
+        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertEquals(expectedCommand, parser.parseCommand("filter d/science"));
+    }
+
+    @Test
+    public void parseCommand_filterByAllCriteria_returnsFilterCommand() throws Exception {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
+                Optional.of("science"), Optional.of("clementi"), Set.of(new Tag("Committee")));
+        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertEquals(expectedCommand,
+                parser.parseCommand("filter n/ali ct/col d/science a/clementi t/Committee"));
     }
 
     @Test
