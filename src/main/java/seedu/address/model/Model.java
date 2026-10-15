@@ -75,8 +75,8 @@ public interface Model {
     void deleteGroup(Group target);
 
     /**
-     * Adds the given person.
-     * {@code person} must not already exist in the address book.
+     * Adds the given group.
+     * {@code group} must not already exist in the address book.
      */
     void addGroup(Group group);
 
