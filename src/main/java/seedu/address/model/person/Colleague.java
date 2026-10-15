@@ -17,7 +17,7 @@ public class Colleague extends Person {
      * Creates a new colleague with an optional department.
      */
     public Colleague(Name name, Phone phone, Email email, Address address, Set<Tag> tags, String department) {
-        super(name, phone, email, address, tags, Role.COLLEAGUE);
+        super(name, phone, email, address, tags, Role.COLLEAGUE, department);
         this.department = department;
     }
 

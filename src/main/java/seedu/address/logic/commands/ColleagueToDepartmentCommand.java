@@ -8,14 +8,18 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Person;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
+import seedu.address.model.group.GroupType;
 
 /** Links an existing colleague to a department. */
 public class ColleagueToDepartmentCommand extends Command {
-    public static final String COMMAND_WORD = "link";
-    public static final String MESSAGE_USAGE = "link: Links a colleague to a department. "
+    public static final String COMMAND_WORD = "link-colleague";
+    public static final String MESSAGE_USAGE = "link-colleague: Links a colleague to a department. "
             + "Parameters: n/NAME d/DEPARTMENT";
     public static final String MESSAGE_SUCCESS = "%s linked to department: %s";
     public static final String MESSAGE_NOT_FOUND = "Colleague not found: %s";
+    public static final String MESSAGE_DEPARTMENT_NOT_FOUND = "Department not found: %s";
     private final String colleagueName;
     private final String department;
 
@@ -28,6 +32,15 @@ public class ColleagueToDepartmentCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        Group departmentGroup;
+        try {
+            departmentGroup = new Group(new GroupName(department), new GroupType("department"));
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
+        }
+        if (!model.getAddressBook().getGroupList().contains(departmentGroup)) {
+            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
+        }
         Person colleague = model.getAddressBook().getPersonList().stream()
                 .filter(person -> person.getName().fullName.equalsIgnoreCase(colleagueName))
                 .findFirst()
@@ -38,7 +51,7 @@ public class ColleagueToDepartmentCommand extends Command {
         }
 
         Colleague linked = new Colleague(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
-                colleague.getAddress(), colleague.getTags(), ((Colleague) colleague).getDepartment());
+                colleague.getAddress(), colleague.getTags(), department);
 
         model.setPerson(colleague, linked);
         return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName, department));
