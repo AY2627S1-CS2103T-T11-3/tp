@@ -19,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
+import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
@@ -83,6 +85,28 @@ public class AddressBookTest {
     @Test
     public void getPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> addressBook.getPersonList().remove(0));
+    }
+
+    @Test
+    public void hasGroup_groupInAddressBook_returnsTrue() {
+        Group g = new Group(new GroupName("g"), new GroupType("class"));
+        addressBook.addGroup(g);
+        assertTrue(addressBook.hasGroup(g));
+    }
+
+    @Test
+    public void hasGroup_groupNotInAddressBook_returnsFalse() {
+        Group g = new Group(new GroupName("g"), new GroupType("class"));
+        assertFalse(addressBook.hasGroup(g));
+    }
+
+    @Test
+    public void removeGroup_groupRemovedFromAddressBook_returnsTrue() {
+        Group g = new Group(new GroupName("g"), new GroupType("class"));
+        addressBook.addGroup(g);
+        assertTrue(addressBook.hasGroup(g));
+        addressBook.removeGroup(g);
+        assertFalse(addressBook.hasGroup(g));
     }
 
     @Test

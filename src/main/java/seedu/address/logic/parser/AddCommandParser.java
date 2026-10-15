@@ -58,9 +58,10 @@ public class AddCommandParser implements Parser<AddCommand> {
             throw new ParseException("Contact type must be student, guardian, or colleague.");
         }
 
+        // TODO: Dispatch for all role types
         Person person = role == Role.GUARDIAN
                 ? new Guardian(name, phone, email, address, tagList)
-                : new Person(name, phone, email, address, tagList, role, null);
+                : new Person(name, phone, email, address, tagList, role);
 
         return new AddCommand(person);
     }

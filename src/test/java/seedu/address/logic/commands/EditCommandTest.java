@@ -15,6 +15,8 @@ import static seedu.address.testutil.TypicalAddressBook.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 
+import java.util.HashSet;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -24,7 +26,13 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Address;
+import seedu.address.model.person.Colleague;
+import seedu.address.model.person.Email;
+import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Phone;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 
@@ -144,6 +152,29 @@ public class EditCommandTest {
                 new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build());
 
         assertCommandFailure(editCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_colleague_success() {
+        Person alice = new Colleague(new Name("Alice Pauline"), new Phone("91234567"), new Email("alice@example.com"),
+                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<Tag>(), "Computer Science");
+        Person charlie = new Colleague(new Name("Charlie"), new Phone("91234567"), new Email("charlie@example.com"),
+                new Address("123, Pine Street, #01-23"), new HashSet<>(), "Computer Science");
+
+        AddressBook expectedAb = new AddressBook();
+        expectedAb.addPerson(charlie);
+        Model expectedModel = new ModelManager(expectedAb, new UserPrefs());
+
+        AddressBook actualAb = new AddressBook();
+        actualAb.addPerson(alice);
+        Model actualModel = new ModelManager(actualAb, new UserPrefs());
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(charlie).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(charlie));
+
+        assertCommandSuccess(editCommand, actualModel, expectedMessage, expectedModel);
     }
 
     @Test

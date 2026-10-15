@@ -6,6 +6,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
@@ -126,4 +128,11 @@ public class JsonAdaptedPersonTest {
         assertThrows(IllegalValueException.class, person::toModelType);
     }
 
+    @Test
+    public void toModelType_validColleague_returnsColleague() throws Exception {
+        Colleague charlie = new Colleague(new Name("Charlie"), new Phone("91234567"), new Email("charlie@example.com"),
+                new Address("123, Pine Street, #01-23"), new HashSet<>(), "Computer Science");
+        JsonAdaptedPerson person = new JsonAdaptedPerson(charlie);
+        assertEquals(charlie, person.toModelType());
+    }
 }
