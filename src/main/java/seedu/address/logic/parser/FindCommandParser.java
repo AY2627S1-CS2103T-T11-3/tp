@@ -1,15 +1,18 @@
 package seedu.address.logic.parser;
 
+import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.PersonFilterCriteria;
+import seedu.address.model.person.PersonMatchesFilterPredicate;
 
 /**
- * Parses input arguments and creates a new FindCommand object
+ * Parses the legacy name-search alias using the same criteria and predicate as {@code filter n/NAME}.
  */
 public class FindCommandParser implements Parser<FindCommand> {
 
@@ -18,16 +21,17 @@ public class FindCommandParser implements Parser<FindCommand> {
      * and returns a FindCommand object for execution.
      * @throws ParseException if the user input does not conform to the expected format
      */
+    @Override
     public FindCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
+        requireNonNull(args);
+        String trimmedArgs = args.strip();
         if (trimmedArgs.isEmpty()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
 
-        String[] nameKeywords = trimmedArgs.split("\\s+");
-
-        return new FindCommand(new NameContainsKeywordsPredicate(List.of(nameKeywords)));
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of(trimmedArgs), Optional.empty(), Set.of());
+        return new FindCommand(new PersonMatchesFilterPredicate(criteria));
     }
 
 }
