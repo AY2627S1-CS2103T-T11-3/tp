@@ -68,6 +68,6 @@ public class LinkCommand extends Command {
 
         return new CommandResult(String.format(
                 "Linked guardian %s to student %s.",
-                guardian.getName(), selectedStudent.getName()));
+                guardian.getName(), student.getName()));
     }
 }
