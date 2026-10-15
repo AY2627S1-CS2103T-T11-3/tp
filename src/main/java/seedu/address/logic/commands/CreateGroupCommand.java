@@ -3,6 +3,9 @@ package seedu.address.logic.commands;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import seedu.address.model.Model;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
+import seedu.address.model.group.GroupType;
 
 /**
  * Creates a group in the address book.
@@ -38,6 +41,7 @@ public class CreateGroupCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) {
+        model.addGroup(new Group(new GroupName(groupName), new GroupType(groupType)));
         return new CommandResult(MESSAGE_SUCCESS);
     }
 

@@ -23,6 +23,7 @@ public class Person {
 
     // Data fields
     private final Address address;
+    private final String groupId;
     private final Role role;
     private final Set<Tag> tags = new HashSet<>();
 
@@ -37,11 +38,18 @@ public class Person {
      * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Role role) {
+        this(name, phone, email, address, tags, role, null);
+    }
+
+    /** Creates a person with an optional group identifier. */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+            Role role, String groupId) {
         requireAllNonNull(name, phone, email, address, tags, role);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
+        this.groupId = groupId;
         this.role = role;
         this.tags.addAll(tags);
     }
@@ -60,6 +68,11 @@ public class Person {
 
     public Address getAddress() {
         return address;
+    }
+
+    /** Returns the identifier of the group this person belongs to, if any. */
+    public String getGroupId() {
+        return groupId;
     }
 
     public Role getRole() {
@@ -106,6 +119,7 @@ public class Person {
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
+                && Objects.equals(groupId, otherPerson.groupId)
                 && role == otherPerson.role
                 && tags.equals(otherPerson.tags);
     }
@@ -113,7 +127,7 @@ public class Person {
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, role);
+        return Objects.hash(name, phone, email, address, groupId, tags, role);
     }
 
     @Override

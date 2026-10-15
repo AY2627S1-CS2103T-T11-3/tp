@@ -14,6 +14,9 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
+import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
@@ -27,17 +30,14 @@ public class ColleagueToDepartmentCommandTest {
     private final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
     @Test
-    public void execute_existingColleague_updatesDepartment() {
+    public void execute_existingColleague_updatesDepartment() throws Exception {
         ColleagueToDepartmentCommand command = new ColleagueToDepartmentCommand("Alice Pauline", "Computer Science");
-        // TODO: Change the test typical persons to have roles
         AddressBook ab = new AddressBook();
+        ab.addGroup(new Group(new GroupName("Computer Science"), new GroupType("department")));
         ab.addPerson(new Colleague(new Name("Alice Pauline"), new Phone("91234567"), new Email("alice@example.com"),
-                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<Tag>(), "Computer Science"));
+                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<Tag>(), null));
         Model expectedModel = new ModelManager(ab, new UserPrefs());
         Person original = expectedModel.getAddressBook().getPersonList().get(0);
-        Person updated = new Colleague(original.getName(), original.getPhone(), original.getEmail(),
-                original.getAddress(), original.getTags(), "Computer Science");
-        expectedModel.setPerson(original, updated);
 
         assertCommandSuccess(command, expectedModel,
                 String.format(ColleagueToDepartmentCommand.MESSAGE_SUCCESS, "Alice Pauline", "Computer Science"),
@@ -45,6 +45,21 @@ public class ColleagueToDepartmentCommandTest {
         Person firstPerson = expectedModel.getAddressBook().getPersonList().getFirst();
         assertInstanceOf(Colleague.class, firstPerson);
         assertEquals("Computer Science", ((Colleague) firstPerson).getDepartment());
+        assertEquals("Computer Science", firstPerson.getGroupId());
+    }
+
+    @Test
+    public void execute_missingDepartment_throwsCommandException() {
+        AddressBook ab = new AddressBook();
+        ab.addPerson(new Colleague(new Name("Alice Pauline"), new Phone("91234567"),
+                new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
+                new HashSet<Tag>(), null));
+        Model colleagueModel = new ModelManager(ab, new UserPrefs());
+        ColleagueToDepartmentCommand command =
+                new ColleagueToDepartmentCommand("Alice Pauline", "Missing Department");
+
+        assertCommandFailure(command, colleagueModel,
+                String.format(ColleagueToDepartmentCommand.MESSAGE_DEPARTMENT_NOT_FOUND, "Missing Department"));
     }
 
     @Test

@@ -91,7 +91,13 @@ public class AddCommandTest {
      */
     private class ModelStub implements Model {
         @Override
+        public void addGroup(Group group) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void linkGuardianToStudent(Guardian guardian, Student student) {
+
             throw new AssertionError("This method should not be called.");
         }
 

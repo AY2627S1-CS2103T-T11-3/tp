@@ -14,7 +14,6 @@ import seedu.address.model.group.Group;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Student;
-
 /**
  * Represents the in-memory model of the address book data.
  */
@@ -87,6 +86,11 @@ public class ModelManager implements Model {
     public void addPerson(Person person) {
         addressBook.addPerson(person);
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+    }
+
+    @Override
+    public void addGroup(Group group) {
+        addressBook.addGroup(group);
     }
 
     @Override

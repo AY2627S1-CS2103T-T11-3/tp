@@ -9,6 +9,7 @@ import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Student;
 
+
 /**
  * The API of the Model component.
  */
@@ -55,6 +56,9 @@ public interface Model {
      * {@code person} must not already exist in the address book.
      */
     void addPerson(Person person);
+
+    /** Adds the given group. */
+    void addGroup(Group group);
 
     /**
      * Replaces the given person {@code target} with {@code editedPerson}.
