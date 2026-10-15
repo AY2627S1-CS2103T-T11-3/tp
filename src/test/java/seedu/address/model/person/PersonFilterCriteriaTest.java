@@ -98,7 +98,8 @@ public class PersonFilterCriteriaTest {
         PersonFilterCriteria criteria =
                 new PersonFilterCriteria(Optional.of("Clementi"), Set.of(new Tag("Student")));
         String expected = PersonFilterCriteria.class.getCanonicalName()
-                + "{addressKeyword=Optional[Clementi], requiredTags=[[Student]]}";
+                + "{nameKeyword=Optional.empty, contactType=Optional.empty, departmentKeyword=Optional.empty, "
+                + "addressKeyword=Optional[Clementi], requiredTags=[[Student]]}";
 
         assertEquals(expected, criteria.toString());
     }
