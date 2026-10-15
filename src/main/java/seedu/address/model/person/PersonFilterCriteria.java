@@ -16,6 +16,7 @@ import seedu.address.model.tag.Tag;
 public final class PersonFilterCriteria {
 
     private final Optional<String> nameKeyword;
+    private final Optional<Role> contactType;
     private final Optional<String> addressKeyword;
     private final Set<Tag> requiredTags;
 
@@ -27,20 +28,23 @@ public final class PersonFilterCriteria {
      * @throws NullPointerException If either argument or any required tag is null.
      */
     public PersonFilterCriteria(Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        this(Optional.empty(), addressKeyword, requiredTags);
+        this(Optional.empty(), Optional.empty(), addressKeyword, requiredTags);
     }
 
     /**
-     * Constructs criteria with optional name and address substrings and required tags.
+     * Constructs criteria with optional text substrings, a resolved contact type, and required tags.
      *
      * @param nameKeyword The optional name substring to match.
+     * @param contactType The optional contact type to match exactly.
      * @param addressKeyword The optional address substring to match.
      * @param requiredTags The exact, case-sensitive tags that must all be present.
      * @throws NullPointerException If any argument or required tag is null.
      */
-    public PersonFilterCriteria(Optional<String> nameKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        requireAllNonNull(nameKeyword, addressKeyword, requiredTags);
+    public PersonFilterCriteria(Optional<String> nameKeyword, Optional<Role> contactType,
+            Optional<String> addressKeyword, Set<Tag> requiredTags) {
+        requireAllNonNull(nameKeyword, contactType, addressKeyword, requiredTags);
         this.nameKeyword = nameKeyword;
+        this.contactType = contactType;
         this.addressKeyword = addressKeyword;
         this.requiredTags = Set.copyOf(requiredTags);
     }
@@ -48,6 +52,11 @@ public final class PersonFilterCriteria {
     /** Returns the optional name substring to match. */
     public Optional<String> getNameKeyword() {
         return nameKeyword;
+    }
+
+    /** Returns the optional resolved contact type to match. */
+    public Optional<Role> getContactType() {
+        return contactType;
     }
 
     /**
@@ -76,19 +85,21 @@ public final class PersonFilterCriteria {
         }
 
         return nameKeyword.equals(otherCriteria.nameKeyword)
+                && contactType.equals(otherCriteria.contactType)
                 && addressKeyword.equals(otherCriteria.addressKeyword)
                 && requiredTags.equals(otherCriteria.requiredTags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nameKeyword, addressKeyword, requiredTags);
+        return Objects.hash(nameKeyword, contactType, addressKeyword, requiredTags);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("nameKeyword", nameKeyword)
+                .add("contactType", contactType)
                 .add("addressKeyword", addressKeyword)
                 .add("requiredTags", requiredTags)
                 .toString();

@@ -9,7 +9,7 @@ import seedu.address.commons.util.ToStringBuilder;
 
 /**
  * Tests whether a person satisfies all supplied filter criteria.
- * Text uses case-insensitive substring matching; tags match exactly.
+ * Text uses case-insensitive substring matching; contact types and tags match exactly.
  */
 public class PersonMatchesFilterPredicate implements Predicate<Person> {
 
@@ -28,6 +28,7 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
     public boolean test(Person person) {
         requireNonNull(person);
         return matchesName(person)
+                && matchesContactType(person)
                 && matchesAddress(person)
                 && matchesTags(person);
     }
@@ -36,6 +37,13 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
     private boolean matchesName(Person person) {
         return criteria.getNameKeyword()
                 .map(keyword -> containsIgnoreCase(person.getName().fullName, keyword))
+                .orElse(true);
+    }
+
+    /** Returns true if the contact has the resolved role, or no contact type was supplied. */
+    private boolean matchesContactType(Person person) {
+        return criteria.getContactType()
+                .map(role -> person.getRole() == role)
                 .orElse(true);
     }
 

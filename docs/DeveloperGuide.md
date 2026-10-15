@@ -157,14 +157,15 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Contact filtering
 
-The command syntax is `filter [n/NAME] [a/ADDRESS] [t/TAG]...`.
+The command syntax is `filter [n/NAME] [ct/CONTACT_TYPE] [a/ADDRESS] [t/TAG]...`.
 
 The filtering flow is:
 
-1. `FilterCommandParser` tokenizes the three supported prefixes. It rejects an unexpected preamble, empty values, and duplicate `n/` or `a/` prefixes. Repeated `t/` prefixes are permitted.
-2. `PersonFilterCriteria` holds the optional name and address criteria and a defensive copy of the required tags. Its original address-and-tags constructor remains available.
-3. `PersonMatchesFilterPredicate` combines all supplied criteria with `AND`. Names and addresses use contiguous substring matching with `Locale.ROOT` for case conversion. Tags use exact, case-sensitive set membership. All required tags must be present.
-4. `FilterCommand` installs the predicate through `Model#updateFilteredPersonList` and reports the result count. It replaces the previous predicate and filters the full contact list. Absent criteria impose no restrictions, so bare `filter` shows every contact.
+1. `FilterCommandParser` tokenizes the four supported prefixes. It rejects an unexpected preamble, empty values, and duplicate `n/`, `ct/`, or `a/` prefixes. Repeated `t/` prefixes are permitted.
+2. Contact-type input is resolved to one `Role` using case-insensitive prefix matching. Full role names are accepted, and unknown or ambiguous prefixes cause a `ParseException`. This validation is specific to filtering; adding contacts still requires a full type.
+3. `PersonFilterCriteria` holds the optional name, role, and address criteria and a defensive copy of the required tags. Its original address-and-tags constructor remains available.
+4. `PersonMatchesFilterPredicate` combines all supplied criteria with `AND`. Names and addresses use contiguous substring matching with `Locale.ROOT` for case conversion. Roles use enum equality, and tags use exact, case-sensitive set membership. All required tags must be present.
+5. `FilterCommand` installs the predicate through `Model#updateFilteredPersonList` and reports the result count. It replaces the previous predicate and filters the full contact list. Absent criteria impose no restrictions, so bare `filter` shows every contact.
 
 `find NAME` remains a compatibility alias. `FindCommandParser` creates the same name criteria and `PersonMatchesFilterPredicate` as `filter n/NAME`. The full supplied name phrase is preserved; the legacy whole-word, multi-keyword `OR` behaviour is no longer used by parsed `find` commands.
 

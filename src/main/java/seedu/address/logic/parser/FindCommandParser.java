@@ -30,7 +30,8 @@ public class FindCommandParser implements Parser<FindCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
 
-        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of(trimmedArgs), Optional.empty(), Set.of());
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of(trimmedArgs), Optional.empty(),
+                Optional.empty(), Set.of());
         return new FindCommand(new PersonMatchesFilterPredicate(criteria));
     }
 

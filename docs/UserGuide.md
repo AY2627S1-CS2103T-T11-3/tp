@@ -113,19 +113,22 @@ Examples:
 
 Lists contacts that satisfy all supplied criteria.
 
-Format: `filter [n/NAME] [a/ADDRESS] [t/TAG]...`
+Format: `filter [n/NAME] [ct/CONTACT_TYPE] [a/ADDRESS] [t/TAG]...`
 
 | Prefix | Criterion | Matching rule |
 | ------ | --------- | ------------- |
 | `n/` | Name | Case-insensitive, contiguous substring |
+| `ct/` | Contact type | Case-insensitive full value or unambiguous prefix of `student`, `guardian`, or `colleague` |
 | `a/` | Address | Case-insensitive, contiguous substring |
 | `t/` | Tag | Case-sensitive, complete tag |
 
 * Running `filter` without criteria shows all contacts.
-* All supplied criteria must match (`AND`). For example, `n/ali a/clementi` requires both conditions.
+* All supplied criteria must match (`AND`). For example, `n/ali ct/student` requires both conditions.
 * Each prefix can appear at most once, except `t/`. If multiple tags are supplied, every tag must be present.
-* Empty values and repeated single-value prefixes are rejected. For example, `filter n/` and `filter n/Alice n/Bob` are invalid.
+* Empty values and repeated single-value prefixes are rejected. For example, `filter n/` and `filter ct/student ct/colleague` are invalid.
 * Leading and trailing whitespace is ignored. The order and whitespace inside a name or address phrase are significant.
+* `ct/student` checks a contact's actual type. `t/Student` only checks for the exact tag `Student`.
+* Contact-type abbreviations start at the beginning of the type: `ct/stu`, `ct/guar`, and `ct/col` are valid. Unknown or ambiguous abbreviations are rejected.
 * Tags contain one or more letters or digits, without spaces or punctuation. For example, `Year2` is valid but `Year 2` and `Year-2` are invalid.
 * Each filter replaces the previous search and checks all contacts; successive filters are not cumulative.
 * If no contacts match, an empty list is displayed.
@@ -133,6 +136,7 @@ Format: `filter [n/NAME] [a/ADDRESS] [t/TAG]...`
 Examples:
 
 * `filter n/ali` matches names such as `Alice` and `Kalid`.
+* `filter ct/STU` selects student contacts, regardless of their tags.
 * `filter n/ali a/clementi t/Student t/Year2` requires the name and address substrings and both exact tags.
 
 ### Name-search compatibility alias: `find`
@@ -210,7 +214,7 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
-**Filter** | `filter [n/NAME] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali a/clementi t/Year2`
+**Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
 **Find (name-only alias)** | `find NAME`<br> e.g., `find James`
 **List** | `list`
 **Help** | `help`
