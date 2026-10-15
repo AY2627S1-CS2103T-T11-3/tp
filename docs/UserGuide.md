@@ -142,14 +142,6 @@ Examples:
 * `filter ct/col d/food sci` selects colleagues whose departments contain `food sci`.
 * `filter n/ali a/clementi t/Student t/Year2` requires the name and address substrings and both exact tags.
 
-### Name-search compatibility alias: `find`
-
-Format: `find NAME`
-
-`find NAME` is retained as a name-only alias for `filter n/NAME`. Use `filter` to combine name searching with other criteria.
-
-For example, `find ali` has the same results as `filter n/ali`. The complete supplied phrase must occur contiguously, ignoring case. Unlike the previous whole-word search, `find alex david` now searches for the phrase `alex david`, rather than either name separately. Bare `find` is invalid; use bare `filter` or `list` to show all contacts.
-
 ### Deleting a person: `delete`
 
 Deletes the specified person from the address book.
@@ -218,6 +210,5 @@ Action | Format, Examples
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
 **Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
-**Find (name-only alias)** | `find NAME`<br> e.g., `find James`
 **List** | `list`
 **Help** | `help`

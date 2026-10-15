@@ -89,7 +89,7 @@ The `UI` component,
 
 Here's a (partial) class diagram of the `Logic` component:
 
-<img src="images/LogicClassDiagram.png" width="550"/>
+<img src="images/LogicClassDiagram.png" width="800"/>
 
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
 
@@ -169,7 +169,7 @@ The filtering flow is:
 
 Department matching checks `instanceof Colleague` and a non-null department before reading the department text. A supplied department criterion excludes students, guardians, and colleagues without a department. Combining incompatible criteria, such as `ct/student d/Science`, produces an empty list rather than an exception.
 
-`find NAME` remains a compatibility alias. `FindCommandParser` creates the same name criteria and `PersonMatchesFilterPredicate` as `filter n/NAME`. The full supplied name phrase is preserved; the legacy whole-word, multi-keyword `OR` behaviour is no longer used by parsed `find` commands.
+Name searches use `filter n/NAME`. The full supplied phrase is preserved and matched as a case-insensitive, contiguous substring, and can be combined with the other filter criteria.
 
 ### \[Proposed\] Undo/redo feature
 
