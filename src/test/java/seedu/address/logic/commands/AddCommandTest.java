@@ -21,13 +21,10 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.group.Group;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
-<<<<<<< HEAD
-import seedu.address.model.group.Group;
-=======
 import seedu.address.model.person.Student;
->>>>>>> upstream/master
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
