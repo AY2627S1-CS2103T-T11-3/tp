@@ -13,6 +13,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -120,5 +121,25 @@ public class ParserUtil {
             tagSet.add(parseTag(tagName));
         }
         return tagSet;
+    }
+
+    /**
+     * Parses a {@code String contactType} into an {@code Role}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code contactType} is invalid.
+     */
+    public static Role parseContactType(String contactType) throws ParseException {
+        requireNonNull(contactType);
+        String trimmedEmail = contactType.trim().toUpperCase();
+
+        Role role;
+        try {
+            role = Role.valueOf(contactType);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException("Contact type must be student, guardian, or colleague.");
+        }
+
+        return role;
     }
 }

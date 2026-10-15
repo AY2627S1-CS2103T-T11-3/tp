@@ -50,13 +50,7 @@ public class AddCommandParser implements Parser<AddCommand> {
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
-        String contactType = argMultimap.getValue(PREFIX_CONTACT_TYPE).get().trim().toUpperCase();
-        Role role;
-        try {
-            role = Role.valueOf(contactType);
-        } catch (IllegalArgumentException e) {
-            throw new ParseException("Contact type must be student, guardian, or colleague.");
-        }
+        Role role = ParserUtil.parseContactType(argMultimap.getValue(PREFIX_CONTACT_TYPE).get());
 
         // TODO: Dispatch for all role types
         Person person = role == Role.GUARDIAN
