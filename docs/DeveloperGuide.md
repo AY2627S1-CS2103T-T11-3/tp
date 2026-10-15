@@ -89,7 +89,7 @@ The `UI` component,
 
 Here's a (partial) class diagram of the `Logic` component:
 
-<img src="images/LogicClassDiagram.png" width="550"/>
+<img src="images/LogicClassDiagram.png" width="800"/>
 
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
 
@@ -154,6 +154,22 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 ## **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
+
+### Contact filtering
+
+The command syntax is `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`.
+
+The filtering flow is:
+
+1. `FilterCommandParser` tokenizes the five supported prefixes. It rejects an unexpected preamble, empty values, and duplicate `n/`, `ct/`, `d/`, or `a/` prefixes. Repeated `t/` prefixes are permitted.
+2. Contact-type input is resolved to one `Role` using case-insensitive prefix matching. Full role names are accepted, and unknown or ambiguous prefixes cause a `ParseException`. This validation is specific to filtering; adding contacts still requires a full type.
+3. `PersonFilterCriteria` holds the optional name, role, department, and address criteria and a defensive copy of the required tags. Its original address-and-tags constructor remains available.
+4. `PersonMatchesFilterPredicate` combines all supplied criteria with `AND`. Names, departments, and addresses use contiguous substring matching with `Locale.ROOT` for case conversion. Roles use enum equality, and tags use exact, case-sensitive set membership. All required tags must be present.
+5. `FilterCommand` installs the predicate through `Model#updateFilteredPersonList` and reports the result count. It replaces the previous predicate and filters the full contact list. Absent criteria impose no restrictions, so bare `filter` shows every contact.
+
+Department matching checks `instanceof Colleague` and a non-null department before reading the department text. A supplied department criterion excludes students, guardians, and colleagues without a department. Combining incompatible criteria, such as `ct/student d/Science`, produces an empty list rather than an exception.
+
+Name searches use `filter n/NAME`. The full supplied phrase is preserved and matched as a case-insensitive, contiguous substring, and can be combined with the other filter criteria.
 
 ### \[Proposed\] Undo/redo feature
 

@@ -109,22 +109,38 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
-### Locating persons by name: `find`
+### Filtering persons: `filter`
 
-Finds persons whose names contain any of the given keywords.
+Lists contacts that satisfy all supplied criteria.
 
-Format: `find KEYWORD [MORE_KEYWORDS]`
+Format: `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`
 
-* The search is case-insensitive; for example, `hans` matches `Hans`.
-* Keyword order does not matter; for example, `Hans Bo` matches `Bo Hans`.
-* The search considers only names.
-* Only full words match; for example, `Han` does not match `Hans`.
-* Persons matching at least one keyword are returned (an `OR` search); for example, `Hans Bo` returns `Hans Gruber` and `Bo Yang`.
+| Prefix | Criterion | Matching rule |
+| ------ | --------- | ------------- |
+| `n/` | Name | Case-insensitive, contiguous substring |
+| `ct/` | Contact type | Case-insensitive full value or unambiguous prefix of `student`, `guardian`, or `colleague` |
+| `d/` | Department | Case-insensitive, contiguous substring; only colleagues with a department can match |
+| `a/` | Address | Case-insensitive, contiguous substring |
+| `t/` | Tag | Case-sensitive, complete tag |
+
+* Running `filter` without criteria shows all contacts.
+* All supplied criteria must match (`AND`). For example, `ct/colleague d/science` requires both conditions.
+* Each prefix can appear at most once, except `t/`. If multiple tags are supplied, every tag must be present.
+* Empty values and repeated single-value prefixes are rejected. For example, `filter n/` and `filter d/Science d/Math` are invalid.
+* Leading and trailing whitespace is ignored. The order and whitespace inside a name, address, or department phrase are significant.
+* `ct/student` checks a contact's actual type. `t/Student` only checks for the exact tag `Student`.
+* Contact-type abbreviations start at the beginning of the type: `ct/stu`, `ct/guar`, and `ct/col` are valid. Unknown or ambiguous abbreviations are rejected.
+* Tags contain one or more letters or digits, without spaces or punctuation. For example, `Year2` is valid but `Year 2` and `Year-2` are invalid.
+* Each filter replaces the previous search and checks all contacts; successive filters are not cumulative.
+* If no contacts match, an empty list is displayed. A department criterion combined with `ct/student` or `ct/guardian` therefore produces no results.
 
 Examples:
-* `find John` returns `john` and `John Doe`
-* `find alex david` returns `Alex Yeoh`, `David Li`<br>
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+
+* `filter n/ali` matches names such as `Alice` and `Kalid`.
+* `filter ct/STU` selects student contacts, regardless of their tags.
+* `filter d/science` matches departments such as `Food Science` and `Computer Science`.
+* `filter ct/col d/food sci` selects colleagues whose departments contain `food sci`.
+* `filter n/ali a/clementi t/Student t/Year2` requires the name and address substrings and both exact tags.
 
 ### Deleting a person: `delete`
 
@@ -138,7 +154,7 @@ Format: `delete INDEX`
 
 Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+* `filter n/Betsy` followed by `delete 1` deletes the 1st person in the filter results.
 
 ### Clearing all entries: `clear`
 
@@ -193,6 +209,6 @@ Action | Format, Examples
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
-**Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
+**Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
 **List** | `list`
 **Help** | `help`

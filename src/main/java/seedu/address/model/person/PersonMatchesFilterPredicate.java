@@ -8,8 +8,8 @@ import java.util.function.Predicate;
 import seedu.address.commons.util.ToStringBuilder;
 
 /**
- * Tests whether a person satisfies all supplied address and tag criteria.
- * Addresses use case-insensitive substring matching, while tags use case-sensitive exact matching.
+ * Tests whether a person satisfies all supplied filter criteria.
+ * Text uses case-insensitive substring matching; contact types and tags match exactly.
  */
 public class PersonMatchesFilterPredicate implements Predicate<Person> {
 
@@ -26,7 +26,35 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
 
     @Override
     public boolean test(Person person) {
-        return matchesAddress(person) && matchesTags(person);
+        requireNonNull(person);
+        return matchesName(person)
+                && matchesContactType(person)
+                && matchesDepartment(person)
+                && matchesAddress(person)
+                && matchesTags(person);
+    }
+
+    /** Returns true if the name contains the keyword, or no name criterion was supplied. */
+    private boolean matchesName(Person person) {
+        return criteria.getNameKeyword()
+                .map(keyword -> containsIgnoreCase(person.getName().fullName, keyword))
+                .orElse(true);
+    }
+
+    /** Returns true if the contact has the resolved role, or no contact type was supplied. */
+    private boolean matchesContactType(Person person) {
+        return criteria.getContactType()
+                .map(role -> person.getRole() == role)
+                .orElse(true);
+    }
+
+    /** Returns false for contacts without a department when a department criterion is supplied. */
+    private boolean matchesDepartment(Person person) {
+        return criteria.getDepartmentKeyword()
+                .map(keyword -> person instanceof Colleague colleague
+                        && colleague.getDepartment() != null
+                        && containsIgnoreCase(colleague.getDepartment(), keyword))
+                .orElse(true);
     }
 
     /**
@@ -34,8 +62,7 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
      */
     private boolean matchesAddress(Person person) {
         return criteria.getAddressKeyword()
-                .map(keyword -> person.getAddress().value.toLowerCase(Locale.ROOT)
-                        .contains(keyword.toLowerCase(Locale.ROOT)))
+                .map(keyword -> containsIgnoreCase(person.getAddress().value, keyword))
                 .orElse(true);
     }
 
@@ -44,6 +71,11 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
      */
     private boolean matchesTags(Person person) {
         return person.getTags().containsAll(criteria.getRequiredTags());
+    }
+
+    /** Matches a contiguous substring independently of the system locale. */
+    private static boolean containsIgnoreCase(String value, String keyword) {
+        return value.toLowerCase(Locale.ROOT).contains(keyword.toLowerCase(Locale.ROOT));
     }
 
     @Override

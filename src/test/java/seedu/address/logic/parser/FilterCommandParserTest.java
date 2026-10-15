@@ -98,7 +98,8 @@ public class FilterCommandParserTest {
 
     @Test
     public void parse_emptyAddress_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE);
+        String expectedMessage = String.format(FilterCommand.MESSAGE_EMPTY_CRITERION, PREFIX_ADDRESS)
+                + "\n" + FilterCommand.MESSAGE_USAGE;
 
         assertParseFailure(parser, " a/", expectedMessage);
         assertParseFailure(parser, " a/     ", expectedMessage);
@@ -150,7 +151,7 @@ public class FilterCommandParserTest {
     public void parse_unsupportedOrReversedPrefix_throwsParseException() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE);
 
-        assertParseFailure(parser, " n/Alice", expectedMessage);
+        assertParseFailure(parser, " p/91234567", expectedMessage);
         assertParseFailure(parser, " /t Student", expectedMessage);
     }
 

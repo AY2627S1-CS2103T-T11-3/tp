@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
@@ -96,8 +95,10 @@ public class FilterCommandTest {
     }
 
     @Test
-    public void execute_previousFind_replacesFilter() {
-        new FindCommand(new NameContainsKeywordsPredicate(List.of("Alice"))).execute(model);
+    public void execute_previousNameFilter_replacesFilter() {
+        PersonFilterCriteria nameCriteria = new PersonFilterCriteria(Optional.of("Alice"), Optional.empty(),
+                Optional.empty(), Optional.empty(), Set.of());
+        new FilterCommand(new PersonMatchesFilterPredicate(nameCriteria)).execute(model);
         assertEquals(List.of(ALICE), model.getFilteredPersonList());
 
         assertFilterSuccess(prepareCommand(Optional.empty(), Set.of(new Tag("friends"))),

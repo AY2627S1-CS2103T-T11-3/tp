@@ -9,10 +9,8 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,11 +24,9 @@ import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FilterCommand;
-import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
@@ -91,11 +87,9 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_find() throws Exception {
-        List<String> keywords = List.of("foo", "bar", "baz");
-        FindCommand command = (FindCommand) parser.parseCommand(
-                FindCommand.COMMAND_WORD + " " + keywords.stream().collect(Collectors.joining(" ")));
-        assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), command);
+    public void parseCommand_find_throwsUnknownCommand() {
+        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("find"));
+        assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("find ali"));
     }
 
     @Test
@@ -137,8 +131,10 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_filterWithInvalidCriteria_throwsParseException() {
         String expectedFormatMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE);
+        String expectedEmptyMessage = String.format(FilterCommand.MESSAGE_EMPTY_CRITERION, PREFIX_ADDRESS)
+                + "\n" + FilterCommand.MESSAGE_USAGE;
 
-        assertThrows(ParseException.class, expectedFormatMessage, () -> parser.parseCommand("filter a/"));
+        assertThrows(ParseException.class, expectedEmptyMessage, () -> parser.parseCommand("filter a/"));
         assertThrows(ParseException.class, expectedFormatMessage, () -> parser.parseCommand("filter Clementi"));
         assertThrows(ParseException.class, Tag.MESSAGE_CONSTRAINTS, () -> parser.parseCommand("filter t/Student t/"));
         assertThrows(ParseException.class, Messages.getErrorMessageForDuplicatePrefixes(PREFIX_ADDRESS), () ->
