@@ -23,6 +23,7 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.group.Group;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
@@ -88,6 +89,11 @@ public class AddCommandTest {
      * A default model stub that has all of the methods failing.
      */
     private class ModelStub implements Model {
+        @Override
+        public void addGroup(Group group) {
+            throw new AssertionError("This method should not be called.");
+        }
+
         @Override
         public void linkGuardianToStudent(Guardian guardian, Person student) {
             throw new AssertionError("This method should not be called.");
