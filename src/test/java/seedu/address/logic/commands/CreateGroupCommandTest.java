@@ -3,10 +3,8 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_NAME_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_NAME_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_TYPE_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_TYPE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_NAME_CLASS;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_NAME_DEPARTMENT;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +13,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupType;
 import seedu.address.testutil.GroupBuilder;
 
 public class CreateGroupCommandTest {
@@ -31,8 +30,8 @@ public class CreateGroupCommandTest {
 
     @Test
     public void equals() {
-        Group validGroupAmy = new GroupBuilder().withName(VALID_GROUP_NAME_AMY).withType(VALID_GROUP_TYPE_AMY).build();
-        Group validGroupBob = new GroupBuilder().withName(VALID_GROUP_NAME_BOB).withType(VALID_GROUP_TYPE_BOB).build();
+        Group validGroupAmy = new GroupBuilder().withName(VALID_GROUP_NAME_CLASS).withType(GroupType.CLASS).build();
+        Group validGroupBob = new GroupBuilder().withName(VALID_GROUP_NAME_DEPARTMENT).withType(GroupType.DEPARTMENT).build();
         CreateGroupCommand createGroupCommandAlice = new CreateGroupCommand(validGroupAmy);
         CreateGroupCommand createGroupCommandBob = new CreateGroupCommand(validGroupBob);
 
@@ -40,7 +39,7 @@ public class CreateGroupCommandTest {
         assertTrue(createGroupCommandAlice.equals(createGroupCommandAlice));
 
         // same values -> returns true
-        Group validGroupAmyCopy = new GroupBuilder().withName(VALID_GROUP_NAME_AMY).withType(VALID_GROUP_TYPE_AMY).build();
+        Group validGroupAmyCopy = new GroupBuilder().withName(VALID_GROUP_NAME_CLASS).withType(GroupType.CLASS).build();
         CreateGroupCommand createGroupCommandAliceCopy = new CreateGroupCommand(validGroupAmyCopy);
         assertTrue(createGroupCommandAlice.equals(createGroupCommandAliceCopy));
 

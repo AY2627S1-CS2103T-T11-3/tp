@@ -167,7 +167,7 @@ public class ParserUtil {
 
         GroupType groupType;
         try {
-            groupType = new GroupType(groupTypeString);
+            groupType = GroupType.valueOf(trimmedContactType);
         } catch (IllegalArgumentException e) {
             throw new ParseException("Contact type must be class or department.");
         }

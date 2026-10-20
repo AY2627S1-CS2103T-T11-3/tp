@@ -9,4 +9,8 @@ public class DepartmentGroup extends Group {
         super(groupName, groupType);
     }
 
+    @Override
+    public GroupType getGroupType() {
+        return GroupType.DEPARTMENT;
+    }
 }

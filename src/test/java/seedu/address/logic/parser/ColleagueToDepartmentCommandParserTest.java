@@ -20,7 +20,7 @@ public class ColleagueToDepartmentCommandParserTest {
     public void parse_validArgs_returnsCommand() {
         assertParseSuccess(parser, " n/Alice Pauline d/Computer Science",
                 new ColleagueToDepartmentCommand("Alice Pauline",
-                        new GroupBuilder().withName("Computer Science").withType("department").build()));
+                        new GroupBuilder().withName("Computer Science").withType(GroupType.DEPARTMENT).build()));
     }
 
     @Test

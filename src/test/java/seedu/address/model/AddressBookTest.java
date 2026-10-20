@@ -90,20 +90,20 @@ public class AddressBookTest {
 
     @Test
     public void hasGroup_groupInAddressBook_returnsTrue() {
-        Group g = new GroupBuilder().withName("g").withType("class").build();
+        Group g = new GroupBuilder().withName("g").withType(GroupType.CLASS).build();
         addressBook.addGroup(g);
         assertTrue(addressBook.hasGroup(g));
     }
 
     @Test
     public void hasGroup_groupNotInAddressBook_returnsFalse() {
-        Group g = new GroupBuilder().withName("g").withType("class").build();
+        Group g = new GroupBuilder().withName("g").withType(GroupType.CLASS).build();
         assertFalse(addressBook.hasGroup(g));
     }
 
     @Test
     public void removeGroup_groupRemovedFromAddressBook_returnsTrue() {
-        Group g = new GroupBuilder().withName("g").withType("class").build();
+        Group g = new GroupBuilder().withName("g").withType(GroupType.CLASS).build();
         addressBook.addGroup(g);
         assertTrue(addressBook.hasGroup(g));
         addressBook.removeGroup(g);

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupType;
 
 /**
  * A utility class containing a list of {@code Group} objects to be used in tests.
@@ -12,11 +13,11 @@ import seedu.address.model.group.Group;
 public class TypicalGroups {
     public static final Group RESPECT_5 = new GroupBuilder()
             .withName("Respect 5")
-            .withType("class")
+            .withType(GroupType.CLASS)
             .build();
     public static final Group MATH_DPT = new GroupBuilder()
             .withName("Math")
-            .withType("department")
+            .withType(GroupType.DEPARTMENT)
             .build();
 
     private TypicalGroups() {} // prevents instantiation

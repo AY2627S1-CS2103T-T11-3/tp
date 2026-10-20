@@ -69,7 +69,7 @@ public class AddressBookParserTest {
         );
         final DepartmentGroup departmentGroup = new DepartmentGroup(
                 new GroupName("Computer Science"),
-                new GroupType("department")
+                GroupType.DEPARTMENT
         );
         assertEquals(new ColleagueToDepartmentCommand(colleagueName, departmentGroup), command);
     }
@@ -208,7 +208,7 @@ public class AddressBookParserTest {
                 CreateGroupCommand.COMMAND_WORD + " "
                 + groupName + " " + PREFIX_GROUP_TYPE + groupType
         );
-        final Group group = new GroupBuilder().withName(groupName).withType(groupType).build();
+        final Group group = new GroupBuilder().withName(groupName).withType(GroupType.valueOf(groupType.toUpperCase())).build();
         assertEquals(new CreateGroupCommand(group), command);
     }
 

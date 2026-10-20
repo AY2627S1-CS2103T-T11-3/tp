@@ -12,7 +12,7 @@ import seedu.address.model.group.GroupType;
 public class GroupBuilder {
 
     public static final String DEFAULT_GROUP_NAME = "Math";
-    public static final String DEFAULT_GROUP_TYPE = "class";
+    public static final GroupType DEFAULT_GROUP_TYPE = GroupType.CLASS;
 
     private GroupName groupName;
     private GroupType groupType;
@@ -22,7 +22,7 @@ public class GroupBuilder {
      */
     public GroupBuilder() {
         groupName = new GroupName(DEFAULT_GROUP_NAME);
-        groupType = new GroupType(DEFAULT_GROUP_TYPE);
+        groupType = DEFAULT_GROUP_TYPE;
     }
 
     /**
@@ -44,13 +44,13 @@ public class GroupBuilder {
     /**
      * Sets the {@code GroupType} of the {@code Group} that we are building.
      */
-    public GroupBuilder withType(String groupType) {
-        this.groupType = new GroupType(groupType);
+    public GroupBuilder withType(GroupType groupType) {
+        this.groupType = groupType;
         return this;
     }
 
     public Group build() {
-        return switch (groupType.getGType()) {
+        return switch (groupType) {
             case CLASS -> new ClassGroup(groupName, groupType);
             case DEPARTMENT -> new DepartmentGroup(groupName, groupType);
         };

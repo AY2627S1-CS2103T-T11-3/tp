@@ -27,9 +27,7 @@ public abstract class Group {
         return groupName;
     }
 
-    public GroupType getGroupType() {
-        return groupType;
-    }
+    public abstract GroupType getGroupType();
 
     /**
      * Returns true if both groupName and groupType are the same.
