@@ -9,7 +9,7 @@ import seedu.address.commons.util.ToStringBuilder;
 /**
  * Represent a Group in the address book.
  */
-public class Group {
+public abstract class Group {
 
     private final GroupName groupName;
     private final GroupType groupType;
