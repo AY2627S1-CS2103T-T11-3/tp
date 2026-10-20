@@ -1,5 +1,7 @@
 package seedu.address.testutil;
 
+import seedu.address.model.group.ClassGroup;
+import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
@@ -48,7 +50,10 @@ public class GroupBuilder {
     }
 
     public Group build() {
-        return new Group(groupName, groupType);
+        return switch (groupType.getGType()) {
+            case CLASS -> new ClassGroup(groupName, groupType);
+            case DEPARTMENT -> new DepartmentGroup(groupName, groupType);
+        };
     }
 
 }

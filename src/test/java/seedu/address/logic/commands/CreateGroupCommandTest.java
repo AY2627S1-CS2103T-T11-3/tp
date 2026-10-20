@@ -14,6 +14,8 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.group.Group;
+import seedu.address.testutil.GroupBuilder;
 
 public class CreateGroupCommandTest {
 
@@ -21,33 +23,25 @@ public class CreateGroupCommandTest {
 
     @Test
     public void execute() {
-        CommandResult commandResult = new CreateGroupCommand(
-                VALID_GROUP_NAME_AMY,
-                VALID_GROUP_TYPE_AMY
-        ).execute(model);
+        Group validGroup = new GroupBuilder().build();
+        CommandResult commandResult = new CreateGroupCommand(validGroup).execute(model);
 
         assertEquals(CreateGroupCommand.MESSAGE_SUCCESS, commandResult.getFeedbackToUser());
     }
 
     @Test
     public void equals() {
-        CreateGroupCommand createGroupCommandAlice = new CreateGroupCommand(
-                VALID_GROUP_NAME_AMY,
-                VALID_GROUP_TYPE_AMY
-        );
-        CreateGroupCommand createGroupCommandBob = new CreateGroupCommand(
-                VALID_GROUP_NAME_BOB,
-                VALID_GROUP_TYPE_BOB
-        );
+        Group validGroupAmy = new GroupBuilder().withName(VALID_GROUP_NAME_AMY).withType(VALID_GROUP_TYPE_AMY).build();
+        Group validGroupBob = new GroupBuilder().withName(VALID_GROUP_NAME_BOB).withType(VALID_GROUP_TYPE_BOB).build();
+        CreateGroupCommand createGroupCommandAlice = new CreateGroupCommand(validGroupAmy);
+        CreateGroupCommand createGroupCommandBob = new CreateGroupCommand(validGroupBob);
 
         // same object -> returns true
         assertTrue(createGroupCommandAlice.equals(createGroupCommandAlice));
 
         // same values -> returns true
-        CreateGroupCommand createGroupCommandAliceCopy = new CreateGroupCommand(
-                VALID_GROUP_NAME_AMY,
-                VALID_GROUP_TYPE_AMY
-        );
+        Group validGroupAmyCopy = new GroupBuilder().withName(VALID_GROUP_NAME_AMY).withType(VALID_GROUP_TYPE_AMY).build();
+        CreateGroupCommand createGroupCommandAliceCopy = new CreateGroupCommand(validGroupAmyCopy);
         assertTrue(createGroupCommandAlice.equals(createGroupCommandAliceCopy));
 
         // different types -> returns false

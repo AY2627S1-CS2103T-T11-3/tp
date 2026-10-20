@@ -43,13 +43,13 @@ public class ColleagueToDepartmentCommand extends Command {
 
         Group departmentGroup;
         if (!model.getAddressBook().getGroupList().contains(department)) {
-            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
+            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department.getGroupName().groupName));
         }
         Colleague linked = new Colleague(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
                 colleague.getAddress(), colleague.getTags(), department.getGroupName().groupName);
 
         model.setPerson(colleague, linked);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName, department));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName, department.getGroupName().groupName));
     }
 
     @Override

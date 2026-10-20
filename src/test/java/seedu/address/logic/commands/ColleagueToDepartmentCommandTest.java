@@ -14,6 +14,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
@@ -31,9 +32,10 @@ public class ColleagueToDepartmentCommandTest {
 
     @Test
     public void execute_existingColleague_updatesDepartment() throws Exception {
-        ColleagueToDepartmentCommand command = new ColleagueToDepartmentCommand("Alice Pauline", "Computer Science");
+        ColleagueToDepartmentCommand command = new ColleagueToDepartmentCommand("Alice Pauline",
+                new DepartmentGroup(new GroupName("Computer Science"), new GroupType("department")));
         AddressBook ab = new AddressBook();
-        ab.addGroup(new Group(new GroupName("Computer Science"), new GroupType("department")));
+        ab.addGroup(new DepartmentGroup(new GroupName("Computer Science"), new GroupType("department")));
         ab.addPerson(new Colleague(new Name("Alice Pauline"), new Phone("91234567"), new Email("alice@example.com"),
                 new Address("123, Jurong West Ave 6, #08-111"), new HashSet<Tag>(), null));
         Model expectedModel = new ModelManager(ab, new UserPrefs());
@@ -56,7 +58,8 @@ public class ColleagueToDepartmentCommandTest {
                 new HashSet<Tag>(), null));
         Model colleagueModel = new ModelManager(ab, new UserPrefs());
         ColleagueToDepartmentCommand command =
-                new ColleagueToDepartmentCommand("Alice Pauline", "Missing Department");
+                new ColleagueToDepartmentCommand("Alice Pauline",
+                        new DepartmentGroup(new GroupName("Missing Department"), new GroupType("department")));
 
         assertCommandFailure(command, colleagueModel,
                 String.format(ColleagueToDepartmentCommand.MESSAGE_DEPARTMENT_NOT_FOUND, "Missing Department"));
@@ -65,7 +68,8 @@ public class ColleagueToDepartmentCommandTest {
     @Test
     public void execute_missingColleague_throwsCommandException() {
         ColleagueToDepartmentCommand command =
-                new ColleagueToDepartmentCommand("Unknown Person", "Computer Science");
+                new ColleagueToDepartmentCommand("Unknown Person",
+                        new DepartmentGroup(new GroupName("Missing Department"), new GroupType("department")));
         assertCommandFailure(command, model, String.format(ColleagueToDepartmentCommand.MESSAGE_NOT_FOUND,
                 "Unknown Person"));
     }
