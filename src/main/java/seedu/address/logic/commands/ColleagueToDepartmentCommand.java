@@ -21,10 +21,10 @@ public class ColleagueToDepartmentCommand extends Command {
     public static final String MESSAGE_NOT_FOUND = "Colleague not found: %s";
     public static final String MESSAGE_DEPARTMENT_NOT_FOUND = "Department not found: %s";
     private final String colleagueName;
-    private final String department;
+    private final Group department;
 
     /** Creates a command linking the named colleague to the given department. */
-    public ColleagueToDepartmentCommand(String colleagueName, String department) {
+    public ColleagueToDepartmentCommand(String colleagueName, Group department) {
         this.colleagueName = requireNonNull(colleagueName);
         this.department = requireNonNull(department);
     }
@@ -42,16 +42,11 @@ public class ColleagueToDepartmentCommand extends Command {
         }
 
         Group departmentGroup;
-        try {
-            departmentGroup = new Group(new GroupName(department), new GroupType("department"));
-        } catch (IllegalArgumentException e) {
-            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
-        }
-        if (!model.getAddressBook().getGroupList().contains(departmentGroup)) {
+        if (!model.getAddressBook().getGroupList().contains(department)) {
             throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
         }
         Colleague linked = new Colleague(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
-                colleague.getAddress(), colleague.getTags(), department);
+                colleague.getAddress(), colleague.getTags(), department.getGroupName().groupName);
 
         model.setPerson(colleague, linked);
         return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName, department));
