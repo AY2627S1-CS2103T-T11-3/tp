@@ -42,8 +42,7 @@ public class GroupTest {
 
     @Test
     public void toStringMethod() {
-        String expected = ClassGroup.class.getCanonicalName() + "{group name=" + RESPECT_5.getGroupName()
-                + ", group type=" + RESPECT_5.getGroupType() + "}";
+        String expected = ClassGroup.class.getCanonicalName() + "{group name=" + RESPECT_5.getGroupName() + "}";
         assertEquals(expected, RESPECT_5.toString());
     }
 

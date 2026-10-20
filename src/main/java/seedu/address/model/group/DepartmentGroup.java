@@ -5,8 +5,8 @@ public class DepartmentGroup extends Group {
     /**
      * Constructs a {@code Group}.
      */
-    public DepartmentGroup(GroupName groupName, GroupType groupType) {
-        super(groupName, groupType);
+    public DepartmentGroup(GroupName groupName) {
+        super(groupName);
     }
 
     @Override

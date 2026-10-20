@@ -36,8 +36,8 @@ public class CreateGroupCommandParser implements Parser<CreateGroupCommand> {
         GroupType groupType = ParserUtil.parseGroupType(argMultimap.getValue(PREFIX_GROUP_TYPE).get());
 
         Group group = switch (groupType) {
-            case GroupType.CLASS -> new ClassGroup(groupName, groupType);
-            case GroupType.DEPARTMENT -> new DepartmentGroup(groupName, groupType);
+            case GroupType.CLASS -> new ClassGroup(groupName);
+            case GroupType.DEPARTMENT -> new DepartmentGroup(groupName);
             default -> throw new ParseException("Invalid group type given");
         };
 

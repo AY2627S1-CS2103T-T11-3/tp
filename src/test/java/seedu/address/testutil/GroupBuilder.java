@@ -51,8 +51,8 @@ public class GroupBuilder {
 
     public Group build() {
         return switch (groupType) {
-            case CLASS -> new ClassGroup(groupName, groupType);
-            case DEPARTMENT -> new DepartmentGroup(groupName, groupType);
+            case CLASS -> new ClassGroup(groupName);
+            case DEPARTMENT -> new DepartmentGroup(groupName);
         };
     }
 

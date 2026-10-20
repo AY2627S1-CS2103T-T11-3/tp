@@ -67,10 +67,7 @@ public class AddressBookParserTest {
                 + CliSyntax.PREFIX_NAME + colleagueName + " "
                 + CliSyntax.PREFIX_DEPARTMENT + department
         );
-        final DepartmentGroup departmentGroup = new DepartmentGroup(
-                new GroupName("Computer Science"),
-                GroupType.DEPARTMENT
-        );
+        final DepartmentGroup departmentGroup = new DepartmentGroup(new GroupName("Computer Science"));
         assertEquals(new ColleagueToDepartmentCommand(colleagueName, departmentGroup), command);
     }
 

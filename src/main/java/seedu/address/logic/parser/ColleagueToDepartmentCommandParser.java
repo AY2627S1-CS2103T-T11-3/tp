@@ -24,7 +24,7 @@ public class ColleagueToDepartmentCommandParser implements Parser<ColleagueToDep
         map.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_DEPARTMENT);
 
         GroupName departmentName = ParserUtil.parseGroupName(map.getValue(PREFIX_DEPARTMENT).get());
-        DepartmentGroup department = new DepartmentGroup(departmentName, GroupType.DEPARTMENT);
+        DepartmentGroup department = new DepartmentGroup(departmentName);
 
         return new ColleagueToDepartmentCommand(map.getValue(PREFIX_NAME).get(), department);
     }

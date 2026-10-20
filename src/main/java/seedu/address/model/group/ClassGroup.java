@@ -5,8 +5,8 @@ public class ClassGroup extends Group {
     /**
      * Constructs a {@code Group}.
      */
-    public ClassGroup(GroupName groupName, GroupType groupType) {
-        super(groupName, groupType);
+    public ClassGroup(GroupName groupName) {
+        super(groupName);
     }
 
     @Override
