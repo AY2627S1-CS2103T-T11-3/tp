@@ -1,8 +1,12 @@
 package seedu.address.testutil;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
+import seedu.address.model.util.SampleDataUtil;
 
 /**
  * A utility class to help with building Group objects.
@@ -14,6 +18,7 @@ public class GroupBuilder {
 
     private GroupName groupName;
     private GroupType groupType;
+    private Set<String> personIds;
 
     /**
      * Creates a {@code GroupBuilder} with the default details.
@@ -21,6 +26,7 @@ public class GroupBuilder {
     public GroupBuilder() {
         groupName = new GroupName(DEFAULT_GROUP_NAME);
         groupType = new GroupType(DEFAULT_GROUP_TYPE);
+        personIds = new HashSet<>();
     }
 
     /**
@@ -29,6 +35,7 @@ public class GroupBuilder {
     public GroupBuilder(Group groupToCopy) {
         groupName = groupToCopy.getGroupName();
         groupType = groupToCopy.getGroupType();
+        personIds = groupToCopy.getPersonIds();
     }
 
     /**
@@ -47,8 +54,16 @@ public class GroupBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code GroupType} of the {@code Group} that we are building.
+     */
+    public GroupBuilder withTags(Set<String> personIds) {
+        this.personIds = personIds;
+        return this;
+    }
+
     public Group build() {
-        return new Group(groupName, groupType);
+        return new Group(groupName, groupType, personIds);
     }
 
 }

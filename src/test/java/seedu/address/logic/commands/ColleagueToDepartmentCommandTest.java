@@ -33,7 +33,7 @@ public class ColleagueToDepartmentCommandTest {
     public void execute_existingColleague_updatesDepartment() throws Exception {
         ColleagueToDepartmentCommand command = new ColleagueToDepartmentCommand("Alice Pauline", "Computer Science");
         AddressBook ab = new AddressBook();
-        ab.addGroup(new Group(new GroupName("Computer Science"), new GroupType("department")));
+        ab.addGroup(new Group(new GroupName("Computer Science"), new GroupType("department"), new HashSet<>()));
         ab.addPerson(new Colleague(new Name("Alice Pauline"), new Phone("91234567"), new Email("alice@example.com"),
                 new Address("123, Jurong West Ave 6, #08-111"), new HashSet<Tag>(), null));
         Model expectedModel = new ModelManager(ab, new UserPrefs());

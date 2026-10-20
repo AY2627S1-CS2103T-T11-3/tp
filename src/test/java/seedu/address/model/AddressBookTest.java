@@ -10,6 +10,7 @@ import static seedu.address.testutil.TypicalAddressBook.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,20 +90,20 @@ public class AddressBookTest {
 
     @Test
     public void hasGroup_groupInAddressBook_returnsTrue() {
-        Group g = new Group(new GroupName("g"), new GroupType("class"));
+        Group g = new Group(new GroupName("g"), new GroupType("class"), new HashSet<>());
         addressBook.addGroup(g);
         assertTrue(addressBook.hasGroup(g));
     }
 
     @Test
     public void hasGroup_groupNotInAddressBook_returnsFalse() {
-        Group g = new Group(new GroupName("g"), new GroupType("class"));
+        Group g = new Group(new GroupName("g"), new GroupType("class"), new HashSet<>());
         assertFalse(addressBook.hasGroup(g));
     }
 
     @Test
     public void removeGroup_groupRemovedFromAddressBook_returnsTrue() {
-        Group g = new Group(new GroupName("g"), new GroupType("class"));
+        Group g = new Group(new GroupName("g"), new GroupType("class"), new HashSet<>());
         addressBook.addGroup(g);
         assertTrue(addressBook.hasGroup(g));
         addressBook.removeGroup(g);

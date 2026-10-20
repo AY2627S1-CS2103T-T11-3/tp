@@ -2,7 +2,9 @@ package seedu.address.model.group;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
 
@@ -13,14 +15,16 @@ public class Group {
 
     private final GroupName groupName;
     private final GroupType groupType;
+    private final Set<String> personIds; // TODO: replace String with person id class
 
     /**
      * Constructs a {@code Group}.
      */
-    public Group(GroupName groupName, GroupType groupType) {
+    public Group(GroupName groupName, GroupType groupType, Set<String> persondIds) {
         requireAllNonNull(groupName, groupType);
         this.groupName = groupName;
         this.groupType = groupType;
+        this.personIds = persondIds;
     }
 
     public GroupName getGroupName() {
@@ -29,6 +33,14 @@ public class Group {
 
     public GroupType getGroupType() {
         return groupType;
+    }
+
+    /**
+     * Returns an immutable person ids set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<String> getPersonIds() {
+        return Collections.unmodifiableSet(personIds);
     }
 
     /**
@@ -46,7 +58,8 @@ public class Group {
         }
 
         return groupName.equals(otherGroup.groupName)
-                && groupType.equals(otherGroup.groupType);
+                && groupType.equals(otherGroup.groupType)
+                && personIds.equals(otherGroup.personIds);
     }
 
     @Override
@@ -59,6 +72,7 @@ public class Group {
         return new ToStringBuilder(this)
                 .add("group name", groupName)
                 .add("group type", groupType)
+                .add("person ids", personIds)
                 .toString();
     }
 }

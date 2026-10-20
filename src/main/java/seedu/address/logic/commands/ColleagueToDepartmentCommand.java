@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.HashSet;
 import java.util.Objects;
 
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -43,7 +44,11 @@ public class ColleagueToDepartmentCommand extends Command {
 
         Group departmentGroup;
         try {
-            departmentGroup = new Group(new GroupName(department), new GroupType("department"));
+            departmentGroup = new Group(
+                    new GroupName(department),
+                    new GroupType("department"),
+                    new HashSet<>()
+            );
         } catch (IllegalArgumentException e) {
             throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
         }
