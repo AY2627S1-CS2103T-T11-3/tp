@@ -205,7 +205,8 @@ public class AddressBookParserTest {
                 CreateGroupCommand.COMMAND_WORD + " "
                 + groupName + " " + PREFIX_GROUP_TYPE + groupType
         );
-        final Group group = new GroupBuilder().withName(groupName).withType(GroupType.valueOf(groupType.toUpperCase())).build();
+        final Group group = new GroupBuilder().withName(groupName)
+                .withType(GroupType.valueOf(groupType.toUpperCase())).build();
         assertEquals(new CreateGroupCommand(group), command);
     }
 

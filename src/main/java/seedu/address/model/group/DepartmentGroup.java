@@ -1,5 +1,8 @@
 package seedu.address.model.group;
 
+/**
+ * Represents a department of colleagues
+ */
 public class DepartmentGroup extends Group {
 
     /**

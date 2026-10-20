@@ -49,6 +49,9 @@ public class GroupBuilder {
         return this;
     }
 
+    /**
+     * Builds the Group
+     */
     public Group build() {
         return switch (groupType) {
             case CLASS -> new ClassGroup(groupName);

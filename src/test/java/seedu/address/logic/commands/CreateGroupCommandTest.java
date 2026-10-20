@@ -30,8 +30,10 @@ public class CreateGroupCommandTest {
 
     @Test
     public void equals() {
-        Group validGroupAmy = new GroupBuilder().withName(VALID_GROUP_NAME_CLASS).withType(GroupType.CLASS).build();
-        Group validGroupBob = new GroupBuilder().withName(VALID_GROUP_NAME_DEPARTMENT).withType(GroupType.DEPARTMENT).build();
+        Group validGroupAmy = new GroupBuilder().withName(VALID_GROUP_NAME_CLASS)
+                .withType(GroupType.CLASS).build();
+        Group validGroupBob = new GroupBuilder().withName(VALID_GROUP_NAME_DEPARTMENT)
+                .withType(GroupType.DEPARTMENT).build();
         CreateGroupCommand createGroupCommandAlice = new CreateGroupCommand(validGroupAmy);
         CreateGroupCommand createGroupCommandBob = new CreateGroupCommand(validGroupBob);
 

@@ -7,8 +7,6 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.ColleagueToDepartmentCommand;
-import seedu.address.model.group.DepartmentGroup;
-import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
 import seedu.address.testutil.GroupBuilder;
 

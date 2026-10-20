@@ -9,7 +9,6 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Address;
@@ -147,10 +146,10 @@ public class ParserUtil {
     }
 
     /**
-     * Parses a {@code String name} into a {@code Name}.
+     * Parses a {@code String groupName} into a {@code GroupName}.
      * Leading and trailing whitespaces will be trimmed.
      *
-     * @throws ParseException if the given {@code name} is invalid.
+     * @throws ParseException if the given {@code groupName} is invalid.
      */
     public static GroupName parseGroupName(String groupName) throws ParseException {
         requireNonNull(groupName);
@@ -161,6 +160,12 @@ public class ParserUtil {
         return new GroupName(trimmedName);
     }
 
+    /**
+     * Parses a {@code String groupTypeString} into a {@code GroupType}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code groupTypeString} is invalid.
+     */
     public static GroupType parseGroupType(String groupTypeString) throws ParseException {
         requireNonNull(groupTypeString);
         String trimmedContactType = groupTypeString.trim().toUpperCase();

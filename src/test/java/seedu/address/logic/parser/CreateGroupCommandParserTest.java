@@ -5,8 +5,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
-import java.util.Locale;
-
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.CreateGroupCommand;
@@ -23,7 +21,8 @@ public class CreateGroupCommandParserTest {
     @Test
     public void parse_allFieldsPresent_success() {
         String userInput = nonEmptyGroupName + " " + PREFIX_GROUP_TYPE + nonEmptyGroupType;
-        Group group = new GroupBuilder().withName(nonEmptyGroupName).withType(GroupType.valueOf(nonEmptyGroupType.toUpperCase())).build();
+        Group group = new GroupBuilder().withName(nonEmptyGroupName)
+                .withType(GroupType.valueOf(nonEmptyGroupType.toUpperCase())).build();
         CreateGroupCommand expectedCommand = new CreateGroupCommand(group);
         assertParseSuccess(parser, userInput, expectedCommand);
     }

@@ -1,15 +1,13 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CliSyntax.*;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPARTMENT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import seedu.address.logic.commands.ColleagueToDepartmentCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.group.ClassGroup;
 import seedu.address.model.group.DepartmentGroup;
-import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
-import seedu.address.model.group.GroupType;
 
 /** Parses the link-colleague command. */
 public class ColleagueToDepartmentCommandParser implements Parser<ColleagueToDepartmentCommand> {

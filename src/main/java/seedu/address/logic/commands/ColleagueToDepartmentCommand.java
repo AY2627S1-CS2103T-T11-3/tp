@@ -7,8 +7,6 @@ import java.util.Objects;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.group.Group;
-import seedu.address.model.group.GroupName;
-import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Person;
 
@@ -43,13 +41,15 @@ public class ColleagueToDepartmentCommand extends Command {
 
         Group departmentGroup;
         if (!model.getAddressBook().getGroupList().contains(department)) {
-            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department.getGroupName().groupName));
+            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND,
+                    department.getGroupName().groupName));
         }
         Colleague linked = new Colleague(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
                 colleague.getAddress(), colleague.getTags(), department.getGroupName().groupName);
 
         model.setPerson(colleague, linked);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName, department.getGroupName().groupName));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName,
+                department.getGroupName().groupName));
     }
 
     @Override

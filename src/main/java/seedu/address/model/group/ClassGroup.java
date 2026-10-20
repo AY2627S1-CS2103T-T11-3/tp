@@ -1,5 +1,8 @@
 package seedu.address.model.group;
 
+/**
+ * Represents a class of students
+ */
 public class ClassGroup extends Group {
 
     /**
