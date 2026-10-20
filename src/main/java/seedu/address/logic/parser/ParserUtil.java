@@ -9,6 +9,9 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
+import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -141,5 +144,34 @@ public class ParserUtil {
         }
 
         return role;
+    }
+
+    /**
+     * Parses a {@code String name} into a {@code Name}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code name} is invalid.
+     */
+    public static GroupName parseGroupName(String groupName) throws ParseException {
+        requireNonNull(groupName);
+        String trimmedName = groupName.trim();
+        if (!GroupName.isValidGroupName(trimmedName)) {
+            throw new ParseException(GroupName.MESSAGE_CONSTRAINTS);
+        }
+        return new GroupName(trimmedName);
+    }
+
+    public static GroupType parseGroupType(String groupTypeString) throws ParseException {
+        requireNonNull(groupTypeString);
+        String trimmedContactType = groupTypeString.trim().toUpperCase();
+
+        GroupType groupType;
+        try {
+            groupType = new GroupType(groupTypeString);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException("Contact type must be class or department.");
+        }
+
+        return groupType;
     }
 }

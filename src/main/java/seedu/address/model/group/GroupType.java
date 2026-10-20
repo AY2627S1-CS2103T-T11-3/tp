@@ -38,6 +38,10 @@ public class GroupType {
         };
     }
 
+    public GType getGType() {
+        return groupType;
+    }
+
     @Override
     public String toString() {
         return switch(groupType) {
