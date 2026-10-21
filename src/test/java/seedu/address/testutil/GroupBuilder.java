@@ -6,7 +6,6 @@ import java.util.Set;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
-import seedu.address.model.util.SampleDataUtil;
 
 /**
  * A utility class to help with building Group objects.
