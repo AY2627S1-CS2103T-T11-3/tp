@@ -3,11 +3,11 @@ package seedu.address.ui;
 import java.util.Comparator;
 import java.util.Locale;
 
-import javafx.geometry.Side;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
