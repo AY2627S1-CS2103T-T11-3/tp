@@ -18,3 +18,30 @@
 .tooltip-text {
     -fx-text-fill: white;
 }
+
+/* Keep the one-click Help action visually consistent with the File menu. */
+.menu-bar-container {
+    -fx-background-color: derive(#1d1d1d, 20%);
+    -fx-padding: 0 8 0 8;
+}
+
+.menu-bar-container > .menu-bar {
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+
+.menu-bar-container > .button.menu-bar-help {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 4 8 4 8;
+    -fx-font-family: "Segoe UI Light";
+    -fx-font-size: 14pt;
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+}
+
+.menu-bar-container > .button.menu-bar-help:hover {
+    -fx-background-color: -fx-selection-bar;
+}
