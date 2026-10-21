@@ -80,4 +80,25 @@ public class LinkGroupCommandTest {
         assertCommandFailure(new LinkGroupCommand("Alice Pauline", "Computer Science"), model,
                 "Group not found: Computer Science");
     }
+
+    @Test
+    public void execute_missingPerson_throwsCommandException() {
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        assertCommandFailure(new LinkGroupCommand("Unknown Person", "Computer Science"), model,
+                "Contact not found: Unknown Person");
+    }
+
+    @Test
+    public void execute_invalidGroupName_throwsCommandException() {
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(new Student(new Name("Alice Pauline"), new Phone("91234567"),
+                new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
+                new HashSet<>()));
+        Model model = new ModelManager(addressBook, new UserPrefs());
+
+        assertCommandFailure(new LinkGroupCommand("Alice Pauline", "!invalid"), model,
+                "Group not found: !invalid");
+    }
+
 }

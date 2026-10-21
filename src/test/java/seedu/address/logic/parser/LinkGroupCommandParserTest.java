@@ -34,4 +34,10 @@ public class LinkGroupCommandParserTest {
         assertParseFailure(parser, " n/Alice n/Bob d/CS2103T T01",
                 seedu.address.logic.Messages.getErrorMessageForDuplicatePrefixes(CliSyntax.PREFIX_NAME));
     }
+
+    @Test
+    public void parse_preamble_throwsParseException() {
+        assertParseFailure(parser, "unexpected n/Alice d/CS2103T T01",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, LinkGroupCommand.MESSAGE_USAGE));
+    }
 }
