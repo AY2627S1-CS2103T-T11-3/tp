@@ -191,7 +191,7 @@
                     <Label text="t/TAG"
                            GridPane.rowIndex="4" GridPane.columnIndex="0"
                            styleClass="help-field-name" />
-                    <Label text="Replaces all tags. Repeat t/ for more; use t/ alone to clear tags."
+                    <Label text="Replaces the contact's existing tags. Use t/TAG for each tag you want to keep. Use t/ with no value to remove all tags. Leave out t/ to keep the current tags unchanged."
                            wrapText="true" minWidth="0" maxWidth="Infinity"
                            GridPane.rowIndex="4" GridPane.columnIndex="1" />
                   </GridPane>
@@ -296,8 +296,10 @@
                 <VBox spacing="5">
                   <Label text="help"
                          styleClass="help-command-name" />
-                  <Label text="Opens or focuses the offline command reference."
+                  <Label text="Shows the command reference or brings it to the front if already open."
                          wrapText="true" styleClass="help-description" />
+                  <Label text="Shortcut: F1"
+                         wrapText="true" styleClass="help-note" />
                 </VBox>
 
                 <VBox spacing="8">
