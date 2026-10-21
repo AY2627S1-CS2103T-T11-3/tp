@@ -9,6 +9,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -67,7 +68,7 @@ public class AddressBookParserTest {
                 + CliSyntax.PREFIX_NAME + colleagueName + " "
                 + CliSyntax.PREFIX_DEPARTMENT + department
         );
-        final DepartmentGroup departmentGroup = new DepartmentGroup(new GroupName("Computer Science"));
+        final DepartmentGroup departmentGroup = new DepartmentGroup(new GroupName("Computer Science"), new HashSet<>());
         assertEquals(new ColleagueToDepartmentCommand(colleagueName, departmentGroup), command);
     }
 
