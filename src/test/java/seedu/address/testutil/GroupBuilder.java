@@ -56,8 +56,8 @@ public class GroupBuilder {
     /**
      * Sets the {@code GroupType} of the {@code Group} that we are building.
      */
-    public GroupBuilder withTags(Set<String> personIds) {
-        this.personIds = personIds;
+    public GroupBuilder withPersonIds(Set<String> personIds) {
+        this.personIds = Set.copyOf(personIds);
         return this;
     }
 
