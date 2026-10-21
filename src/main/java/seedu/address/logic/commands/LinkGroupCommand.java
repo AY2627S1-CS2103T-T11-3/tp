@@ -16,7 +16,8 @@ import seedu.address.model.person.Student;
 /** Links a student or colleague to the appropriate group. */
 public class LinkGroupCommand extends Command {
     public static final String COMMAND_WORD = "link";
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Links a student to a class or a colleague to a department. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Links a student to a class or a colleague to a department. "
             + "Parameters: n/NAME d/GROUP";
     public static final String MESSAGE_NOT_FOUND = "Contact not found: %s";
     public static final String MESSAGE_GROUP_NOT_FOUND = "Group not found: %s";
@@ -24,6 +25,7 @@ public class LinkGroupCommand extends Command {
     private final String personName;
     private final String groupName;
 
+    /** Creates a command to link a named contact to a named group. */
     public LinkGroupCommand(String personName, String groupName) {
         this.personName = requireNonNull(personName);
         this.groupName = requireNonNull(groupName);
