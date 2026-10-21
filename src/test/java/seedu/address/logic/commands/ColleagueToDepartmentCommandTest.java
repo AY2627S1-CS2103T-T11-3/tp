@@ -32,9 +32,9 @@ public class ColleagueToDepartmentCommandTest {
     @Test
     public void execute_existingColleague_updatesDepartment() throws Exception {
         ColleagueToDepartmentCommand command = new ColleagueToDepartmentCommand("Alice Pauline",
-                new DepartmentGroup(new GroupName("Computer Science")));
+                new DepartmentGroup(new GroupName("Computer Science"), new HashSet<>()));
         AddressBook ab = new AddressBook();
-        ab.addGroup(new DepartmentGroup(new GroupName("Computer Science")));
+        ab.addGroup(new DepartmentGroup(new GroupName("Computer Science"), new HashSet<>()));
         ab.addPerson(new Colleague(new Name("Alice Pauline"), new Phone("91234567"), new Email("alice@example.com"),
                 new Address("123, Jurong West Ave 6, #08-111"), new HashSet<Tag>(), null));
         Model expectedModel = new ModelManager(ab, new UserPrefs());
@@ -58,7 +58,7 @@ public class ColleagueToDepartmentCommandTest {
         Model colleagueModel = new ModelManager(ab, new UserPrefs());
         ColleagueToDepartmentCommand command =
                 new ColleagueToDepartmentCommand("Alice Pauline",
-                        new DepartmentGroup(new GroupName("Missing Department")));
+                        new DepartmentGroup(new GroupName("Missing Department"), new HashSet<>()));
 
         assertCommandFailure(command, colleagueModel,
                 String.format(ColleagueToDepartmentCommand.MESSAGE_DEPARTMENT_NOT_FOUND, "Missing Department"));
@@ -70,11 +70,11 @@ public class ColleagueToDepartmentCommandTest {
         ab.addPerson(new Colleague(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
                 new HashSet<Tag>(), null));
-        ab.addGroup(new ClassGroup(new GroupName("Computer Science")));
+        ab.addGroup(new ClassGroup(new GroupName("Computer Science"), new HashSet<>()));
         Model colleagueModel = new ModelManager(ab, new UserPrefs());
         ColleagueToDepartmentCommand command =
                 new ColleagueToDepartmentCommand("Alice Pauline",
-                        new DepartmentGroup(new GroupName("Computer Science")));
+                        new DepartmentGroup(new GroupName("Computer Science"), new HashSet<>()));
         assertCommandFailure(command, colleagueModel,
                 String.format(ColleagueToDepartmentCommand.MESSAGE_DEPARTMENT_NOT_FOUND, "Computer Science"));
     }
@@ -83,7 +83,7 @@ public class ColleagueToDepartmentCommandTest {
     public void execute_missingColleague_throwsCommandException() {
         ColleagueToDepartmentCommand command =
                 new ColleagueToDepartmentCommand("Unknown Person",
-                        new DepartmentGroup(new GroupName("Missing Department")));
+                        new DepartmentGroup(new GroupName("Missing Department"), new HashSet<>()));
         assertCommandFailure(command, model, String.format(ColleagueToDepartmentCommand.MESSAGE_NOT_FOUND,
                 "Unknown Person"));
     }
