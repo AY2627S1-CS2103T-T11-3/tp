@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.Person;
 
 /**
  * Represent a Group in the address book.
@@ -41,6 +42,20 @@ public class Group {
      */
     public Set<String> getPersonIds() {
         return Collections.unmodifiableSet(personIds);
+    }
+
+    /**
+     * Returns true if both groups have the same name and types.
+     * This defines a weaker notion of equality between two groups.
+     */
+    public boolean isSameGroup(Group otherGroup) {
+        if (otherGroup == this) {
+            return true;
+        }
+
+        return otherGroup != null
+                && otherGroup.getGroupName().equals(getGroupName())
+                && otherGroup.getGroupType().equals(getGroupType());
     }
 
     /**

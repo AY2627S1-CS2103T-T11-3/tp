@@ -26,7 +26,7 @@ public class UniqueGroupList implements Iterable<Group> {
      */
     public boolean contains(Group toCheck) {
         requireNonNull(toCheck);
-        return internalList.stream().anyMatch(toCheck::equals);
+        return internalList.stream().anyMatch(toCheck::isSameGroup);
     }
 
     /**
