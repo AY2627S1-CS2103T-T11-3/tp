@@ -2,6 +2,7 @@ package seedu.address.logic;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -70,6 +71,14 @@ public class LogicManager implements Logic {
         return model.getAddressBook().getGuardianStudents().entrySet().stream()
                 .filter(entry -> entry.getValue().contains(student))
                 .map(entry -> entry.getKey().getName().fullName)
+                .sorted()
+                .collect(Collectors.joining(", "));
+    }
+
+    @Override
+    public String getStudentNames(Person guardian) {
+        return model.getAddressBook().getGuardianStudents().getOrDefault(guardian, Set.of()).stream()
+                .map(student -> student.getName().fullName)
                 .sorted()
                 .collect(Collectors.joining(", "));
     }

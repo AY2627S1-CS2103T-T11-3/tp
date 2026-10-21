@@ -127,9 +127,45 @@
 }
 
 .cell_small_label {
-    -fx-font-family: "Segoe UI";
+    -fx-font-family: "Segoe UI Emoji", "Segoe UI";
     -fx-font-size: 13px;
     -fx-text-fill: #010504;
+    -fx-padding: 1 0 1 0;
+}
+
+.guardian-button {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-text-fill: #9ed7e8;
+    -fx-background-color: transparent;
+    -fx-background-radius: 3;
+    -fx-border-color: transparent;
+    -fx-border-radius: 3;
+    -fx-padding: 2 4 2 0;
+    -fx-cursor: hand;
+}
+
+.guardian-button:hover {
+    -fx-text-fill: white;
+    -fx-underline: true;
+}
+
+.guardian-button:pressed {
+    -fx-text-fill: #75bfd5;
+}
+
+.guardian-popup {
+    -fx-padding: 10;
+    -fx-background-color: #383838;
+}
+
+.popup-title, .popup-content {
+    -fx-text-fill: white;
+    -fx-font-family: "Segoe UI";
+}
+
+.popup-title {
+    -fx-font-family: "Segoe UI Semibold";
 }
 
 .role_badge {
@@ -139,7 +175,20 @@
     -fx-border-radius: 5, 5;
     -fx-background-radius: 5, 5;
     -fx-padding: 2px;
-    -fx-background-color: derive(#024402, 80%);
+    -fx-text-fill: white;
+    -fx-background-color: #3e7b91;
+}
+
+.role_badge.role-student {
+    -fx-background-color: #3e7b91;
+}
+
+.role_badge.role-guardian {
+    -fx-background-color: #4c8c4a;
+}
+
+.role_badge.role-colleague {
+    -fx-background-color: #a66a2c;
 }
 
 .stack-pane {
@@ -264,6 +313,37 @@
 
 .button:default:hover {
     -fx-background-color: derive(-fx-focus-color, 30%);
+}
+
+/* Relationship actions use a quiet text-link treatment instead of the default button skin. */
+.button.guardian-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 3;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
+    -fx-effect: none;
+    -fx-padding: 2 4 2 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.button.guardian-button:hover {
+    -fx-background-color: rgba(62, 123, 145, 0.25);
+    -fx-text-fill: white;
+    -fx-underline: true;
+}
+
+.button.guardian-button:pressed {
+    -fx-background-color: rgba(62, 123, 145, 0.4);
+    -fx-text-fill: #75bfd5;
+}
+
+.button.guardian-button:focused {
+    -fx-border-color: #64b5f6;
+    -fx-border-width: 1;
+    -fx-border-insets: -1;
 }
 
 .dialog-pane {
