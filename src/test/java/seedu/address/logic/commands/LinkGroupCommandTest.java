@@ -2,6 +2,8 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 
@@ -19,6 +21,7 @@ import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
+import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -99,6 +102,40 @@ public class LinkGroupCommandTest {
 
         assertCommandFailure(new LinkGroupCommand("Alice Pauline", "!invalid"), model,
                 "Group not found: !invalid");
+    }
+
+    @Test
+    public void execute_guardian_throwsCommandException() {
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(new Guardian(new Name("Carol Lim"), new Phone("91234569"),
+                new Email("carol@example.com"), new Address("123, Jurong West Ave 6, #08-113"),
+                new HashSet<>()));
+        Model model = new ModelManager(addressBook, new UserPrefs());
+
+        assertCommandFailure(new LinkGroupCommand("Carol Lim", "Computer Science"), model,
+                "Selected contact cannot be linked to a class or department.");
+    }
+
+    @Test
+    public void equals_sameObject_returnsTrue() {
+        LinkGroupCommand command = new LinkGroupCommand("Alice Pauline", "CS2103T T01");
+
+        assertTrue(command.equals(command));
+    }
+
+    @Test
+    public void equals_unrelatedObject_returnsFalse() {
+        LinkGroupCommand command = new LinkGroupCommand("Alice Pauline", "CS2103T T01");
+
+        assertFalse(command.equals("not a command"));
+    }
+
+    @Test
+    public void hashCode_sameValues_returnsSameHashCode() {
+        LinkGroupCommand first = new LinkGroupCommand("Alice Pauline", "CS2103T T01");
+        LinkGroupCommand second = new LinkGroupCommand("Alice Pauline", "CS2103T T01");
+
+        assertEquals(first.hashCode(), second.hashCode());
     }
 
 }
