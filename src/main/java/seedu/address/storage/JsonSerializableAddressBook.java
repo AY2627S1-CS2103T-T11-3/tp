@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.group.Group;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Student;
@@ -22,18 +23,20 @@ import seedu.address.model.person.Student;
 class JsonSerializableAddressBook {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
+    public static final String MESSAGE_DUPLICATE_GROUP = "Group list contains duplicate groups(s).";
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
+    private final List<JsonAdaptedGroup> groups = new ArrayList<>();
 
     // Each pair contains [guardian position, student position], both zero-based.
     // Positions refer to the persons array in this same JSON file.
     private final List<List<Integer>> guardianLinks = new ArrayList<>();
 
     /**
-     * Constructs a {@code JsonSerializableAddressBook} with the given persons.
+     * Constructs a {@code JsonSerializableAddressBook} with the given persons and groups
      */
-    public JsonSerializableAddressBook(List<JsonAdaptedPerson> persons) {
-        this(persons, null);
+    public JsonSerializableAddressBook(List<JsonAdaptedPerson> persons, List<JsonAdaptedGroup> groups) {
+        this(persons,null, groups);
     }
 
     /**
@@ -42,11 +45,14 @@ class JsonSerializableAddressBook {
     @JsonCreator
     public JsonSerializableAddressBook(
             @JsonProperty("persons") List<JsonAdaptedPerson> persons,
-            @JsonProperty("guardianLinks") List<List<Integer>> guardianLinks) {
+            @JsonProperty("guardianLinks") List<List<Integer>> guardianLinks,
+            @JsonProperty("groups") List<JsonAdaptedGroup> groups
+    ) {
         this.persons.addAll(persons);
         if (guardianLinks != null) {
             this.guardianLinks.addAll(guardianLinks);
         }
+        this.groups.addAll(groups);
     }
 
     /**
@@ -64,6 +70,11 @@ class JsonSerializableAddressBook {
                 students.forEach(student -> guardianLinks.add(List.of(
                         contacts.indexOf(guardian),
                         contacts.indexOf(student)))));
+
+        List<Group> sourceGroups = source.getGroupList();
+        groups.addAll(sourceGroups.stream()
+                .map(JsonAdaptedGroup::new)
+                .collect(Collectors.toList()));
     }
 
     /**
@@ -80,6 +91,7 @@ class JsonSerializableAddressBook {
             }
             addressBook.addPerson(person);
         }
+
         // Restore relationships only after all contacts have been loaded.
         List<Person> contacts = addressBook.getPersonList();
         for (List<Integer> link : guardianLinks) {
@@ -108,6 +120,14 @@ class JsonSerializableAddressBook {
                 // Self-links and duplicate links are invalid stored data.
                 throw new IllegalValueException(e.getMessage());
             }
+        }
+
+        for (JsonAdaptedGroup jsonAdaptedGroup : groups) {
+            Group group = jsonAdaptedGroup.toModelType();
+            if (addressBook.hasGroup(group)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_GROUP);
+            }
+            addressBook.addGroup(group);
         }
         return addressBook;
     }
