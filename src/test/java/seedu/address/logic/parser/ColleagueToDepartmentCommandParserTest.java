@@ -18,8 +18,8 @@ public class ColleagueToDepartmentCommandParserTest {
     @Test
     public void parse_validArgs_returnsCommand() {
         assertParseSuccess(parser, " n/Alice Pauline d/Computer Science",
-                new ColleagueToDepartmentCommand("Alice Pauline",
-                        (DepartmentGroup) new GroupBuilder().withName("Computer Science").withType(GroupType.DEPARTMENT).build()));
+                new ColleagueToDepartmentCommand("Alice Pauline", (DepartmentGroup) new GroupBuilder()
+                        .withName("Computer Science").withType(GroupType.DEPARTMENT).build()));
     }
 
     @Test
