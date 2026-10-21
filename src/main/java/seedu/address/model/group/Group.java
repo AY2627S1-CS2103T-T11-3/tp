@@ -11,19 +11,17 @@ import seedu.address.commons.util.ToStringBuilder;
 /**
  * Represent a Group in the address book.
  */
-public class Group {
+public abstract class Group {
 
     private final GroupName groupName;
-    private final GroupType groupType;
     private final Set<String> personIds; // TODO: replace String with person id class
 
     /**
      * Constructs a {@code Group}.
      */
-    public Group(GroupName groupName, GroupType groupType, Set<String> persondIds) {
-        requireAllNonNull(groupName, groupType);
+    public Group(GroupName groupName, Set<String> persondIds) {
+        requireAllNonNull(groupName, persondIds);
         this.groupName = groupName;
-        this.groupType = groupType;
         this.personIds = Set.copyOf(persondIds);
     }
 
@@ -31,9 +29,7 @@ public class Group {
         return groupName;
     }
 
-    public GroupType getGroupType() {
-        return groupType;
-    }
+    public abstract GroupType getGroupType();
 
     /**
      * Returns an immutable person ids set, which throws {@code UnsupportedOperationException}
@@ -72,20 +68,19 @@ public class Group {
         }
 
         return groupName.equals(otherGroup.groupName)
-                && groupType.equals(otherGroup.groupType)
+                && getGroupType() == otherGroup.getGroupType()
                 && personIds.equals(otherGroup.personIds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(groupName, groupType);
+        return Objects.hash(groupName, getGroupType());
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("group name", groupName)
-                .add("group type", groupType)
                 .add("person ids", personIds)
                 .toString();
     }

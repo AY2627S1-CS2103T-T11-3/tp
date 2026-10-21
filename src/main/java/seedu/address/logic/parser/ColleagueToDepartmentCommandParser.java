@@ -4,8 +4,12 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPARTMENT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
+import java.util.HashSet;
+
 import seedu.address.logic.commands.ColleagueToDepartmentCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.group.DepartmentGroup;
+import seedu.address.model.group.GroupName;
 
 /** Parses the link-colleague command. */
 public class ColleagueToDepartmentCommandParser implements Parser<ColleagueToDepartmentCommand> {
@@ -18,7 +22,10 @@ public class ColleagueToDepartmentCommandParser implements Parser<ColleagueToDep
                     ColleagueToDepartmentCommand.MESSAGE_USAGE));
         }
         map.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_DEPARTMENT);
-        return new ColleagueToDepartmentCommand(map.getValue(PREFIX_NAME).get(),
-                map.getValue(PREFIX_DEPARTMENT).get());
+
+        GroupName departmentName = ParserUtil.parseGroupName(map.getValue(PREFIX_DEPARTMENT).get());
+        DepartmentGroup department = new DepartmentGroup(departmentName, new HashSet<>());
+
+        return new ColleagueToDepartmentCommand(map.getValue(PREFIX_NAME).get(), department);
     }
 }

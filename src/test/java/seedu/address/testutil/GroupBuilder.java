@@ -3,6 +3,8 @@ package seedu.address.testutil;
 import java.util.HashSet;
 import java.util.Set;
 
+import seedu.address.model.group.ClassGroup;
+import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
@@ -13,7 +15,7 @@ import seedu.address.model.group.GroupType;
 public class GroupBuilder {
 
     public static final String DEFAULT_GROUP_NAME = "Math";
-    public static final String DEFAULT_GROUP_TYPE = "class";
+    public static final GroupType DEFAULT_GROUP_TYPE = GroupType.CLASS;
 
     private GroupName groupName;
     private GroupType groupType;
@@ -24,7 +26,7 @@ public class GroupBuilder {
      */
     public GroupBuilder() {
         groupName = new GroupName(DEFAULT_GROUP_NAME);
-        groupType = new GroupType(DEFAULT_GROUP_TYPE);
+        groupType = DEFAULT_GROUP_TYPE;
         personIds = new HashSet<>();
     }
 
@@ -48,8 +50,8 @@ public class GroupBuilder {
     /**
      * Sets the {@code GroupType} of the {@code Group} that we are building.
      */
-    public GroupBuilder withType(String groupType) {
-        this.groupType = new GroupType(groupType);
+    public GroupBuilder withType(GroupType groupType) {
+        this.groupType = groupType;
         return this;
     }
 
@@ -61,8 +63,14 @@ public class GroupBuilder {
         return this;
     }
 
+    /**
+     * Builds the Group
+     */
     public Group build() {
-        return new Group(groupName, groupType, personIds);
+        return switch (groupType) {
+            case CLASS -> new ClassGroup(groupName, personIds);
+            case DEPARTMENT -> new DepartmentGroup(groupName, personIds);
+        };
     }
 
 }
