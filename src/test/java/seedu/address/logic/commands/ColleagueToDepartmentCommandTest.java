@@ -14,6 +14,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.group.ClassGroup;
 import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Address;
@@ -61,6 +62,21 @@ public class ColleagueToDepartmentCommandTest {
 
         assertCommandFailure(command, colleagueModel,
                 String.format(ColleagueToDepartmentCommand.MESSAGE_DEPARTMENT_NOT_FOUND, "Missing Department"));
+    }
+
+    @Test
+    public void execute_incorrectGroupType_throwsCommandException() {
+        AddressBook ab = new AddressBook();
+        ab.addPerson(new Colleague(new Name("Alice Pauline"), new Phone("91234567"),
+                new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
+                new HashSet<Tag>(), null));
+        ab.addGroup(new ClassGroup(new GroupName("Computer Science")));
+        Model colleagueModel = new ModelManager(ab, new UserPrefs());
+        ColleagueToDepartmentCommand command =
+                new ColleagueToDepartmentCommand("Alice Pauline",
+                        new DepartmentGroup(new GroupName("Computer Science")));
+        assertCommandFailure(command, colleagueModel,
+                String.format(ColleagueToDepartmentCommand.MESSAGE_DEPARTMENT_NOT_FOUND, "Computer Science"));
     }
 
     @Test
