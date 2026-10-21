@@ -24,7 +24,7 @@ public class Group {
         requireAllNonNull(groupName, groupType);
         this.groupName = groupName;
         this.groupType = groupType;
-        this.personIds = persondIds;
+        this.personIds = Set.copyOf(persondIds);
     }
 
     public GroupName getGroupName() {
