@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
-import seedu.address.logic.commands.ColleagueToDepartmentCommand;
+import seedu.address.logic.commands.LinkGroupCommand;
 import seedu.address.logic.commands.CreateGroupCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -57,12 +57,12 @@ public class AddressBookParserTest {
     public void parseCommand_link() throws Exception {
         final String colleagueName = "Alice Pauline";
         final String department = "Computer Science";
-        ColleagueToDepartmentCommand command = (ColleagueToDepartmentCommand) parser.parseCommand(
-                ColleagueToDepartmentCommand.COMMAND_WORD + " "
+        LinkGroupCommand command = (LinkGroupCommand) parser.parseCommand(
+                LinkGroupCommand.COMMAND_WORD + " "
                 + CliSyntax.PREFIX_NAME + colleagueName + " "
                 + CliSyntax.PREFIX_DEPARTMENT + department
         );
-        assertEquals(new ColleagueToDepartmentCommand(colleagueName, department), command);
+        assertEquals(new LinkGroupCommand(colleagueName, department), command);
     }
 
     @Test
