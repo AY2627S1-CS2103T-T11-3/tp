@@ -5,6 +5,11 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 
 import seedu.address.logic.commands.CreateGroupCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.group.ClassGroup;
+import seedu.address.model.group.DepartmentGroup;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
+import seedu.address.model.group.GroupType;
 
 /**
  * Parses input arguments and creates a new CreateGroupCommand object
@@ -27,10 +32,16 @@ public class CreateGroupCommandParser implements Parser<CreateGroupCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, CreateGroupCommand.MESSAGE_USAGE));
         }
 
-        return new CreateGroupCommand(
-                argMultimap.getPreamble(),
-                argMultimap.getValue(PREFIX_GROUP_TYPE).orElse("class")
-        );
+        GroupName groupName = ParserUtil.parseGroupName(argMultimap.getPreamble());
+        GroupType groupType = ParserUtil.parseGroupType(argMultimap.getValue(PREFIX_GROUP_TYPE).get());
+
+        Group group = switch (groupType) {
+            case GroupType.CLASS -> new ClassGroup(groupName);
+            case GroupType.DEPARTMENT -> new DepartmentGroup(groupName);
+            default -> throw new ParseException("Invalid group type given");
+        };
+
+        return new CreateGroupCommand(group);
     }
 
 }

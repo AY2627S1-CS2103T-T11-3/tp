@@ -4,8 +4,6 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import seedu.address.model.Model;
 import seedu.address.model.group.Group;
-import seedu.address.model.group.GroupName;
-import seedu.address.model.group.GroupType;
 
 /**
  * Creates a group in the address book.
@@ -24,24 +22,19 @@ public class CreateGroupCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "create_group command executed successfully";
 
-    private final String groupName;
-    private final String groupType;
+    private final Group toAdd;
 
     /**
      * Creates a CreateGroupCommand to add the specified {@code Group}
-     * @param groupName name of the group
-     * @param groupType must be one of "class" or "department"
      */
-    public CreateGroupCommand(String groupName, String groupType) {
-        requireAllNonNull(groupName, groupType);
-
-        this.groupName = groupName;
-        this.groupType = groupType;
+    public CreateGroupCommand(Group group) {
+        requireAllNonNull(group);
+        this.toAdd = group;
     }
 
     @Override
     public CommandResult execute(Model model) {
-        model.addGroup(new Group(new GroupName(groupName), new GroupType(groupType)));
+        model.addGroup(toAdd);
         return new CommandResult(MESSAGE_SUCCESS);
     }
 
@@ -56,7 +49,7 @@ public class CreateGroupCommand extends Command {
             return false;
         }
 
-        return groupName.equals(otherCreateGroupCommand.groupName);
+        return toAdd.equals(otherCreateGroupCommand.toAdd);
     }
 
 }

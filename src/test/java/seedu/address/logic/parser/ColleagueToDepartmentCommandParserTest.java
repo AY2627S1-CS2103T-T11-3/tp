@@ -7,6 +7,9 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.ColleagueToDepartmentCommand;
+import seedu.address.model.group.DepartmentGroup;
+import seedu.address.model.group.GroupType;
+import seedu.address.testutil.GroupBuilder;
 
 public class ColleagueToDepartmentCommandParserTest {
 
@@ -15,7 +18,8 @@ public class ColleagueToDepartmentCommandParserTest {
     @Test
     public void parse_validArgs_returnsCommand() {
         assertParseSuccess(parser, " n/Alice Pauline d/Computer Science",
-                new ColleagueToDepartmentCommand("Alice Pauline", "Computer Science"));
+                new ColleagueToDepartmentCommand("Alice Pauline", (DepartmentGroup) new GroupBuilder()
+                        .withName("Computer Science").withType(GroupType.DEPARTMENT).build()));
     }
 
     @Test

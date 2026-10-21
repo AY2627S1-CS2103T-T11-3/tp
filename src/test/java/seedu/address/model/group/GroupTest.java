@@ -3,8 +3,7 @@ package seedu.address.model.group;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_NAME_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_TYPE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_NAME_DEPARTMENT;
 import static seedu.address.testutil.TypicalGroups.MATH_DPT;
 import static seedu.address.testutil.TypicalGroups.RESPECT_5;
 
@@ -33,18 +32,17 @@ public class GroupTest {
         assertFalse(RESPECT_5.equals(MATH_DPT));
 
         // different group name -> returns false
-        Group editedRespect5 = new GroupBuilder(RESPECT_5).withName(VALID_GROUP_NAME_BOB).build();
+        Group editedRespect5 = new GroupBuilder(RESPECT_5).withName(VALID_GROUP_NAME_DEPARTMENT).build();
         assertFalse(RESPECT_5.equals(editedRespect5));
 
         // different group type -> returns false
-        editedRespect5 = new GroupBuilder(RESPECT_5).withType(VALID_GROUP_TYPE_BOB).build();
+        editedRespect5 = new GroupBuilder(RESPECT_5).withType(GroupType.DEPARTMENT).build();
         assertFalse(RESPECT_5.equals(editedRespect5));
     }
 
     @Test
     public void toStringMethod() {
-        String expected = Group.class.getCanonicalName() + "{group name=" + RESPECT_5.getGroupName()
-                + ", group type=" + RESPECT_5.getGroupType() + "}";
+        String expected = ClassGroup.class.getCanonicalName() + "{group name=" + RESPECT_5.getGroupName() + "}";
         assertEquals(expected, RESPECT_5.toString());
     }
 

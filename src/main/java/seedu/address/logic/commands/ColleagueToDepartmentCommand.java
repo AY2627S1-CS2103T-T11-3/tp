@@ -6,9 +6,7 @@ import java.util.Objects;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.group.Group;
-import seedu.address.model.group.GroupName;
-import seedu.address.model.group.GroupType;
+import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Person;
 
@@ -21,10 +19,10 @@ public class ColleagueToDepartmentCommand extends Command {
     public static final String MESSAGE_NOT_FOUND = "Colleague not found: %s";
     public static final String MESSAGE_DEPARTMENT_NOT_FOUND = "Department not found: %s";
     private final String colleagueName;
-    private final String department;
+    private final DepartmentGroup department;
 
     /** Creates a command linking the named colleague to the given department. */
-    public ColleagueToDepartmentCommand(String colleagueName, String department) {
+    public ColleagueToDepartmentCommand(String colleagueName, DepartmentGroup department) {
         this.colleagueName = requireNonNull(colleagueName);
         this.department = requireNonNull(department);
     }
@@ -41,20 +39,16 @@ public class ColleagueToDepartmentCommand extends Command {
             throw new CommandException("Selected contact is not a colleague.");
         }
 
-        Group departmentGroup;
-        try {
-            departmentGroup = new Group(new GroupName(department), new GroupType("department"));
-        } catch (IllegalArgumentException e) {
-            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
-        }
-        if (!model.getAddressBook().getGroupList().contains(departmentGroup)) {
-            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND, department));
+        if (!model.getAddressBook().getGroupList().contains(department)) {
+            throw new CommandException(String.format(MESSAGE_DEPARTMENT_NOT_FOUND,
+                    department.getGroupName().groupName));
         }
         Colleague linked = new Colleague(colleague.getName(), colleague.getPhone(), colleague.getEmail(),
-                colleague.getAddress(), colleague.getTags(), department);
+                colleague.getAddress(), colleague.getTags(), department.getGroupName().groupName);
 
         model.setPerson(colleague, linked);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName, department));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, colleagueName,
+                department.getGroupName().groupName));
     }
 
     @Override

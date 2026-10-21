@@ -9,27 +9,23 @@ import seedu.address.commons.util.ToStringBuilder;
 /**
  * Represent a Group in the address book.
  */
-public class Group {
+public abstract class Group {
 
     private final GroupName groupName;
-    private final GroupType groupType;
 
     /**
      * Constructs a {@code Group}.
      */
-    public Group(GroupName groupName, GroupType groupType) {
-        requireAllNonNull(groupName, groupType);
+    public Group(GroupName groupName) {
+        requireAllNonNull(groupName);
         this.groupName = groupName;
-        this.groupType = groupType;
     }
 
     public GroupName getGroupName() {
         return groupName;
     }
 
-    public GroupType getGroupType() {
-        return groupType;
-    }
+    public abstract GroupType getGroupType();
 
     /**
      * Returns true if both groupName and groupType are the same.
@@ -46,19 +42,18 @@ public class Group {
         }
 
         return groupName.equals(otherGroup.groupName)
-                && groupType.equals(otherGroup.groupType);
+                && getGroupType() == otherGroup.getGroupType();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(groupName, groupType);
+        return Objects.hash(groupName, getGroupType());
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("group name", groupName)
-                .add("group type", groupType)
                 .toString();
     }
 }
