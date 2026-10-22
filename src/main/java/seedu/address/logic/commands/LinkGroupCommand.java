@@ -3,12 +3,14 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
+import java.util.Set;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.group.ClassGroup;
+import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
-import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Student;
@@ -47,7 +49,9 @@ public class LinkGroupCommand extends Command {
 
         Group group;
         try {
-            group = new Group(new GroupName(groupName), new GroupType(groupType));
+            group = groupType.equals("class")
+                    ? new ClassGroup(new GroupName(groupName), Set.of())
+                    : new DepartmentGroup(new GroupName(groupName), Set.of());
         } catch (IllegalArgumentException e) {
             throw new CommandException(String.format(MESSAGE_GROUP_NOT_FOUND, groupName));
         }

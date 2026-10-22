@@ -9,7 +9,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,9 +27,7 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.LinkGroupCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
-import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
@@ -68,12 +65,7 @@ public class AddressBookParserTest {
                 + CliSyntax.PREFIX_NAME + colleagueName + " "
                 + CliSyntax.PREFIX_DEPARTMENT + department
         );
-<<<<<<< HEAD
         assertEquals(new LinkGroupCommand(colleagueName, department), command);
-=======
-        final DepartmentGroup departmentGroup = new DepartmentGroup(new GroupName("Computer Science"), new HashSet<>());
-        assertEquals(new ColleagueToDepartmentCommand(colleagueName, departmentGroup), command);
->>>>>>> upstream/master
     }
 
     @Test

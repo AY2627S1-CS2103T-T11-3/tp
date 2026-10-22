@@ -3,11 +3,9 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPARTMENT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+
 import seedu.address.logic.commands.LinkGroupCommand;
-import java.util.HashSet;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.group.DepartmentGroup;
-import seedu.address.model.group.GroupName;
 
 /** Parses the generic link command. */
 public class LinkGroupCommandParser implements Parser<LinkGroupCommand> {
