@@ -111,6 +111,11 @@ public class ModelManager implements Model {
         addressBook.addGroup(group);
     }
 
+    @Override
+    public ObservableList<Group> getGroupList() {
+        return addressBook.getGroupList();
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**
