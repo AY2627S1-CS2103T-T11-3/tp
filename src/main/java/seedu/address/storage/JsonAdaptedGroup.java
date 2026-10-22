@@ -38,7 +38,7 @@ public class JsonAdaptedGroup {
     ) {
         this.groupName = groupName;
         this.groupType = groupType;
-        this.personIds.addAll(personIds.stream().collect(Collectors.toList()));
+        this.personIds.addAll(new ArrayList<>(personIds));
     }
 
     /**
@@ -47,7 +47,7 @@ public class JsonAdaptedGroup {
     public JsonAdaptedGroup(Group source) {
         groupName = source.getGroupName().groupName;
         groupType = source.getGroupType();
-        personIds.addAll(source.getPersonIds().stream().collect(Collectors.toList()));
+        personIds.addAll(new ArrayList<>(personIds));
     }
 
     /**
