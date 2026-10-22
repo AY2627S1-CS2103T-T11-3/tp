@@ -21,6 +21,16 @@ public class Colleague extends Person {
         this.department = department;
     }
 
+    /**
+     * Creates a new colleague with a specified person ID instead of an automatically assigned one.
+     */
+    public Colleague(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Integer rawPersonId,
+                     String department) {
+        super(name, phone, email, address, tags, Role.COLLEAGUE, rawPersonId, department);
+        this.department = department;
+    }
+
+
     public String getDepartment() {
         return department;
     }

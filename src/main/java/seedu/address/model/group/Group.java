@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.PersonId;
 
 /**
  * Represent a Group in the address book.
@@ -14,12 +15,12 @@ import seedu.address.commons.util.ToStringBuilder;
 public abstract class Group {
 
     private final GroupName groupName;
-    private final Set<String> personIds; // TODO: replace String with person id class
+    private final Set<PersonId> personIds;
 
     /**
      * Constructs a {@code Group}.
      */
-    public Group(GroupName groupName, Set<String> persondIds) {
+    public Group(GroupName groupName, Set<PersonId> persondIds) {
         requireAllNonNull(groupName, persondIds);
         this.groupName = groupName;
         this.personIds = Set.copyOf(persondIds);
@@ -35,7 +36,7 @@ public abstract class Group {
      * Returns an immutable person ids set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
-    public Set<String> getPersonIds() {
+    public Set<PersonId> getPersonIds() {
         return Collections.unmodifiableSet(personIds);
     }
 

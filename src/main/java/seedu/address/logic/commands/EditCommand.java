@@ -102,19 +102,20 @@ public class EditCommand extends Command {
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
+        int personId = personToEdit.getId().getRawId();
 
         if (personToEdit instanceof Guardian) {
-            return new Guardian(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+            return new Guardian(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId);
         }
 
         if (personToEdit instanceof Colleague personToEditColleague) {
             // TODO: Integrate department into EditPersonDescriptor and EditCommand
-            return new Colleague(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
+            return new Colleague(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
                     personToEditColleague.getDepartment());
         }
 
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                personToEdit.getRole());
+                personToEdit.getRole(), personId, null);
     }
 
     @Override

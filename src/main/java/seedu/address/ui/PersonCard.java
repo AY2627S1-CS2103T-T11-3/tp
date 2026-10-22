@@ -38,6 +38,8 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label name;
     @FXML
+    private Label index;
+    @FXML
     private Label id;
     @FXML
     private Label phone;
@@ -70,7 +72,8 @@ public class PersonCard extends UiPart<Region> {
     public PersonCard(Person person, int displayedIndex, String guardianNames, String studentNames) {
         super(FXML);
         this.person = person;
-        id.setText(displayedIndex + ". ");
+        index.setText(displayedIndex + ". ");
+        id.setText("ID: " + person.getId().toString());
         name.setText(person.getName().fullName);
         phone.setText("☎  " + person.getPhone().value);
         address.setText("📍  " + person.getAddress().value);
