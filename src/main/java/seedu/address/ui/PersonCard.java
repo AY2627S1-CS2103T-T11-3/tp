@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 
 /**
  * A UI component that displays information of a {@code Person}.
@@ -49,6 +50,8 @@ public class PersonCard extends UiPart<Region> {
     private Label email;
     @FXML
     private Label role;
+    @FXML
+    private Label yearOfStudy;
     @FXML
     private Button guardians;
     @FXML
@@ -96,6 +99,15 @@ public class PersonCard extends UiPart<Region> {
             guardians.setOnAction(event -> showRelationshipPopup(
                     isGuardian ? "Students" : "Guardians", relationshipNames));
         }
+
+        String yearOfStudyString = "";
+        if (person instanceof Student student && student.getYearOfStudy() != null) {
+            yearOfStudyString = "Year of study: " + student.getYearOfStudy().toString();
+        }
+
+        yearOfStudy.setText(yearOfStudyString);
+        yearOfStudy.setVisible(!yearOfStudyString.isEmpty());
+        yearOfStudy.setManaged(!yearOfStudyString.isEmpty());
     }
 
     /** Shows linked contacts without adding extra lines to the contact card. */
