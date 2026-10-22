@@ -15,5 +15,7 @@
     "role": "STUDENT",
     "personId" : 1
   } ],
+  "guardianLinks" : [ ],
+  "groups": [ ],
   "nextId": 2
 }
