@@ -9,7 +9,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -19,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
-import seedu.address.logic.commands.ColleagueToDepartmentCommand;
 import seedu.address.logic.commands.CreateGroupCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -27,11 +25,10 @@ import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.LinkGroupCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
-import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
@@ -70,13 +67,12 @@ public class AddressBookParserTest {
     public void parseCommand_link() throws Exception {
         final String colleagueName = "Alice Pauline";
         final String department = "Computer Science";
-        ColleagueToDepartmentCommand command = (ColleagueToDepartmentCommand) parser.parseCommand(
-                ColleagueToDepartmentCommand.COMMAND_WORD + " "
+        LinkGroupCommand command = (LinkGroupCommand) parser.parseCommand(
+                LinkGroupCommand.COMMAND_WORD + " "
                 + CliSyntax.PREFIX_NAME + colleagueName + " "
                 + CliSyntax.PREFIX_DEPARTMENT + department
         );
-        final DepartmentGroup departmentGroup = new DepartmentGroup(new GroupName("Computer Science"), new HashSet<>());
-        assertEquals(new ColleagueToDepartmentCommand(colleagueName, departmentGroup), command);
+        assertEquals(new LinkGroupCommand(colleagueName, department), command);
     }
 
     @Test

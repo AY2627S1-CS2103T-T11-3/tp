@@ -26,6 +26,9 @@ public interface Logic {
     /** Returns the names of guardians linked to the given student. */
     String getGuardianNames(Person student);
 
+    /** Returns the names of students linked to the given guardian. */
+    String getStudentNames(Person guardian);
+
     /**
      * Returns the user prefs' GUI settings.
      */
