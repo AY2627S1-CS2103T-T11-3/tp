@@ -35,7 +35,7 @@ public class LinkGroupCommandTest {
         addressBook.addGroup(new ClassGroup(new GroupName("CS2103T T01"), new HashSet<>()));
         addressBook.addPerson(new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
-                new HashSet<>()));
+                new HashSet<>(), null));
         Model model = new ModelManager(addressBook, new UserPrefs());
 
         assertCommandSuccess(new LinkGroupCommand("Alice Pauline", "CS2103T T01"), model,
@@ -64,7 +64,7 @@ public class LinkGroupCommandTest {
         AddressBook addressBook = new AddressBook();
         addressBook.addPerson(new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
-                new HashSet<>()));
+                new HashSet<>(), null));
         Model model = new ModelManager(addressBook, new UserPrefs());
 
         assertCommandFailure(new LinkGroupCommand("Alice Pauline", "Missing Class"), model,
@@ -77,7 +77,7 @@ public class LinkGroupCommandTest {
         addressBook.addGroup(new DepartmentGroup(new GroupName("Computer Science"), new HashSet<>()));
         addressBook.addPerson(new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
-                new HashSet<>()));
+                new HashSet<>(), null));
         Model model = new ModelManager(addressBook, new UserPrefs());
 
         assertCommandFailure(new LinkGroupCommand("Alice Pauline", "Computer Science"), model,
@@ -97,7 +97,7 @@ public class LinkGroupCommandTest {
         AddressBook addressBook = new AddressBook();
         addressBook.addPerson(new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
-                new HashSet<>()));
+                new HashSet<>(), null));
         Model model = new ModelManager(addressBook, new UserPrefs());
 
         assertCommandFailure(new LinkGroupCommand("Alice Pauline", "!invalid"), model,
