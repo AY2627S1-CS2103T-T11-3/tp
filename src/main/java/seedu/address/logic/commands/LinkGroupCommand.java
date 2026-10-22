@@ -62,10 +62,11 @@ public class LinkGroupCommand extends Command {
         Person linked;
         if (person instanceof Student) {
             linked = new Student(person.getName(), person.getPhone(), person.getEmail(),
-                    person.getAddress(), person.getTags(), groupName);
+                    person.getAddress(), person.getTags(), person.getId().getRawId(), groupName,
+                    ((Student) person).getYearOfStudy());
         } else {
             linked = new Colleague(person.getName(), person.getPhone(), person.getEmail(),
-                    person.getAddress(), person.getTags(), groupName);
+                    person.getAddress(), person.getTags(), person.getId().getRawId(), groupName);
         }
         model.setPerson(person, linked);
         return new CommandResult(String.format("%s linked to %s: %s", personName, groupType, groupName));
