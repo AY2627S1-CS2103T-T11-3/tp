@@ -17,6 +17,7 @@ import seedu.address.model.tag.Tag;
 public class Person {
 
     // Identity fields
+    private final PersonId id;
     private final Name name;
     private final Phone phone;
     private final Email email;
@@ -52,6 +53,7 @@ public class Person {
         this.groupId = groupId;
         this.role = role;
         this.tags.addAll(tags);
+        this.id = new PersonId();
     }
 
     public Name getName() {
@@ -87,9 +89,13 @@ public class Person {
         return Collections.unmodifiableSet(tags);
     }
 
+    public PersonId getId() {
+        return id;
+    }
+
     /**
-     * Returns true if both persons have the same name.
-     * This defines a weaker notion of equality between two persons.
+     * Returns true if both persons have the same ID.
+     * Name is not used as multiple people can have the same name.
      */
     public boolean isSamePerson(Person otherPerson) {
         if (otherPerson == this) {
@@ -97,7 +103,7 @@ public class Person {
         }
 
         return otherPerson != null
-                && otherPerson.getName().equals(getName());
+                && otherPerson.getId().equals(getId());
     }
 
     /**
@@ -121,13 +127,14 @@ public class Person {
                 && address.equals(otherPerson.address)
                 && Objects.equals(groupId, otherPerson.groupId)
                 && role == otherPerson.role
-                && tags.equals(otherPerson.tags);
+                && tags.equals(otherPerson.tags)
+                && id.equals(otherPerson.id);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, groupId, tags, role);
+        return Objects.hash(name, phone, email, address, groupId, tags, role, id);
     }
 
     @Override
@@ -138,6 +145,7 @@ public class Person {
                 .add("email", email)
                 .add("address", address)
                 .add("tags", tags)
+                .add("id", id)
                 .toString();
     }
 
