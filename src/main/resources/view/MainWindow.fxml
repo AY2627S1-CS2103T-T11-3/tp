@@ -35,6 +35,7 @@
             </Menu>
           </MenuBar>
 
+          <!-- Use a Button so Help opens immediately without a dropdown. -->
           <Button text="Help" mnemonicParsing="false"
                   onAction="#handleHelp" styleClass="menu-bar-help" />
         </HBox>
