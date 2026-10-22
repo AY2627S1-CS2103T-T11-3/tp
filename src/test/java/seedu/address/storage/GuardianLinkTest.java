@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -166,11 +167,12 @@ public class GuardianLinkTest {
         assertEquals(book, JsonUtil.fromJsonString(oldJson, JsonSerializableAddressBook.class).toModelType());
         List<JsonAdaptedPerson> persons = List.of(new JsonAdaptedPerson(aliceStudent),
                 new JsonAdaptedPerson(BOB_GUARDIAN));
+        List<JsonAdaptedGroup> groups = new ArrayList<>();
         // Stored links must have two valid positions and must not be self-links or duplicates.
         for (List<List<Integer>> links : List.of(List.of(List.of(2, 0)), List.of(List.of(0, 0)),
                 List.of(List.of(1, 0), List.of(1, 0)), List.of(List.of(1)))) {
             assertThrows(IllegalValueException.class, () ->
-                    new JsonSerializableAddressBook(persons, links).toModelType());
+                    new JsonSerializableAddressBook(persons, links, groups).toModelType());
         }
     }
 }
