@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
-import seedu.address.logic.commands.ColleagueToDepartmentCommand;
 import seedu.address.logic.commands.CreateGroupCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -25,14 +24,18 @@ import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.LinkGroupCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
 import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
+import seedu.address.testutil.GroupBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
 
@@ -57,12 +60,12 @@ public class AddressBookParserTest {
     public void parseCommand_link() throws Exception {
         final String colleagueName = "Alice Pauline";
         final String department = "Computer Science";
-        ColleagueToDepartmentCommand command = (ColleagueToDepartmentCommand) parser.parseCommand(
-                ColleagueToDepartmentCommand.COMMAND_WORD + " "
+        LinkGroupCommand command = (LinkGroupCommand) parser.parseCommand(
+                LinkGroupCommand.COMMAND_WORD + " "
                 + CliSyntax.PREFIX_NAME + colleagueName + " "
                 + CliSyntax.PREFIX_DEPARTMENT + department
         );
-        assertEquals(new ColleagueToDepartmentCommand(colleagueName, department), command);
+        assertEquals(new LinkGroupCommand(colleagueName, department), command);
     }
 
     @Test
@@ -193,13 +196,15 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_createGroup() throws Exception {
-        final String groupName = "CS2103T-T01";
+        final String groupName = "Math";
         final String groupType = "class";
         CreateGroupCommand command = (CreateGroupCommand) parser.parseCommand(
                 CreateGroupCommand.COMMAND_WORD + " "
                 + groupName + " " + PREFIX_GROUP_TYPE + groupType
         );
-        assertEquals(new CreateGroupCommand(groupName, groupType), command);
+        final Group group = new GroupBuilder().withName(groupName)
+                .withType(GroupType.valueOf(groupType.toUpperCase())).build();
+        assertEquals(new CreateGroupCommand(group), command);
     }
 
     @Test

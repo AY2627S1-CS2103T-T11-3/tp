@@ -19,11 +19,11 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.group.Group;
-import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
+import seedu.address.testutil.GroupBuilder;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddressBookTest {
@@ -89,20 +89,20 @@ public class AddressBookTest {
 
     @Test
     public void hasGroup_groupInAddressBook_returnsTrue() {
-        Group g = new Group(new GroupName("g"), new GroupType("class"));
+        Group g = new GroupBuilder().withName("g").withType(GroupType.CLASS).build();
         addressBook.addGroup(g);
         assertTrue(addressBook.hasGroup(g));
     }
 
     @Test
     public void hasGroup_groupNotInAddressBook_returnsFalse() {
-        Group g = new Group(new GroupName("g"), new GroupType("class"));
+        Group g = new GroupBuilder().withName("g").withType(GroupType.CLASS).build();
         assertFalse(addressBook.hasGroup(g));
     }
 
     @Test
     public void removeGroup_groupRemovedFromAddressBook_returnsTrue() {
-        Group g = new Group(new GroupName("g"), new GroupType("class"));
+        Group g = new GroupBuilder().withName("g").withType(GroupType.CLASS).build();
         addressBook.addGroup(g);
         assertTrue(addressBook.hasGroup(g));
         addressBook.removeGroup(g);
