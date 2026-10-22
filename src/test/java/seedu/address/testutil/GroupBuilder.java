@@ -8,6 +8,7 @@ import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
+import seedu.address.model.person.PersonId;
 
 /**
  * A utility class to help with building Group objects.
@@ -19,7 +20,7 @@ public class GroupBuilder {
 
     private GroupName groupName;
     private GroupType groupType;
-    private Set<String> personIds;
+    private Set<PersonId> personIds;
 
     /**
      * Creates a {@code GroupBuilder} with the default details.
@@ -58,7 +59,7 @@ public class GroupBuilder {
     /**
      * Sets the {@code GroupType} of the {@code Group} that we are building.
      */
-    public GroupBuilder withPersonIds(Set<String> personIds) {
+    public GroupBuilder withPersonIds(Set<PersonId> personIds) {
         this.personIds = Set.copyOf(personIds);
         return this;
     }

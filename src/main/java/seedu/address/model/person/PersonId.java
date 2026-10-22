@@ -8,7 +8,7 @@ import java.util.Objects;
  * Guaranteed to be immutable.
  */
 public class PersonId {
-    private static int nextId = 0;
+    private static int nextId = 1;
 
     private final int id;
 

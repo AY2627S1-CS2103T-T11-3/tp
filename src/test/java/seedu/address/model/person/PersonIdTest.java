@@ -10,19 +10,19 @@ import org.junit.jupiter.api.Test;
 public class PersonIdTest {
     @BeforeEach
     public void setUp() {
-        PersonId.setNextId(0);
+        PersonId.setNextId(1);
     }
 
     @Test
     public void match_equalValue_returnsTrue() {
         PersonId id0 = new PersonId();
-        assertTrue(id0.matches(0));
+        assertTrue(id0.matches(1));
 
         PersonId id1 = new PersonId();
-        assertTrue(id1.matches(1));
+        assertTrue(id1.matches(2));
 
         PersonId id2 = new PersonId();
-        assertTrue(id2.matches(2));
+        assertTrue(id2.matches(3));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class PersonIdTest {
     @Test
     public void equals() {
         PersonId id1 = new PersonId();
-        PersonId.setNextId(0);
+        PersonId.setNextId(1);
         PersonId id2 = new PersonId();
         assertEquals(id1, id2);
     }

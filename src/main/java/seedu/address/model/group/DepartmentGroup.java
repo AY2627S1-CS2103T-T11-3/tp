@@ -1,5 +1,7 @@
 package seedu.address.model.group;
 
+import seedu.address.model.person.PersonId;
+
 import java.util.Set;
 
 /**
@@ -10,7 +12,7 @@ public class DepartmentGroup extends Group {
     /**
      * Constructs a {@code Group}.
      */
-    public DepartmentGroup(GroupName groupName, Set<String> personIds) {
+    public DepartmentGroup(GroupName groupName, Set<PersonId> personIds) {
         super(groupName, personIds);
     }
 
