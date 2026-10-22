@@ -1,19 +1,110 @@
-#copyButton, #helpMessage {
+.help-root {
+    -fx-background-color: #303030;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 14px;
+}
+
+.help-root .label {
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #dedede;
+    -fx-opacity: 1;
+}
+
+.help-header {
+    -fx-border-color: transparent transparent #484848 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.help-root .help-title {
+    -fx-font-family: "Segoe UI Light", Helvetica, Arial, sans-serif;
+    -fx-font-size: 26px;
     -fx-text-fill: white;
 }
 
-#copyButton {
-    -fx-background-color: dimgray;
+.help-root .help-subtitle,
+.help-root .help-notation,
+.help-root .help-note {
+    -fx-font-size: 12px;
+    -fx-text-fill: #bbbbbb;
 }
 
-#copyButton:hover {
-    -fx-background-color: gray;
+.help-scroll,
+.help-scroll > .viewport,
+.help-content {
+    -fx-background-color: #303030;
 }
 
-#copyButton:armed {
-    -fx-background-color: darkgray;
+.help-scroll {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
 }
 
-#helpMessageContainer {
-    -fx-background-color: derive(#1d1d1d, 20%);
+.command-entry {
+    -fx-background-color: #383838;
+    -fx-background-radius: 6;
+    -fx-border-color: #505050;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+}
+
+.help-root .help-command-name {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 22px;
+    -fx-text-fill: #82d4f1;
+}
+
+.help-root .help-section-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.help-root .help-field-name {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 13px;
+    -fx-text-fill: #a2d9ed;
+}
+
+.help-syntax {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 13px;
+    -fx-text-fill: #eeeeee;
+    -fx-control-inner-background: #242424;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-highlight-fill: #0096c9;
+    -fx-highlight-text-fill: white;
+}
+
+.help-syntax > .scroll-pane,
+.help-syntax > .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.help-syntax .content {
+    -fx-background-color: #242424;
+    -fx-background-radius: 4;
+    -fx-padding: 12;
+}
+
+.help-footer {
+    -fx-border-color: #484848 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+
+.help-root .help-close-button {
+    -fx-font-size: 13px;
+    -fx-text-fill: white;
+    -fx-padding: 7 18 7 18;
+    -fx-background-color: #454545;
+    -fx-border-color: #686868;
+    -fx-border-width: 1;
+}
+
+.help-root .help-close-button:hover,
+.help-root .help-close-button:focused {
+    -fx-background-color: #006f94;
+    -fx-border-color: #0096c9;
 }

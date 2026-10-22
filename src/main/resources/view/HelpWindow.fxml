@@ -5,40 +5,351 @@
 <?import javafx.scene.Scene?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.stage.Stage?>
 
-<fx:root resizable="false" title="Help" type="javafx.stage.Stage" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root type="javafx.stage.Stage" title="Help - Command reference" resizable="true"
+         width="820" height="700" minWidth="540" minHeight="420"
+         xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
   <icons>
     <Image url="@/images/help_icon.png" />
   </icons>
   <scene>
     <Scene>
       <stylesheets>
+        <URL value="@DarkTheme.css" />
         <URL value="@HelpWindow.css" />
       </stylesheets>
 
-      <HBox alignment="CENTER" fx:id="helpMessageContainer">
-        <children>
-          <Label fx:id="helpMessage" text="Label">
-            <HBox.margin>
-              <Insets right="5.0" />
-            </HBox.margin>
-          </Label>
-          <Button fx:id="copyButton" mnemonicParsing="false" onAction="#copyUrl" text="Copy URL">
-            <HBox.margin>
-              <Insets left="5.0" />
-            </HBox.margin>
-          </Button>
-        </children>
-        <opaqueInsets>
-          <Insets bottom="10.0" left="5.0" right="10.0" top="5.0" />
-        </opaqueInsets>
-        <padding>
-          <Insets bottom="10.0" left="5.0" right="10.0" top="5.0" />
-        </padding>
-      </HBox>
+      <VBox styleClass="help-root">
+        <VBox spacing="6" styleClass="help-header">
+          <padding>
+            <Insets top="22" right="24" bottom="18" left="24" />
+          </padding>
+          <Label text="Command reference" styleClass="help-title" />
+          <Label text="Command formats and fields, available offline."
+                 wrapText="true" styleClass="help-subtitle" />
+        </VBox>
+
+        <ScrollPane fx:id="commandScrollPane" fitToWidth="true" hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" styleClass="help-scroll">
+          <content>
+            <VBox fx:id="commandEntries" spacing="16" styleClass="help-content">
+              <padding>
+                <Insets top="20" right="24" bottom="24" left="24" />
+              </padding>
+
+              <Label text="UPPERCASE = value to supply   [ ] = optional   ... = repeatable"
+                     wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-notation" />
+
+              <!-- Command entry template: copy this VBox for each additional command. -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding>
+                  <Insets top="20" right="20" bottom="20" left="20" />
+                </padding>
+
+                <VBox spacing="5">
+                  <Label text="add" styleClass="help-command-name" />
+                  <Label text="Adds a student, guardian or colleague to the address book."
+                         wrapText="true" styleClass="help-description" />
+                </VBox>
+
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <!-- Verified against AddCommandParser: all five non-tag fields are required. -->
+                  <TextArea text="add n/NAME p/PHONE e/EMAIL a/ADDRESS ct/CONTACT_TYPE [t/TAG]..."
+                            editable="false" wrapText="true" prefRowCount="2"
+                            minHeight="68" prefHeight="68" maxHeight="68" styleClass="help-syntax" />
+                </VBox>
+
+                <VBox spacing="10">
+                  <Label text="Required fields" styleClass="help-section-title" />
+                  <GridPane hgap="16" vgap="10">
+                    <columnConstraints>
+                      <ColumnConstraints minWidth="136" prefWidth="136" />
+                      <ColumnConstraints minWidth="0" hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <Label text="n/NAME" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Name; letters, digits and spaces."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                    <Label text="p/PHONE" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Phone number; at least 3 digits."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                    <Label text="e/EMAIL" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Email address in local-part@domain format."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                    <Label text="a/ADDRESS" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Address; must not be blank."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                    <Label text="ct/CONTACT_TYPE" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="student, guardian or colleague. Use a full value; case-insensitive."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="4" GridPane.columnIndex="1" />
+                  </GridPane>
+                  <Label text="Use each required prefix once, in any order. Values must not be blank."
+                         wrapText="true" styleClass="help-note" />
+                </VBox>
+
+                <VBox spacing="10">
+                  <Label text="Optional fields" styleClass="help-section-title" />
+                  <GridPane hgap="16" vgap="10">
+                    <columnConstraints>
+                      <ColumnConstraints minWidth="136" prefWidth="136" />
+                      <ColumnConstraints minWidth="0" hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <Label text="t/TAG" GridPane.columnIndex="0" styleClass="help-field-name" />
+                    <Label text="Tag; letters and digits only. Repeat t/ to add more tags."
+                           wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                  </GridPane>
+                </VBox>
+              </VBox>
+
+              <!-- Edit command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding>
+                  <Insets top="20" right="20" bottom="20" left="20" />
+                </padding>
+
+                <VBox spacing="5">
+                  <Label text="edit"
+                         styleClass="help-command-name" />
+                  <Label text="Updates a contact in the displayed list."
+                         wrapText="true" styleClass="help-description" />
+                </VBox>
+
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]..."
+                            editable="false" wrapText="true" prefRowCount="2"
+                            minHeight="68" prefHeight="68" maxHeight="68" styleClass="help-syntax" />
+                </VBox>
+
+                <VBox spacing="10">
+                  <Label text="Required fields"
+                         styleClass="help-section-title" />
+                  <GridPane hgap="16" vgap="10">
+                    <columnConstraints>
+                      <ColumnConstraints minWidth="136" prefWidth="136" />
+                      <ColumnConstraints minWidth="0" hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <Label text="INDEX"
+                           GridPane.rowIndex="0" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Positive contact number in the currently displayed list."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                  </GridPane>
+                </VBox>
+
+                <VBox spacing="10">
+                  <Label text="Optional fields"
+                         styleClass="help-section-title" />
+                  <GridPane hgap="16" vgap="10">
+                    <columnConstraints>
+                      <ColumnConstraints minWidth="136" prefWidth="136" />
+                      <ColumnConstraints minWidth="0" hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <Label text="n/NAME"
+                           GridPane.rowIndex="0" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="New name; letters, digits and spaces."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                    <Label text="p/PHONE"
+                           GridPane.rowIndex="1" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="New phone number; at least 3 digits."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                    <Label text="e/EMAIL"
+                           GridPane.rowIndex="2" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="New email address in local-part@domain format."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                    <Label text="a/ADDRESS"
+                           GridPane.rowIndex="3" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="New address; must not be blank."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                    <Label text="t/TAG"
+                           GridPane.rowIndex="4" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Replaces the contact's existing tags. Use t/TAG for each tag you want to keep. Use t/ with no value to remove all tags. Leave out t/ to keep the current tags unchanged."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="4" GridPane.columnIndex="1" />
+                  </GridPane>
+                </VBox>
+
+                <Label text="Provide at least one field to edit. Use each non-tag prefix once."
+                       wrapText="true" styleClass="help-note" />
+              </VBox>
+
+              <!-- Delete command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding>
+                  <Insets top="20" right="20" bottom="20" left="20" />
+                </padding>
+
+                <VBox spacing="5">
+                  <Label text="delete"
+                         styleClass="help-command-name" />
+                  <Label text="Deletes the contact at the displayed index."
+                         wrapText="true" styleClass="help-description" />
+                </VBox>
+
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="delete INDEX"
+                            editable="false" wrapText="true" prefRowCount="2"
+                            minHeight="68" prefHeight="68" maxHeight="68" styleClass="help-syntax" />
+                </VBox>
+
+                <VBox spacing="10">
+                  <Label text="Required fields"
+                         styleClass="help-section-title" />
+                  <GridPane hgap="16" vgap="10">
+                    <columnConstraints>
+                      <ColumnConstraints minWidth="136" prefWidth="136" />
+                      <ColumnConstraints minWidth="0" hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <Label text="INDEX"
+                           GridPane.rowIndex="0" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Positive contact number in the currently displayed list."
+                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                  </GridPane>
+                </VBox>
+              </VBox>
+
+              <!-- List command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding>
+                  <Insets top="20" right="20" bottom="20" left="20" />
+                </padding>
+
+                <VBox spacing="5">
+                  <Label text="list"
+                         styleClass="help-command-name" />
+                  <Label text="Displays all contacts."
+                         wrapText="true" styleClass="help-description" />
+                </VBox>
+
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="list"
+                            editable="false" wrapText="true" prefRowCount="1"
+                            minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                </VBox>
+
+                <Label text="No fields required."
+                       wrapText="true" styleClass="help-note" />
+              </VBox>
+
+              <!-- Clear command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding>
+                  <Insets top="20" right="20" bottom="20" left="20" />
+                </padding>
+
+                <VBox spacing="5">
+                  <Label text="clear"
+                         styleClass="help-command-name" />
+                  <Label text="Clears the address book, including contacts, groups and relationships."
+                         wrapText="true" styleClass="help-description" />
+                </VBox>
+
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="clear"
+                            editable="false" wrapText="true" prefRowCount="1"
+                            minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                </VBox>
+
+                <Label text="No fields required."
+                       wrapText="true" styleClass="help-note" />
+              </VBox>
+
+              <!-- Help command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding>
+                  <Insets top="20" right="20" bottom="20" left="20" />
+                </padding>
+
+                <VBox spacing="5">
+                  <Label text="help"
+                         styleClass="help-command-name" />
+                  <Label text="Shows the command reference or brings it to the front if already open."
+                         wrapText="true" styleClass="help-description" />
+                  <Label text="Shortcut: F1"
+                         wrapText="true" styleClass="help-note" />
+                </VBox>
+
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="help"
+                            editable="false" wrapText="true" prefRowCount="1"
+                            minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                </VBox>
+
+                <Label text="No fields required."
+                       wrapText="true" styleClass="help-note" />
+              </VBox>
+
+              <!-- Exit command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding>
+                  <Insets top="20" right="20" bottom="20" left="20" />
+                </padding>
+
+                <VBox spacing="5">
+                  <Label text="exit"
+                         styleClass="help-command-name" />
+                  <Label text="Closes the application."
+                         wrapText="true" styleClass="help-description" />
+                </VBox>
+
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="exit"
+                            editable="false" wrapText="true" prefRowCount="1"
+                            minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                </VBox>
+
+                <Label text="No fields required."
+                       wrapText="true" styleClass="help-note" />
+              </VBox>
+
+              <!-- Add more command-entry sections here, using the Add entry above as the template. -->
+            </VBox>
+          </content>
+        </ScrollPane>
+
+        <HBox alignment="CENTER_RIGHT" styleClass="help-footer">
+          <padding>
+            <Insets top="12" right="24" bottom="12" left="24" />
+          </padding>
+          <Button text="Close" mnemonicParsing="false" cancelButton="true"
+                  onAction="#hide" styleClass="help-close-button" />
+        </HBox>
+      </VBox>
     </Scene>
   </scene>
 </fx:root>
