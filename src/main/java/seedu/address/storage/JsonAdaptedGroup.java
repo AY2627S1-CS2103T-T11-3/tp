@@ -57,7 +57,8 @@ public class JsonAdaptedGroup {
      */
     public Group toModelType() throws IllegalValueException {
         if (groupName == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, GroupName.class.getSimpleName()));
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    GroupName.class.getSimpleName()));
         }
         if (!GroupName.isValidGroupName(groupName)) {
             throw new IllegalValueException(GroupName.MESSAGE_CONSTRAINTS);
@@ -65,7 +66,8 @@ public class JsonAdaptedGroup {
         final GroupName modelGroupName = new GroupName(groupName);
 
         if (groupType == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, GroupType.class.getSimpleName()));
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    GroupType.class.getSimpleName()));
         }
         final GroupType modelGroupType = groupType;
 

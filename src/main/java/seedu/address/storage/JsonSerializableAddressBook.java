@@ -36,7 +36,7 @@ class JsonSerializableAddressBook {
      * Constructs a {@code JsonSerializableAddressBook} with the given persons and groups
      */
     public JsonSerializableAddressBook(List<JsonAdaptedPerson> persons, List<JsonAdaptedGroup> groups) {
-        this(persons,null, groups);
+        this(persons, null, groups);
     }
 
     /**
