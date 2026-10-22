@@ -15,7 +15,7 @@ import seedu.address.model.person.PersonId;
 public abstract class Group {
 
     private final GroupName groupName;
-    private final Set<PersonId> personIds; // TODO: replace String with person id class
+    private final Set<PersonId> personIds;
 
     /**
      * Constructs a {@code Group}.
