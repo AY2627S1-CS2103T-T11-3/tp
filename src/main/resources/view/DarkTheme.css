@@ -416,6 +416,20 @@
     -fx-font-family: "Segoe UI Light";
     -fx-font-size: 13pt;
     -fx-text-fill: white;
+    -fx-padding: 8 12 8 12;
+}
+
+#commandTextField .text {
+    -fx-fill: white;
+}
+
+#commandTextField:focused {
+    -fx-border-color: #64b5f6 #64b5f6 #64b5f6 #64b5f6;
+    -fx-border-width: 2;
+}
+
+#commandTextField .prompt-text {
+    -fx-fill: #bdbdbd;
 }
 
 #filterField, #personListPanel, #personWebpage {
