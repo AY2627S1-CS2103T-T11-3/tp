@@ -1,12 +1,19 @@
 package seedu.address.ui;
 
 import java.util.Comparator;
+import java.util.Locale;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import seedu.address.model.person.Person;
 
 /**
@@ -41,7 +48,7 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label role;
     @FXML
-    private Label guardians;
+    private Button guardians;
     @FXML
     private FlowPane tags;
 
@@ -49,26 +56,58 @@ public class PersonCard extends UiPart<Region> {
      * Creates a {@code PersonCard} with the given {@code Person} and index to display.
      */
     public PersonCard(Person person, int displayedIndex) {
-        this(person, displayedIndex, "");
+        this(person, displayedIndex, "", "");
     }
 
     /**
      * Creates a contact card with the names of linked guardians.
      */
     public PersonCard(Person person, int displayedIndex, String guardianNames) {
+        this(person, displayedIndex, guardianNames, "");
+    }
+
+    /** Creates a contact card with both linked guardians and linked students. */
+    public PersonCard(Person person, int displayedIndex, String guardianNames, String studentNames) {
         super(FXML);
         this.person = person;
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
-        phone.setText(person.getPhone().value);
-        address.setText(person.getAddress().value);
-        email.setText(person.getEmail().value);
-        role.setText(person.getRole().name());
+        phone.setText("☎  " + person.getPhone().value);
+        address.setText("📍  " + person.getAddress().value);
+        email.setText("✉  " + person.getEmail().value);
+        String roleName = person.getRole().name();
+        role.setText(roleName.charAt(0) + roleName.substring(1).toLowerCase(Locale.ROOT));
+        role.getStyleClass().add("role-" + roleName.toLowerCase(Locale.ROOT));
         person.getTags().stream()
+                .filter(tag -> !tag.tagName.equalsIgnoreCase(roleName))
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
-        guardians.setText("Guardians: " + guardianNames);
-        guardians.setVisible(!guardianNames.isEmpty());
-        guardians.setManaged(!guardianNames.isEmpty());
+        boolean isGuardian = !studentNames.isEmpty();
+        String relationshipNames = isGuardian ? studentNames : guardianNames;
+        String relationshipLabel = isGuardian ? "View students" : "View guardians";
+        guardians.setText(relationshipLabel);
+        guardians.setTooltip(new Tooltip("Click to " + relationshipLabel.toLowerCase(Locale.ROOT)));
+        guardians.setVisible(!relationshipNames.isEmpty());
+        guardians.setManaged(!relationshipNames.isEmpty());
+        if (!relationshipNames.isEmpty()) {
+            guardians.setOnAction(event -> showRelationshipPopup(
+                    isGuardian ? "Students" : "Guardians", relationshipNames));
+        }
+    }
+
+    /** Shows linked contacts without adding extra lines to the contact card. */
+    private void showRelationshipPopup(String titleText, String relationshipNames) {
+        Label title = new Label(titleText);
+        title.getStyleClass().add("popup-title");
+        Label names = new Label(relationshipNames);
+        names.setWrapText(true);
+        names.getStyleClass().add("popup-content");
+
+        VBox content = new VBox(6, title, names);
+        content.getStyleClass().add("guardian-popup");
+
+        CustomMenuItem popupItem = new CustomMenuItem(content);
+        ContextMenu popup = new ContextMenu(popupItem);
+        popup.show(guardians, Side.BOTTOM, 0, 0);
     }
 }
