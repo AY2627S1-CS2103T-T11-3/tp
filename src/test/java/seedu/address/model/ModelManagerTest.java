@@ -8,9 +8,14 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.group.ClassGroup;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 import seedu.address.testutil.AddressBookBuilder;
 
 public class ModelManagerTest {
@@ -68,6 +73,15 @@ public class ModelManagerTest {
     @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
+    }
+
+    @Test
+    public void getGroupList_afterAddingGroup_containsGroup() {
+        Group group = new ClassGroup(new GroupName("CS2103T T01"), Set.of());
+
+        modelManager.addGroup(group);
+
+        assertTrue(modelManager.getGroupList().contains(group));
     }
 
     @Test
