@@ -7,6 +7,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonId;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
@@ -21,6 +22,7 @@ public class PersonBuilder {
     public static final String DEFAULT_PHONE = "85355255";
     public static final String DEFAULT_EMAIL = "amy@gmail.com";
     public static final String DEFAULT_ADDRESS = "123, Jurong West Ave 6, #08-111";
+    public static final Integer DEFAULT_PERSONID = 1;
 
     private Name name;
     private Phone phone;
@@ -28,6 +30,7 @@ public class PersonBuilder {
     private Address address;
     private Set<Tag> tags;
     private Role role;
+    private PersonId personId;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -39,6 +42,7 @@ public class PersonBuilder {
         address = new Address(DEFAULT_ADDRESS);
         tags = new HashSet<>();
         role = Role.STUDENT;
+        personId = PersonId.createFromRawId(DEFAULT_PERSONID);
     }
 
     /**
@@ -51,6 +55,7 @@ public class PersonBuilder {
         address = personToCopy.getAddress();
         tags = new HashSet<>(personToCopy.getTags());
         role = personToCopy.getRole();
+        personId = personToCopy.getId();
     }
 
     /**
@@ -99,8 +104,16 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the person ID of the person being built.
+     */
+    public PersonBuilder withPersonId(Integer rawId) {
+        this.personId = PersonId.createFromRawId(rawId);
+        return this;
+    }
+
     public Person build() {
-        return new Person(name, phone, email, address, tags, role);
+        return new Person(name, phone, email, address, tags, role, personId.getRawId(), null);
     }
 
 }

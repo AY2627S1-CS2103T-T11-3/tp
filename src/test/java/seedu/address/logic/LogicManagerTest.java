@@ -33,6 +33,7 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonId;
 import seedu.address.model.person.Student;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
@@ -63,6 +64,7 @@ public class LogicManagerTest {
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json"));
         StorageManager storage = new StorageManager(addressBookStorage, userPrefsStorage);
         logic = new LogicManager(model, storage);
+        PersonId.setNextId(1);
     }
 
     @Test
@@ -107,18 +109,20 @@ public class LogicManagerTest {
         model.addPerson(aliceStudent);
         Guardian bobGuardian = new Guardian(BOB.getName(), BOB.getPhone(), BOB.getEmail(),
                 BOB.getAddress(), BOB.getTags());
-        model.addPerson(CARL_GUARDIAN);
+        Guardian carlGuardian = new Guardian(CARL.getName(), CARL.getPhone(), CARL.getEmail(), CARL.getAddress(),
+                CARL.getTags());
+        model.addPerson(carlGuardian);
         model.addPerson(bobGuardian);
         assertEquals("", logic.getGuardianNames(aliceStudent));
 
         logic.execute("link-guardian s/1 g/2");
         logic.execute("link-guardian s/1 g/3");
-        assertEquals(bobGuardian.getName().fullName + ", " + CARL_GUARDIAN.getName().fullName,
+        assertEquals(bobGuardian.getName().fullName + ", " + carlGuardian.getName().fullName,
                 logic.getGuardianNames(aliceStudent));
 
         // A guardian outside the filtered list must still appear on the student card.
         model.updateFilteredPersonList(person -> person.equals(aliceStudent));
-        assertEquals(bobGuardian.getName().fullName + ", " + CARL_GUARDIAN.getName().fullName,
+        assertEquals(bobGuardian.getName().fullName + ", " + carlGuardian.getName().fullName,
                 logic.getGuardianNames(aliceStudent));
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 
@@ -179,6 +183,7 @@ public class LogicManagerTest {
      */
     private void assertCommandFailure(String inputCommand, Class<? extends Throwable> expectedException,
             String expectedMessage, Model expectedModel) {
+        PersonId.setNextId(1);
         assertThrows(expectedException, expectedMessage, () -> logic.execute(inputCommand));
         assertEquals(expectedModel, model);
     }
@@ -209,6 +214,7 @@ public class LogicManagerTest {
         // Triggers the saveAddressBook method by executing an add command
         String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + CONTACT_TYPE_STUDENT
                 + EMAIL_DESC_AMY + ADDRESS_DESC_AMY;
+        PersonId.setNextId(1);
         Person expectedPerson = new PersonBuilder(AMY).withTags().build();
         ModelManager expectedModel = new ModelManager();
         expectedModel.addPerson(expectedPerson);

@@ -5,14 +5,17 @@
     "email": "alice@example.com",
     "address": "123, Jurong West Ave 6, #08-111",
     "tags": [ "friends" ],
-    "role": "STUDENT"
+    "role": "STUDENT",
+    "personId" : 1
   }, {
     "name": "Alice Pauline",
     "phone": "94351253",
     "email": "pauline@example.com",
     "address": "4th street",
-    "role": "STUDENT"
+    "role": "STUDENT",
+    "personId" : 1
   } ],
   "guardianLinks" : [ ],
-  "groups": [ ]
+  "groups": [ ],
+  "nextId": 2
 }

@@ -11,20 +11,26 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.person.PersonId;
 import seedu.address.testutil.GroupBuilder;
 
 public class GroupTest {
+    @BeforeEach
+    public void setUp() {
+        PersonId.setNextId(0);
+    }
 
     @Test
     public void constructor() {
-        Set<String> personIds = new HashSet<>();
+        Set<PersonId> personIds = new HashSet<>();
         Group group = new ClassGroup(
                 new GroupName("Computer Science"),
                 personIds
         );
-        personIds.add("1");
+        personIds.add(new PersonId());
         assertFalse(personIds.equals(group.getPersonIds()));
     }
 
@@ -37,7 +43,7 @@ public class GroupTest {
         assertFalse(RESPECT_5.isSameGroup(null));
 
         // same name, all other attributes different -> returns true
-        String[] editedPersonIds = { "1" };
+        PersonId[] editedPersonIds = { new PersonId() };
         Group editedRespect5 = new GroupBuilder(RESPECT_5)
                 .withPersonIds(new HashSet<>(Arrays.asList(editedPersonIds))).build();
         assertTrue(RESPECT_5.isSameGroup(editedRespect5));
@@ -84,7 +90,7 @@ public class GroupTest {
         assertFalse(RESPECT_5.equals(editedRespect5));
 
         // different group type -> returns true
-        String[] editedPersonIds = { "1" };
+        PersonId[] editedPersonIds = { new PersonId() };
         editedRespect5 = new GroupBuilder(RESPECT_5)
                 .withPersonIds(new HashSet<>(Arrays.asList(editedPersonIds))).build();
         assertFalse(RESPECT_5.equals(editedRespect5));

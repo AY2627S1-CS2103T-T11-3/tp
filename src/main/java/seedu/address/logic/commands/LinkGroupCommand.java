@@ -55,7 +55,7 @@ public class LinkGroupCommand extends Command {
         } catch (IllegalArgumentException e) {
             throw new CommandException(String.format(MESSAGE_GROUP_NOT_FOUND, groupName));
         }
-        if (!model.getAddressBook().getGroupList().contains(group)) {
+        if (!model.getGroupList().contains(group)) {
             throw new CommandException(String.format(MESSAGE_GROUP_NOT_FOUND, groupName));
         }
 

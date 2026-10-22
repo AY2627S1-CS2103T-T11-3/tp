@@ -14,6 +14,7 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.group.Group;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonId;
 import seedu.address.model.person.Student;
 
 /**
@@ -32,11 +33,13 @@ class JsonSerializableAddressBook {
     // Positions refer to the persons array in this same JSON file.
     private final List<List<Integer>> guardianLinks = new ArrayList<>();
 
+    private final Integer nextId;
+
     /**
      * Constructs a {@code JsonSerializableAddressBook} with the given persons and groups
      */
     public JsonSerializableAddressBook(List<JsonAdaptedPerson> persons, List<JsonAdaptedGroup> groups) {
-        this(persons, null, groups);
+        this(persons, null, groups, 1);
     }
 
     /**
@@ -46,13 +49,15 @@ class JsonSerializableAddressBook {
     public JsonSerializableAddressBook(
             @JsonProperty("persons") List<JsonAdaptedPerson> persons,
             @JsonProperty("guardianLinks") List<List<Integer>> guardianLinks,
-            @JsonProperty("groups") List<JsonAdaptedGroup> groups
+            @JsonProperty("groups") List<JsonAdaptedGroup> groups,
+            @JsonProperty("nextId") Integer nextId
     ) {
         this.persons.addAll(persons);
         if (guardianLinks != null) {
             this.guardianLinks.addAll(guardianLinks);
         }
         this.groups.addAll(groups);
+        this.nextId = nextId;
     }
 
     /**
@@ -75,6 +80,9 @@ class JsonSerializableAddressBook {
         groups.addAll(sourceGroups.stream()
                 .map(JsonAdaptedGroup::new)
                 .collect(Collectors.toList()));
+
+        // PersonId class handles the next ID by itself
+        nextId = PersonId.getNextId();
     }
 
     /**
@@ -83,6 +91,9 @@ class JsonSerializableAddressBook {
      * @throws IllegalValueException if there were any data constraints violated.
      */
     public AddressBook toModelType() throws IllegalValueException {
+        // PersonId class handles the next ID by itself
+        PersonId.setNextId(nextId);
+
         AddressBook addressBook = new AddressBook();
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
             Person person = jsonAdaptedPerson.toModelType();
@@ -110,12 +121,16 @@ class JsonSerializableAddressBook {
 
             try {
                 Person guardian = contacts.get(guardianPosition);
+                Person student = contacts.get(studentPosition);
                 if (!(guardian instanceof Guardian)) {
                     throw new IllegalArgumentException("Guardian link refers to a non-guardian.");
                 }
+                if (!(student instanceof Student)) {
+                    throw new IllegalArgumentException("Guardian link refers to a non-student.");
+                }
                 addressBook.linkGuardianToStudent(
                         (Guardian) guardian,
-                        (Student) contacts.get(studentPosition));
+                        (Student) student);
             } catch (IllegalArgumentException e) {
                 // Self-links and duplicate links are invalid stored data.
                 throw new IllegalValueException(e.getMessage());

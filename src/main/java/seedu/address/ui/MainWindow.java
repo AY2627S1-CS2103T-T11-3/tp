@@ -15,6 +15,7 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
+import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 
@@ -34,6 +35,7 @@ public class MainWindow extends UiPart<Stage> {
 
     // Independent Ui parts residing in this Ui container
     private PersonListPanel personListPanel;
+    private GroupListPanel groupListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
 
@@ -41,10 +43,10 @@ public class MainWindow extends UiPart<Stage> {
     private StackPane commandBoxPlaceholder;
 
     @FXML
-    private MenuItem helpMenuItem;
+    private StackPane personListPanelPlaceholder;
 
     @FXML
-    private StackPane personListPanelPlaceholder;
+    private StackPane groupListPanelPlaceholder;
 
     @FXML
     private StackPane resultDisplayPlaceholder;
@@ -77,7 +79,13 @@ public class MainWindow extends UiPart<Stage> {
     }
 
     private void setAccelerators() {
-        setAccelerator(helpMenuItem, KeyCombination.valueOf("F1"));
+        KeyCombination helpShortcut = KeyCombination.valueOf("F1");
+        getRoot().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (helpShortcut.match(event)) {
+                handleHelp();
+                event.consume();
+            }
+        });
     }
 
     /**
@@ -115,8 +123,11 @@ public class MainWindow extends UiPart<Stage> {
      */
     void fillInnerParts() {
         personListPanel = new PersonListPanel(
-                logic.getFilteredPersonList(), logic::getGuardianNames);
+                logic.getFilteredPersonList(), logic::getGuardianNames, logic::getStudentNames);
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
+
+        groupListPanel = new GroupListPanel(logic.getGroupList(), logic.getFilteredPersonList());
+        groupListPanelPlaceholder.getChildren().add(groupListPanel.getRoot());
 
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());
@@ -141,7 +152,7 @@ public class MainWindow extends UiPart<Stage> {
     }
 
     /**
-     * Opens the help window or focuses on it if it's already opened.
+     * Opens or focuses the help window and displays the help command feedback.
      */
     @FXML
     public void handleHelp() {
@@ -150,6 +161,7 @@ public class MainWindow extends UiPart<Stage> {
         } else {
             helpWindow.focus();
         }
+        resultDisplay.setFeedbackToUser(HelpCommand.SHOWING_HELP_MESSAGE);
     }
 
     void show() {
@@ -182,6 +194,7 @@ public class MainWindow extends UiPart<Stage> {
             CommandResult commandResult = logic.execute(commandText);
             // Links do not change the contact list, so refresh cards explicitly.
             personListPanel.refresh();
+            groupListPanel.refresh();
             logger.info("Result: " + commandResult.getFeedbackToUser());
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
 

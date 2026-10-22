@@ -3,7 +3,9 @@ package seedu.address.logic.commands;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.List;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -20,6 +22,7 @@ public class LinkCommand extends Command {
                     + "indices in the displayed contact list.\n"
                     + "Parameters: s/STUDENT_INDEX g/GUARDIAN_INDEX\n"
                     + "Example: " + COMMAND_WORD + " s/1 g/2";
+    private static final Logger LOGGER = LogsCenter.getLogger(LinkCommand.class);
     private final Index guardianIndex;
     private final Index studentIndex;
 
@@ -39,9 +42,11 @@ public class LinkCommand extends Command {
         List<Person> contacts = model.getFilteredPersonList();
 
         if (guardianIndex.getZeroBased() >= contacts.size()) {
+            LOGGER.warning("Rejected guardian link: guardian index is out of bounds.");
             throw new CommandException("Guardian contact does not exist.");
         }
         if (studentIndex.getZeroBased() >= contacts.size()) {
+            LOGGER.warning("Rejected guardian link: student index is out of bounds.");
             throw new CommandException("Student contact does not exist.");
         }
 
@@ -50,10 +55,12 @@ public class LinkCommand extends Command {
 
         if (!(selectedGuardian instanceof Guardian)
                 || selectedGuardian.getRole() != Role.GUARDIAN) {
+            LOGGER.warning("Rejected guardian link: selected guardian contact has an invalid role.");
             throw new CommandException("Selected contact is not a guardian.");
         }
 
         if (!(selectedStudent instanceof Student)) {
+            LOGGER.warning("Rejected guardian link: selected student contact has an invalid role.");
             throw new CommandException("Selected contact is not a student.");
         }
 
@@ -63,8 +70,12 @@ public class LinkCommand extends Command {
         try {
             model.linkGuardianToStudent(guardian, student);
         } catch (IllegalArgumentException e) {
+            LOGGER.warning("Rejected guardian link: " + e.getMessage());
             throw new CommandException(e.getMessage(), e);
         }
+
+        LOGGER.info(String.format("Linked guardian %s to student %s.",
+                guardian.getName(), student.getName()));
 
         return new CommandResult(String.format(
                 "Linked guardian %s to student %s.",
