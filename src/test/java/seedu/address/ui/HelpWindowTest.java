@@ -4,13 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.FxTestUtil.runAndWait;
+import static seedu.address.testutil.TypicalCommands.ALL_COMMAND_NAMES;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,10 +35,23 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.testutil.FxTestUtil;
 
+/**
+ * Integration tests requiring the offline Help window implementation in the tested revision.
+ */
 public class HelpWindowTest {
+    private static final Map<String, String> OPTIONAL_FIELDS = Map.of(
+            "[n/NAME]", "n/NAME", "[p/PHONE]", "p/PHONE", "[e/EMAIL]", "e/EMAIL",
+            "[a/ADDRESS]", "a/ADDRESS", "[t/TAG]...", "t/TAG");
+    private static final Map<String, String> PLACEHOLDER_VALUES = Map.of(
+            "NAME", "Help Example", "PHONE", "12345678", "EMAIL", "help@example.com",
+            "ADDRESS", "12 Help Street", "INDEX", "1", "TAG", "Friends");
+    private static final Pattern UNRESOLVED_PLACEHOLDER = Pattern.compile("\\b[A-Z][A-Z_]*\\b");
+
     private HelpWindow helpWindow;
 
     @BeforeAll
@@ -78,11 +95,7 @@ public class HelpWindowTest {
     public void reference_documentedCommands_haveSelectableReadOnlyFormats() throws Exception {
         runAndWait(() -> {
             Parent root = helpWindow.getRoot().getScene().getRoot();
-            List<String> names = root.lookupAll(".help-command-name").stream()
-                    .map(node -> ((Label) node).getText()).toList();
-            assertTrue(names.containsAll(List.of("add", "edit", "delete", "list", "clear", "help", "exit")));
-            for (Node node : root.lookupAll(".help-syntax")) {
-                TextArea syntax = (TextArea) node;
+            for (TextArea syntax : documentedFormats().values()) {
                 assertFalse(syntax.getText().isBlank());
                 assertFalse(syntax.isEditable());
                 assertTrue(syntax.isWrapText());
@@ -96,25 +109,38 @@ public class HelpWindowTest {
     }
 
     @Test
-    public void reference_documentedFormats_areAcceptedByParser() throws Exception {
+    public void reference_addFormat_acceptsAllRolesAndOptionalTags() throws Exception {
         runAndWait(() -> {
-            AddressBookParser parser = new AddressBookParser();
-            Map<String, String> values = Map.of("NAME", "Help Example", "PHONE", "12345678",
-                    "EMAIL", "help@example.com", "ADDRESS", "12 Help Street", "INDEX", "1", "TAG", "Friends");
-            var formats = helpWindow.getRoot().getScene().getRoot().lookupAll(".help-syntax");
-            assertFalse(formats.isEmpty());
-            for (Node node : formats) {
-                String format = ((TextArea) node).getText();
-                List<String> roles = format.startsWith("add ")
-                        ? List.of("student", "guardian", "colleague") : List.of("student");
-                for (String role : roles) {
-                    String example = format.replaceAll("\\[([^\\]]+)\\]", "$1").replace("...", "")
-                            .replace("CONTACT_TYPE", role);
-                    for (Map.Entry<String, String> value : values.entrySet()) {
-                        example = example.replace(value.getKey(), value.getValue());
-                    }
-                    String command = example;
-                    assertDoesNotThrow(() -> parser.parseCommand(command), command);
+            String format = documentedFormats().get(AddCommand.COMMAND_WORD).getText();
+            for (String role : List.of("student", "guardian", "colleague")) {
+                assertFormatAcceptedByParser(format, role, Map.of());
+                assertFormatAcceptedByParser(format, role, Map.of("[t/TAG]...", "t/TAG"));
+                assertFormatAcceptedByParser(format, role, Map.of("[t/TAG]...", "t/TAG t/School"));
+            }
+        });
+    }
+
+    @Test
+    public void reference_editFormat_acceptsOptionalFieldsAndRepeatedTags() throws Exception {
+        runAndWait(() -> {
+            String format = documentedFormats().get(EditCommand.COMMAND_WORD).getText();
+            for (Map.Entry<String, String> field : OPTIONAL_FIELDS.entrySet()) {
+                assertFormatAcceptedByParser(format, "student", Map.of(field.getKey(), field.getValue()));
+            }
+            Map<String, String> allFields = new HashMap<>(OPTIONAL_FIELDS);
+            allFields.put("[t/TAG]...", "t/TAG t/School");
+            assertFormatAcceptedByParser(format, "student", allFields);
+            assertFormatAcceptedByParser(format, "student", Map.of("[t/TAG]...", "t/"));
+        });
+    }
+
+    @Test
+    public void reference_remainingFormats_areAcceptedByParser() throws Exception {
+        runAndWait(() -> {
+            Map<String, TextArea> formats = documentedFormats();
+            for (String command : ALL_COMMAND_NAMES) {
+                if (!command.equals(AddCommand.COMMAND_WORD) && !command.equals(EditCommand.COMMAND_WORD)) {
+                    assertFormatAcceptedByParser(formats.get(command).getText(), "student", Map.of());
                 }
             }
         });
@@ -146,7 +172,11 @@ public class HelpWindowTest {
             helpWindow.focus();
             assertTrue(helpWindow.isShowing());
             assertFalse(stage.isIconified());
-            assertEquals(1, Window.getWindows().size());
+            long helpWindows = Window.getWindows().stream()
+                    .filter(window -> window.getScene() != null)
+                    .filter(window -> window.getScene().getRoot().getStyleClass().contains("help-root"))
+                    .count();
+            assertEquals(1, helpWindows);
         });
     }
 
@@ -189,6 +219,7 @@ public class HelpWindowTest {
             assertEquals(ScrollPane.ScrollBarPolicy.AS_NEEDED, scroll.getVbarPolicy());
             assertTrue(scroll.getContent().getLayoutBounds().getHeight() > scroll.getViewportBounds().getHeight());
             assertTrue(scroll.getContent().getLayoutBounds().getWidth() <= scroll.getViewportBounds().getWidth() + 1);
+            assertEquals(ALL_COMMAND_NAMES.size(), root.lookupAll(".command-entry").size());
             for (Node entry : root.lookupAll(".command-entry")) {
                 assertTrue(entry.getBoundsInParent().getMaxX() <= scroll.getContent().getLayoutBounds().getWidth());
                 Bounds entryBounds = entry.localToScene(entry.getLayoutBounds());
@@ -199,5 +230,41 @@ public class HelpWindowTest {
                 }
             }
         });
+    }
+
+    private Map<String, TextArea> documentedFormats() {
+        Parent root = helpWindow.getRoot().getScene().getRoot();
+        Map<String, TextArea> formats = new HashMap<>();
+        for (Node node : root.lookupAll(".command-entry")) {
+            Parent entry = (Parent) node;
+            assertEquals(1, entry.lookupAll(".help-command-name").size(), "Each entry needs one command name");
+            assertEquals(1, entry.lookupAll(".help-syntax").size(), "Each entry needs one format");
+            String command = ((Label) entry.lookup(".help-command-name")).getText();
+            TextArea syntax = (TextArea) entry.lookup(".help-syntax");
+            assertFalse(syntax.getText().isBlank(), command);
+            assertEquals(command, syntax.getText().strip().split("\\s+", 2)[0]);
+            assertNull(formats.put(command, syntax), "Duplicate Help entry: " + command);
+        }
+        assertEquals(ALL_COMMAND_NAMES.size(), formats.size());
+        assertTrue(formats.keySet().containsAll(ALL_COMMAND_NAMES));
+        return formats;
+    }
+
+    private void assertFormatAcceptedByParser(String format, String role, Map<String, String> optionalFields) {
+        for (String field : optionalFields.keySet()) {
+            assertTrue(format.contains(field), "Missing optional field in Help format: " + field);
+        }
+        String example = format;
+        for (String field : OPTIONAL_FIELDS.keySet()) {
+            example = example.replace(field, optionalFields.getOrDefault(field, ""));
+        }
+        example = example.replace("CONTACT_TYPE", role);
+        for (Map.Entry<String, String> placeholder : PLACEHOLDER_VALUES.entrySet()) {
+            example = example.replace(placeholder.getKey(), placeholder.getValue());
+        }
+        assertFalse(example.contains("[") || example.contains("]") || example.contains("..."), example);
+        assertFalse(UNRESOLVED_PLACEHOLDER.matcher(example).find(), example);
+        String command = example;
+        assertDoesNotThrow(() -> new AddressBookParser().parseCommand(command), command);
     }
 }

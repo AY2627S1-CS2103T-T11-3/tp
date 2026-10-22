@@ -23,13 +23,16 @@ import org.junit.jupiter.api.io.TempDir;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -48,6 +51,9 @@ import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
 import seedu.address.testutil.FxTestUtil;
 
+/**
+ * Integration tests requiring the offline Help window implementation in the tested revision.
+ */
 public class MainWindowHelpTest {
     @TempDir
     public Path testFolder;
@@ -101,7 +107,7 @@ public class MainWindowHelpTest {
             showPersonAtIndex(model, INDEX_FIRST_PERSON);
             AddressBook original = new AddressBook(model.getAddressBook());
             List<?> displayed = List.copyOf(model.getFilteredPersonList());
-            enterCommand("help");
+            enterCommand(HelpCommand.COMMAND_WORD);
             assertHelpVisible();
             assertEquals("", commandField.getText());
             assertEquals(original, model.getAddressBook());
@@ -136,7 +142,7 @@ public class MainWindowHelpTest {
             helpButton.fire();
             Stage helpStage = assertHelpVisible();
             feedback.setText("Other feedback");
-            enterCommand("help");
+            enterCommand(HelpCommand.COMMAND_WORD);
             assertSame(helpStage, assertHelpVisible());
             helpStage.setIconified(true);
             feedback.setText("Other feedback");
@@ -250,15 +256,49 @@ public class MainWindowHelpTest {
     public void helpButton_focusAndArmedStyles_highlightOnlyOnHover() throws Exception {
         runAndWait(() -> {
             PseudoClass hover = PseudoClass.getPseudoClass("hover");
+            Region fileMenu = (Region) lookup("#menuBar", MenuBar.class).lookup(".menu-button");
+            assertNotNull(fileMenu);
+            fileMenu.pseudoClassStateChanged(hover, true);
+            applyStyles();
+            Color expectedHighlight = (Color) fileMenu.getBackground().getFills().getFirst().getFill();
+            assertTrue(expectedHighlight.getOpacity() > 0);
+            fileMenu.pseudoClassStateChanged(hover, false);
             helpButton.pseudoClassStateChanged(hover, false);
             helpButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("focused"), true);
+            assertEquals(0, helpButtonBackground().getOpacity());
             helpButton.arm();
+            helpButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), true);
             assertEquals(0, helpButtonBackground().getOpacity());
             helpButton.pseudoClassStateChanged(hover, true);
-            assertTrue(helpButtonBackground().getOpacity() > 0);
+            assertEquals(expectedHighlight, helpButtonBackground());
             helpButton.pseudoClassStateChanged(hover, false);
             assertEquals(0, helpButtonBackground().getOpacity());
             helpButton.disarm();
+        });
+    }
+
+    @Test
+    public void helpButton_allStates_preservesFileMenuHighlightSpacing() throws Exception {
+        runAndWait(() -> {
+            Region fileMenu = (Region) lookup("#menuBar", MenuBar.class).lookup(".menu-button");
+            assertNotNull(fileMenu);
+            Parent bar = helpButton.getParent();
+            for (String state : List.of("normal", "hover", "focused", "pressed")) {
+                for (String pseudo : List.of("hover", "focused", "pressed")) {
+                    helpButton.pseudoClassStateChanged(PseudoClass.getPseudoClass(pseudo), state.equals(pseudo));
+                }
+                applyStyles();
+                Bounds barBounds = bar.localToScene(bar.getLayoutBounds());
+                Bounds fileBounds = fileMenu.localToScene(fileMenu.getLayoutBounds());
+                Bounds helpBounds = helpButton.localToScene(helpButton.getLayoutBounds());
+                double fileBottomGap = barBounds.getMaxY() - fileBounds.getMaxY();
+                double helpBottomGap = barBounds.getMaxY() - helpBounds.getMaxY();
+                assertTrue(fileBottomGap > 0, state);
+                assertTrue(helpBottomGap > 0, state);
+                assertEquals(fileBottomGap, helpBottomGap, 0.5, state);
+                assertEquals(fileBounds.getMinY(), helpBounds.getMinY(), 0.5, state);
+                assertEquals(fileBounds.getHeight(), helpBounds.getHeight(), 0.5, state);
+            }
         });
     }
 
@@ -292,7 +332,13 @@ public class MainWindowHelpTest {
     }
 
     private Color helpButtonBackground() {
-        mainWindow.getRoot().getScene().getRoot().applyCss();
+        applyStyles();
         return (Color) helpButton.getBackground().getFills().getFirst().getFill();
+    }
+
+    private void applyStyles() {
+        Parent root = mainWindow.getRoot().getScene().getRoot();
+        root.applyCss();
+        root.layout();
     }
 }

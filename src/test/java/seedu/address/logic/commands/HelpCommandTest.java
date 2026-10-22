@@ -33,7 +33,6 @@ public class HelpCommandTest {
         HelpCommand command = new HelpCommand();
 
         assertCommandSuccess(command, populatedModel, expectedResult, expectedPopulatedModel);
-        assertCommandSuccess(command, populatedModel, expectedResult, expectedPopulatedModel);
         assertEquals(expectedPopulatedModel.getAddressBook().getGroupList(),
                 populatedModel.getAddressBook().getGroupList());
     }
