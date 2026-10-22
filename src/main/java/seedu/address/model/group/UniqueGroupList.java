@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.group.exceptions.DuplicateGroupException;
 import seedu.address.model.group.exceptions.GroupNotFoundException;
+import seedu.address.model.person.exceptions.DuplicatePersonException;
 
 /**
  * A list of groups that enforces uniqueness between its elements and does not allow nulls.
@@ -39,6 +40,26 @@ public class UniqueGroupList implements Iterable<Group> {
             throw new DuplicateGroupException();
         }
         internalList.add(toAdd);
+    }
+
+    /**
+     * Replaces the group {@code target} in the list with {@code editedGroup}.
+     * {@code target} must exist in the list.
+     * The group identity of {@code editedGroup} must not be the same as another existing group in the list.
+     */
+    public void setGroup(Group target, Group editedGroup) {
+        requireAllNonNull(target, editedGroup);
+
+        int index = internalList.indexOf(target);
+        if (index == -1) {
+            throw new GroupNotFoundException();
+        }
+
+        if (!target.isSameGroup(editedGroup) && contains(editedGroup)) {
+            throw new DuplicateGroupException();
+        }
+
+        internalList.set(index, editedGroup);
     }
 
     /**
