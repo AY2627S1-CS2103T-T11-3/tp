@@ -32,6 +32,13 @@ public final class PersonId {
     }
 
     /**
+     * Returns the next ID to automatically assign.
+     */
+    public static int getNextId() {
+        return nextId;
+    }
+
+    /**
      * Initialises the next ID to assign to a person.
      *
      * @param nextId the next free ID.

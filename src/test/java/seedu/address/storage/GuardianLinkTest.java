@@ -171,7 +171,7 @@ public class GuardianLinkTest {
                 List.of(List.of(1, 0), List.of(1, 0)), List.of(List.of(1)),
                 List.of(List.of(0, 1)))) {
             assertThrows(IllegalValueException.class, () ->
-                    new JsonSerializableAddressBook(persons, links).toModelType());
+                    new JsonSerializableAddressBook(persons, links, 1).toModelType());
         }
     }
 }
