@@ -1,5 +1,6 @@
 package seedu.address.model.person;
 
+import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.model.tag.Tag;
@@ -37,5 +38,22 @@ public class Student extends Person {
 
     public Integer getYearOfStudy() {
         return yearOfStudy;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        Student student = (Student) o;
+        return Objects.equals(yearOfStudy, student.yearOfStudy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), yearOfStudy);
     }
 }
