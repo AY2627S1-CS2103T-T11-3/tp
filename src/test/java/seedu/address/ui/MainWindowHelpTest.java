@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
+import static seedu.address.testutil.FxTestUtil.callAndWait;
 import static seedu.address.testutil.FxTestUtil.runAndWait;
+import static seedu.address.testutil.FxTestUtil.waitUntil;
 import static seedu.address.testutil.TypicalAddressBook.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
@@ -138,16 +140,24 @@ public class MainWindowHelpTest {
 
     @Test
     public void repeatedHelp_allEntryPoints_reuseAndRestoreSameWindow() throws Exception {
-        runAndWait(() -> {
+        Stage helpStage = callAndWait(() -> {
             helpButton.fire();
-            Stage helpStage = assertHelpVisible();
+            Stage openedStage = assertHelpVisible();
             feedback.setText("Other feedback");
             enterCommand(HelpCommand.COMMAND_WORD);
-            assertSame(helpStage, assertHelpVisible());
-            helpStage.setIconified(true);
+            assertSame(openedStage, assertHelpVisible());
+            return openedStage;
+        });
+        waitUntil(helpStage::isShowing, "the Help window to be shown");
+        runAndWait(() -> helpStage.setIconified(true));
+        waitUntil(helpStage::isIconified, "the Help window to be minimised");
+        runAndWait(() -> {
             feedback.setText("Other feedback");
             pressF1(commandField);
             assertSame(helpStage, assertHelpVisible());
+        });
+        waitUntil(() -> !helpStage.isIconified(), "F1 to restore the Help window");
+        runAndWait(() -> {
             assertFalse(helpStage.isIconified());
             feedback.setText("Other feedback");
             helpButton.fire();

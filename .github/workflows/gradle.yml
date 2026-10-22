@@ -28,9 +28,22 @@ jobs:
           java-version: '25'
           java-package: jdk+fx
 
-      - name: Build and check with Gradle (Linux virtual display)
+      - name: Install Linux window manager
         if: runner.os == 'Linux'
-        run: xvfb-run --auto-servernum ./gradlew check coverage
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends openbox wmctrl
+
+      - name: Build and check with Gradle (Linux virtual desktop)
+        if: runner.os == 'Linux'
+        run: |
+          xvfb-run --auto-servernum bash -e <<'EOF'
+          openbox >/tmp/cs2103t-openbox.log 2>&1 &
+          window_manager_pid=$!
+          trap 'kill "$window_manager_pid" 2>/dev/null || true' EXIT
+          timeout 10s bash -c 'until wmctrl -m >/dev/null 2>&1; do sleep 0.1; done'
+          ./gradlew check coverage
+          EOF
 
       - name: Build and check with Gradle
         if: runner.os != 'Linux'

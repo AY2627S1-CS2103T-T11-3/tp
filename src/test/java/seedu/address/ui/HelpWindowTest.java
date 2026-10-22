@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.FxTestUtil.runAndWait;
+import static seedu.address.testutil.FxTestUtil.waitUntil;
 import static seedu.address.testutil.TypicalCommands.ALL_COMMAND_NAMES;
 
 import java.util.ArrayList;
@@ -165,11 +166,14 @@ public class HelpWindowTest {
 
     @Test
     public void focus_minimizedWindow_restoresExistingStage() throws Exception {
+        Stage stage = helpWindow.getRoot();
+        runAndWait(helpWindow::show);
+        waitUntil(stage::isShowing, "the Help window to be shown");
+        runAndWait(() -> stage.setIconified(true));
+        waitUntil(stage::isIconified, "the Help window to be minimised");
+        runAndWait(helpWindow::focus);
+        waitUntil(() -> !stage.isIconified(), "the Help window to be restored");
         runAndWait(() -> {
-            helpWindow.show();
-            Stage stage = helpWindow.getRoot();
-            stage.setIconified(true);
-            helpWindow.focus();
             assertTrue(helpWindow.isShowing());
             assertFalse(stage.isIconified());
             long helpWindows = Window.getWindows().stream()
