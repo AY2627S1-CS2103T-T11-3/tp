@@ -143,7 +143,7 @@ class JsonAdaptedPerson {
         }
 
         // Default is student
-        return new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags);
+        return new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags, groupId);
     }
 
 }
