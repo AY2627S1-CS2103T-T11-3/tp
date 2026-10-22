@@ -1,6 +1,17 @@
 package seedu.address.storage;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.group.ClassGroup;
+import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
@@ -13,17 +24,30 @@ public class JsonAdaptedGroup {
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Group's %s field is missing!";
 
     private final String groupName;
-    private final String groupType;
+    private final GroupType groupType;
+    private final List<String> personIds = new ArrayList<>();
+
+    /**
+     * Constructs a {@code JsonAdaptedGroup} with the given person details.
+     */
+    @JsonCreator
+    public JsonAdaptedGroup(
+            @JsonProperty("groupName") String groupName,
+            @JsonProperty("groupType") GroupType groupType,
+            @JsonProperty("personIds") List<String> personIds
+    ) {
+        this.groupName = groupName;
+        this.groupType = groupType;
+        this.personIds.addAll(personIds.stream().collect(Collectors.toList()));
+    }
 
     /**
      * Converts a given {@code Group} into this class for Jackson use.
      */
     public JsonAdaptedGroup(Group source) {
         groupName = source.getGroupName().groupName;
-        groupType = switch(source.getGroupType().groupType) {
-            case CLASS -> "class";
-            case DEPARTMENT -> "department";
-        }; // temporary map while merging subclasses code
+        groupType = source.getGroupType();
+        personIds.addAll(source.getPersonIds().stream().collect(Collectors.toList()));
     }
 
     /**
@@ -43,9 +67,14 @@ public class JsonAdaptedGroup {
         if (groupType == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, GroupType.class.getSimpleName()));
         }
-        final GroupType modelGroupType = new GroupType(groupName);
+        final GroupType modelGroupType = groupType;
 
-        return new Group(modelGroupName, modelGroupType);
+        final Set<String> modelPersonIds = new HashSet<>(personIds);
+
+        return switch (modelGroupType) {
+            case CLASS -> new ClassGroup(modelGroupName, modelPersonIds);
+            case DEPARTMENT -> new DepartmentGroup(modelGroupName, modelPersonIds);
+        };
     }
 
 }
