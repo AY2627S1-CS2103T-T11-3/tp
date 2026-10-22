@@ -1,6 +1,7 @@
 package seedu.address.ui;
 
 import java.util.Locale;
+
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -18,6 +19,7 @@ public class GroupListPanel extends UiPart<Region> {
     @FXML
     private ListView<Group> groupListView;
 
+    /** Creates a group panel backed by the given groups and contacts. */
     public GroupListPanel(ObservableList<Group> groups, ObservableList<Person> persons) {
         super(FXML);
         this.persons = persons;
