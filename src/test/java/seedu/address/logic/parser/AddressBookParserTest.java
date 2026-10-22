@@ -9,6 +9,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -27,12 +28,17 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.LinkGroupCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.group.DepartmentGroup;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
+import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
 import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
+import seedu.address.testutil.GroupBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
 
@@ -62,7 +68,12 @@ public class AddressBookParserTest {
                 + CliSyntax.PREFIX_NAME + colleagueName + " "
                 + CliSyntax.PREFIX_DEPARTMENT + department
         );
+<<<<<<< HEAD
         assertEquals(new LinkGroupCommand(colleagueName, department), command);
+=======
+        final DepartmentGroup departmentGroup = new DepartmentGroup(new GroupName("Computer Science"), new HashSet<>());
+        assertEquals(new ColleagueToDepartmentCommand(colleagueName, departmentGroup), command);
+>>>>>>> upstream/master
     }
 
     @Test
@@ -193,13 +204,15 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_createGroup() throws Exception {
-        final String groupName = "CS2103T-T01";
+        final String groupName = "Math";
         final String groupType = "class";
         CreateGroupCommand command = (CreateGroupCommand) parser.parseCommand(
                 CreateGroupCommand.COMMAND_WORD + " "
                 + groupName + " " + PREFIX_GROUP_TYPE + groupType
         );
-        assertEquals(new CreateGroupCommand(groupName, groupType), command);
+        final Group group = new GroupBuilder().withName(groupName)
+                .withType(GroupType.valueOf(groupType.toUpperCase())).build();
+        assertEquals(new CreateGroupCommand(group), command);
     }
 
     @Test

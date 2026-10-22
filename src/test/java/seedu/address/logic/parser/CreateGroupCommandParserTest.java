@@ -8,17 +8,22 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.CreateGroupCommand;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupType;
+import seedu.address.testutil.GroupBuilder;
 
 public class CreateGroupCommandParserTest {
 
     private CreateGroupCommandParser parser = new CreateGroupCommandParser();
-    private final String nonEmptyGroupName = "CS2103T-T01";
+    private final String nonEmptyGroupName = "Math";
     private final String nonEmptyGroupType = "class";
 
     @Test
     public void parse_allFieldsPresent_success() {
         String userInput = nonEmptyGroupName + " " + PREFIX_GROUP_TYPE + nonEmptyGroupType;
-        CreateGroupCommand expectedCommand = new CreateGroupCommand(nonEmptyGroupName, nonEmptyGroupType);
+        Group group = new GroupBuilder().withName(nonEmptyGroupName)
+                .withType(GroupType.valueOf(nonEmptyGroupType.toUpperCase())).build();
+        CreateGroupCommand expectedCommand = new CreateGroupCommand(group);
         assertParseSuccess(parser, userInput, expectedCommand);
     }
 
