@@ -13,6 +13,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonId;
 import seedu.address.model.person.Student;
 
 /**
@@ -29,11 +30,13 @@ class JsonSerializableAddressBook {
     // Positions refer to the persons array in this same JSON file.
     private final List<List<Integer>> guardianLinks = new ArrayList<>();
 
+    private final Integer nextId;
+
     /**
      * Constructs a {@code JsonSerializableAddressBook} with the given persons.
      */
     public JsonSerializableAddressBook(List<JsonAdaptedPerson> persons) {
-        this(persons, null);
+        this(persons, null, 1);
     }
 
     /**
@@ -42,11 +45,13 @@ class JsonSerializableAddressBook {
     @JsonCreator
     public JsonSerializableAddressBook(
             @JsonProperty("persons") List<JsonAdaptedPerson> persons,
-            @JsonProperty("guardianLinks") List<List<Integer>> guardianLinks) {
+            @JsonProperty("guardianLinks") List<List<Integer>> guardianLinks,
+            @JsonProperty("nextId") Integer nextId) {
         this.persons.addAll(persons);
         if (guardianLinks != null) {
             this.guardianLinks.addAll(guardianLinks);
         }
+        this.nextId = nextId;
     }
 
     /**
@@ -64,6 +69,9 @@ class JsonSerializableAddressBook {
                 students.forEach(student -> guardianLinks.add(List.of(
                         contacts.indexOf(guardian),
                         contacts.indexOf(student)))));
+
+        // PersonId class handles the next ID by itself
+        nextId = PersonId.getNextId();
     }
 
     /**
@@ -72,6 +80,9 @@ class JsonSerializableAddressBook {
      * @throws IllegalValueException if there were any data constraints violated.
      */
     public AddressBook toModelType() throws IllegalValueException {
+        // PersonId class handles the next ID by itself
+        PersonId.setNextId(nextId);
+
         AddressBook addressBook = new AddressBook();
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
             Person person = jsonAdaptedPerson.toModelType();
