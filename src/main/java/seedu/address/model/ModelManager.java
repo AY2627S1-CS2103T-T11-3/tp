@@ -112,6 +112,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void setGroup(Group target, Group editedGroup) {
+        requireAllNonNull(target, editedGroup);
+        addressBook.setGroup(target, editedGroup);
+    }
+
+    @Override
     public ObservableList<Group> getGroupList() {
         return addressBook.getGroupList();
     }
