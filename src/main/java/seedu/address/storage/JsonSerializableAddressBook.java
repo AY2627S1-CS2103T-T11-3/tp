@@ -98,12 +98,16 @@ class JsonSerializableAddressBook {
 
             try {
                 Person guardian = contacts.get(guardianPosition);
+                Person student = contacts.get(studentPosition);
                 if (!(guardian instanceof Guardian)) {
                     throw new IllegalArgumentException("Guardian link refers to a non-guardian.");
                 }
+                if (!(student instanceof Student)) {
+                    throw new IllegalArgumentException("Guardian link refers to a non-student.");
+                }
                 addressBook.linkGuardianToStudent(
                         (Guardian) guardian,
-                        (Student) contacts.get(studentPosition));
+                        (Student) student);
             } catch (IllegalArgumentException e) {
                 // Self-links and duplicate links are invalid stored data.
                 throw new IllegalValueException(e.getMessage());

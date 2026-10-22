@@ -168,7 +168,8 @@ public class GuardianLinkTest {
                 new JsonAdaptedPerson(BOB_GUARDIAN));
         // Stored links must have two valid positions and must not be self-links or duplicates.
         for (List<List<Integer>> links : List.of(List.of(List.of(2, 0)), List.of(List.of(0, 0)),
-                List.of(List.of(1, 0), List.of(1, 0)), List.of(List.of(1)))) {
+                List.of(List.of(1, 0), List.of(1, 0)), List.of(List.of(1)),
+                List.of(List.of(0, 1)))) {
             assertThrows(IllegalValueException.class, () ->
                     new JsonSerializableAddressBook(persons, links).toModelType());
         }
