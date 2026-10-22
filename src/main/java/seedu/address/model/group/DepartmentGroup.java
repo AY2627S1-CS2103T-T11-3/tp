@@ -1,8 +1,8 @@
 package seedu.address.model.group;
 
-import seedu.address.model.person.PersonId;
-
 import java.util.Set;
+
+import seedu.address.model.person.PersonId;
 
 /**
  * Represents a department of colleagues

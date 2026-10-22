@@ -16,6 +16,9 @@ public class PersonId {
         this.id = id;
     }
 
+    /**
+     * Creates an automatically assigned person ID.
+     */
     public PersonId() {
         id = nextId;
         nextId++;

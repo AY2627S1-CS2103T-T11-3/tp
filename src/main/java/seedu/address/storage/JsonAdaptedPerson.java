@@ -40,7 +40,7 @@ class JsonAdaptedPerson {
 
     public JsonAdaptedPerson(String name, String phone, String email, String address,
             List<JsonAdaptedTag> tags, Integer personId) {
-        this(name, phone, email, address, tags, Role.STUDENT, personId,null, null);
+        this(name, phone, email, address, tags, Role.STUDENT, personId, null, null);
     }
 
     /** Backwards-compatible constructor for data without an explicit group ID. */
@@ -139,7 +139,8 @@ class JsonAdaptedPerson {
         }
 
         if (personId == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, PersonId.class.getSimpleName()));
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    PersonId.class.getSimpleName()));
         }
         final Integer modelPersonId = personId;
 
