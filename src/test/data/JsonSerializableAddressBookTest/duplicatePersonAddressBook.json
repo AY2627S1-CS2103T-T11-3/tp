@@ -12,5 +12,7 @@
     "email": "pauline@example.com",
     "address": "4th street",
     "role": "STUDENT"
-  } ]
+  } ],
+  "guardianLinks" : [ ],
+  "groups": [ ]
 }

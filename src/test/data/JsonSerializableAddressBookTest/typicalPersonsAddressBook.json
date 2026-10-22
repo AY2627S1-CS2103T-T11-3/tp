@@ -49,5 +49,7 @@
     "address" : "4th street",
     "tags" : [ ],
     "role" : "STUDENT"
-  } ]
+  } ],
+  "guardianLinks" : [ ],
+  "groups": [ ]
 }
