@@ -12,11 +12,12 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
+import seedu.address.model.person.PersonId;
 
 public class JsonAdaptedGroupTest {
     private static final String VALID_GROUPNAME = RESPECT_5.getGroupName().toString();
     private static final GroupType VALID_GROUPTYPE = RESPECT_5.getGroupType();
-    private static final List<String> VALID_PERSONIDS = RESPECT_5.getPersonIds().stream().toList();
+    private static final List<PersonId> VALID_PERSONIDS = RESPECT_5.getPersonIds().stream().toList();
 
     private static final String INVALID_GROUPNAME = "M@th";
 
