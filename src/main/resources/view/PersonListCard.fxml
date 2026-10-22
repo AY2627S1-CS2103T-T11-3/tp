@@ -36,9 +36,9 @@
           <ColumnConstraints hgrow="SOMETIMES" minWidth="120" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="180" />
         </columnConstraints>
-        <Label fx:id="id" styleClass="cell_small_label" text="\$id" />
-        <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" GridPane.columnIndex="0" />
-        <Label fx:id="email" styleClass="cell_small_label" text="\$email" GridPane.columnIndex="1" />
+        <Label fx:id="id" styleClass="cell_small_label" text="\$id" GridPane.columnIndex="0" />
+        <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" GridPane.columnIndex="1" />
+        <Label fx:id="email" styleClass="cell_small_label" text="\$email" GridPane.columnIndex="2" />
         <Label fx:id="address" styleClass="cell_small_label" wrapText="true" text="\$address"
                GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
       </GridPane>
