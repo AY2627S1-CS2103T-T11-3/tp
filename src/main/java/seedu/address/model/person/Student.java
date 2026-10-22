@@ -13,6 +13,9 @@ public class Student extends Person {
     // Data fields
     private Integer yearOfStudy;
 
+    /**
+     * Creates a student with optional year of study.
+     */
     public Student(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Integer yearOfStudy) {
         super(name, phone, email, address, tags);
         this.yearOfStudy = yearOfStudy;
@@ -49,7 +52,14 @@ public class Student extends Person {
             return false;
         }
         Student student = (Student) o;
-        return Objects.equals(yearOfStudy, student.yearOfStudy);
+        if (yearOfStudy == null && student.yearOfStudy == null) {
+            return true;
+        }
+
+        if (yearOfStudy != null && student.yearOfStudy == null || yearOfStudy == null && student.yearOfStudy != null) {
+            return false;
+        }
+        return yearOfStudy.equals(((Student) o).yearOfStudy);
     }
 
     @Override

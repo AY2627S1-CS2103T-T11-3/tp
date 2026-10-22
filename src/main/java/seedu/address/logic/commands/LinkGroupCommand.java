@@ -60,10 +60,10 @@ public class LinkGroupCommand extends Command {
         }
 
         Person linked;
-        if (person instanceof Student) {
+        if (person instanceof Student student) {
             linked = new Student(person.getName(), person.getPhone(), person.getEmail(),
                     person.getAddress(), person.getTags(), person.getId().getRawId(), groupName,
-                    ((Student) person).getYearOfStudy());
+                    student.getYearOfStudy());
         } else {
             linked = new Colleague(person.getName(), person.getPhone(), person.getEmail(),
                     person.getAddress(), person.getTags(), person.getId().getRawId(), groupName);

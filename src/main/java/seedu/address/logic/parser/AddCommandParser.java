@@ -56,7 +56,7 @@ public class AddCommandParser implements Parser<AddCommand> {
         Role role = ParserUtil.parseContactType(argMultimap.getValue(PREFIX_CONTACT_TYPE).get());
         Integer yearOfStudy = null;
         if (argMultimap.getValue(PREFIX_YEAR_OF_STUDY).isPresent()) {
-            if(role != Role.STUDENT) {
+            if (role != Role.STUDENT) {
                 throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
             }
 

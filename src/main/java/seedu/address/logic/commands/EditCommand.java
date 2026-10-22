@@ -28,6 +28,7 @@ import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Student;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -114,8 +115,9 @@ public class EditCommand extends Command {
                     personToEditColleague.getDepartment());
         }
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                personToEdit.getRole(), personId, null);
+        Student student = (Student) personToEdit;
+        return new Student(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
+                student.getGroupId(), student.getYearOfStudy());
     }
 
     @Override
