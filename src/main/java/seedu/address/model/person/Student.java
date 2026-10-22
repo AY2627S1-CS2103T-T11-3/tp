@@ -36,6 +36,6 @@ public class Student extends Person {
     }
 
     public Integer getYearOfStudy() {
-        return getYearOfStudy();
+        return yearOfStudy;
     }
 }
