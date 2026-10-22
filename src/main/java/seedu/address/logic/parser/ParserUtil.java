@@ -24,6 +24,7 @@ import seedu.address.model.tag.Tag;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index must be a positive integer.";
+    public static final String MESSAGE_INVALID_YEAR_OF_STUDY = "Year of study must be a positive integer.";
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
@@ -178,5 +179,19 @@ public class ParserUtil {
         }
 
         return groupType;
+    }
+
+    /**
+     * Parses {@code yearOfStudy} into an {@code Integer} and returns it. Leading and trailing whitespaces will be
+     * trimmed.
+     *
+     * @throws ParseException if the specified year of study is invalid (not a non-zero unsigned integer).
+     */
+    public static Integer parseYearOfStudy(String yearOfStudy) throws ParseException {
+        String trimmedYearOfStudy = yearOfStudy.trim();
+        if (!StringUtil.isNonZeroUnsignedInteger(yearOfStudy)) {
+            throw new ParseException(MESSAGE_INVALID_YEAR_OF_STUDY);
+        }
+        return Integer.parseInt(trimmedYearOfStudy);
     }
 }

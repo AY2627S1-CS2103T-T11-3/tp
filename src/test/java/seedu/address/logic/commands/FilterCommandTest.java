@@ -39,7 +39,7 @@ public class FilterCommandTest {
 
     private final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
     private final Student student = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(),
-            ALICE.getAddress(), ALICE.getTags());
+            ALICE.getAddress(), ALICE.getTags(), null);
     private final Guardian guardian = new Guardian(BENSON.getName(), BENSON.getPhone(), BENSON.getEmail(),
             BENSON.getAddress(), BENSON.getTags());
     private final Colleague foodScienceColleague = prepareColleague("Alison Goh", "Food Science");

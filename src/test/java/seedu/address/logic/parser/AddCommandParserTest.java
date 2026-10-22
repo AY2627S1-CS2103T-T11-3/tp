@@ -28,6 +28,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
+import static seedu.address.logic.commands.CommandTestUtil.YEAR_OF_STUDY_DESC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACT_TYPE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
@@ -64,11 +65,13 @@ public class AddCommandParserTest {
 
     @Test
     public void parse_allFieldsPresent_success() {
-        Person expectedPerson = new PersonBuilder(BOB).withPersonId(1).withTags(VALID_TAG_FRIEND).build();
+        Person expectedPerson = new PersonBuilder(BOB).withPersonId(1).withTags(VALID_TAG_FRIEND)
+                .withYearOfStudy(2026).build();
 
         // whitespace only preamble
         assertParseSuccess(parser, PREAMBLE_WHITESPACE + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
-                + ADDRESS_DESC_BOB + CONTACT_TYPE_STUDENT + TAG_DESC_FRIEND, new AddCommand(expectedPerson));
+                + ADDRESS_DESC_BOB + CONTACT_TYPE_STUDENT + TAG_DESC_FRIEND + YEAR_OF_STUDY_DESC,
+                new AddCommand(expectedPerson));
 
 
         // multiple tags - all accepted

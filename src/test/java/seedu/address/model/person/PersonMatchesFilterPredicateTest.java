@@ -25,7 +25,7 @@ public class PersonMatchesFilterPredicateTest {
     private final Person person = new PersonBuilder().withName("Alice Tan").withAddress("311, Clementi Ave 2")
             .withTags("Student", "Year2").build();
     private final Student student = new Student(person.getName(), person.getPhone(), person.getEmail(),
-            person.getAddress(), person.getTags());
+            person.getAddress(), person.getTags(), null);
     private final Guardian guardian = new Guardian(person.getName(), person.getPhone(), person.getEmail(),
             person.getAddress(), person.getTags());
     private final Colleague colleague = prepareColleague("Food Science");
