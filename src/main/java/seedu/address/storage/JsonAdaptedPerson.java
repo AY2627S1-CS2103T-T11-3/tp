@@ -16,6 +16,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonId;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.Student;
@@ -32,19 +33,20 @@ class JsonAdaptedPerson {
     private final String phone;
     private final String email;
     private final String address;
+    private final Integer personId;
     private final String groupId;
     private final Role role;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
 
     public JsonAdaptedPerson(String name, String phone, String email, String address,
-            List<JsonAdaptedTag> tags) {
-        this(name, phone, email, address, tags, Role.STUDENT, null, null);
+            List<JsonAdaptedTag> tags, int personId) {
+        this(name, phone, email, address, tags, Role.STUDENT, personId,null, null);
     }
 
     /** Backwards-compatible constructor for data without an explicit group ID. */
     public JsonAdaptedPerson(String name, String phone, String email, String address,
-            List<JsonAdaptedTag> tags, Role role, String department) {
-        this(name, phone, email, address, tags, role, department, null);
+            List<JsonAdaptedTag> tags, Role role, int personId, String department) {
+        this(name, phone, email, address, tags, role, personId, department, null);
     }
 
     /**
@@ -54,11 +56,13 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("role") Role role,
-            @JsonProperty("department") String department, @JsonProperty("groupId") String groupId) {
+            @JsonProperty("personId") int personId, @JsonProperty("department") String department,
+            @JsonProperty("groupId") String groupId) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
+        this.personId = personId;
         // department is retained as a backwards-compatible name for older data files.
         this.groupId = groupId != null ? groupId : department;
         this.role = role;
@@ -84,6 +88,7 @@ class JsonAdaptedPerson {
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
+        personId = source.getId().getRawId();
     }
 
     /**
@@ -133,17 +138,22 @@ class JsonAdaptedPerson {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Role.class.getSimpleName()));
         }
 
+        if (personId == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, PersonId.class.getSimpleName()));
+        }
+        final Integer modelPersonId = personId;
+
         final Set<Tag> modelTags = new HashSet<>(personTags);
         if (role == Role.GUARDIAN) {
-            return new Guardian(modelName, modelPhone, modelEmail, modelAddress, modelTags);
+            return new Guardian(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPersonId);
         }
 
         if (role == Role.COLLEAGUE) {
-            return new Colleague(modelName, modelPhone, modelEmail, modelAddress, modelTags, groupId);
+            return new Colleague(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPersonId, groupId);
         }
 
         // Default is student
-        return new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags);
+        return new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPersonId);
     }
 
 }

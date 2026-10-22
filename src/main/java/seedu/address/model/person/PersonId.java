@@ -12,9 +12,20 @@ public class PersonId {
 
     private final int id;
 
+    private PersonId(int id) {
+        this.id = id;
+    }
+
     public PersonId() {
         id = nextId;
         nextId++;
+    }
+
+    /**
+     * Creates a new PersonId with the given numeric ID, without any checks if it has already been assigned.
+     */
+    public static PersonId createFromRawId(int id) {
+        return new PersonId(id);
     }
 
     /**
@@ -34,6 +45,13 @@ public class PersonId {
      */
     public boolean matches(int id) {
         return this.id == id;
+    }
+
+    /**
+     * Returns the raw numeric ID.
+     */
+    public int getRawId() {
+        return id;
     }
 
     @Override

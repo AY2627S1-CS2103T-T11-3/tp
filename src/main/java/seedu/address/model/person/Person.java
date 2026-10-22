@@ -56,6 +56,22 @@ public class Person {
         this.id = new PersonId();
     }
 
+    /**
+     * Creates a person with a specified person ID instead of an automatically assigned one.
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Role role, Integer rawPersonId,
+                  String groupId) {
+        requireAllNonNull(name, phone, email, address, tags, role, rawPersonId);
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.groupId = groupId;
+        this.role = role;
+        this.tags.addAll(tags);
+        this.id = PersonId.createFromRawId(rawPersonId);
+    }
+
     public Name getName() {
         return name;
     }
