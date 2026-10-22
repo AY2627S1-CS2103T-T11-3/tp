@@ -9,20 +9,33 @@ import seedu.address.model.tag.Tag;
  */
 public class Student extends Person {
 
-    public Student(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
+    // Data fields
+    private Integer yearOfStudy;
+
+    public Student(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Integer yearOfStudy) {
         super(name, phone, email, address, tags);
+        this.yearOfStudy = yearOfStudy;
     }
 
-    /** Creates a student with an optional class identifier. */
-    public Student(Name name, Phone phone, Email email, Address address, Set<Tag> tags, String className) {
+    /**
+     * Creates a student with an optional class identifier and year of study.
+     */
+    public Student(Name name, Phone phone, Email email, Address address, Set<Tag> tags, String className,
+            Integer yearOfStudy) {
         super(name, phone, email, address, tags, Role.STUDENT, className);
+        this.yearOfStudy = yearOfStudy;
     }
 
     /**
      * Creates a student with a specified person ID instead of an automatically assigned one.
      */
     public Student(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Integer rawPersonId,
-            String className) {
+            String className, Integer yearOfStudy) {
         super(name, phone, email, address, tags, Role.STUDENT, rawPersonId, className);
+        this.yearOfStudy = yearOfStudy;
+    }
+
+    public Integer getYearOfStudy() {
+        return getYearOfStudy();
     }
 }
