@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,6 +14,7 @@ import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
+import seedu.address.model.person.PersonId;
 
 /**
  * Jackson-friendly version of {@link Group}.
@@ -25,7 +25,7 @@ public class JsonAdaptedGroup {
 
     private final String groupName;
     private final GroupType groupType;
-    private final List<String> personIds = new ArrayList<>();
+    private final List<PersonId> personIds = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedGroup} with the given person details.
@@ -34,7 +34,7 @@ public class JsonAdaptedGroup {
     public JsonAdaptedGroup(
             @JsonProperty("groupName") String groupName,
             @JsonProperty("groupType") GroupType groupType,
-            @JsonProperty("personIds") List<String> personIds
+            @JsonProperty("personIds") List<PersonId> personIds
     ) {
         this.groupName = groupName;
         this.groupType = groupType;
@@ -47,7 +47,7 @@ public class JsonAdaptedGroup {
     public JsonAdaptedGroup(Group source) {
         groupName = source.getGroupName().groupName;
         groupType = source.getGroupType();
-        personIds.addAll(new ArrayList<>(personIds));
+        personIds.addAll(source.getPersonIds());
     }
 
     /**
@@ -71,7 +71,7 @@ public class JsonAdaptedGroup {
         }
         final GroupType modelGroupType = groupType;
 
-        final Set<String> modelPersonIds = new HashSet<>(personIds);
+        final Set<PersonId> modelPersonIds = new HashSet<>(personIds);
 
         return switch (modelGroupType) {
             case CLASS -> new ClassGroup(modelGroupName, modelPersonIds);
