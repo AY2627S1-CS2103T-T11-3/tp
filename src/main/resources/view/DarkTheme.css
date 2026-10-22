@@ -191,6 +191,29 @@
     -fx-background-color: #a66a2c;
 }
 
+.panel-title {
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 8 0;
+}
+
+.group_list_card {
+    -fx-padding: 8;
+}
+
+.group_list_name {
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+}
+
+.group_list_details {
+    -fx-font-size: 11px;
+    -fx-text-fill: #b8dce8;
+    -fx-wrap-text: true;
+}
+
 .stack-pane {
      -fx-background-color: derive(#1d1d1d, 20%);
 }
