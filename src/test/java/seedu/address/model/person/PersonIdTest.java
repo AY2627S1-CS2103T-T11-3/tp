@@ -51,6 +51,7 @@ public class PersonIdTest {
 
     @Test
     public void equals() {
+        PersonId.setNextId(1);
         PersonId id1 = new PersonId();
         PersonId.setNextId(1);
         PersonId id2 = new PersonId();

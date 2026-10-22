@@ -11,13 +11,13 @@ public class ColleagueTest {
     @Test
     public void equals() {
         Person alice = new Colleague(new Name("Alice Pauline"), new Phone("91234567"), new Email("alice@example.com"),
-                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), "Computer Science");
+                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1, "Computer Science");
         Person aliceCopy = new Colleague(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(),
-                "Computer Science");
+                1, "Computer Science");
 
         Person bob = new Person(new Name("Bob"), new Phone("99887766"), new Email("bob@example.org"),
-                new Address("456, Banana Lane, #01-23"), new HashSet<>());
+                new Address("456, Banana Lane, #01-23"), new HashSet<>(), Role.STUDENT, 2, null);
 
         // same values -> returns true
         assertTrue(alice.equals(aliceCopy));

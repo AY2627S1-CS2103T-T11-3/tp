@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
@@ -34,6 +35,7 @@ import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
+import seedu.address.model.person.PersonId;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
 import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
@@ -45,6 +47,11 @@ import seedu.address.testutil.PersonUtil;
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
+
+    @BeforeEach
+    public void setUp() {
+        PersonId.setNextId(1);
+    }
 
     @Test
     public void parseCommand_add() throws Exception {
