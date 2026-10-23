@@ -15,9 +15,9 @@ CaNvUS is a **desktop application for managing contacts, optimized for use throu
 1. Ensure that Java `25` or later is installed on your computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/se-edu/addressbook-level3/releases).
+1. Download the latest `.jar` file from [here](https://github.com/AY2627S1-CS2103T-T11-3/tp/releases).
 
-1. Copy the file to the folder you want to use as the _home folder_ for your AddressBook.
+1. Copy the file to the folder you want to use as the CaNvUS home folder. This is the folder from which you will run the application.
 
 1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar addressbook.jar`.<br>
    A GUI similar to the one below should appear in a few seconds. Note how the app contains some sample data.<br>
@@ -77,7 +77,7 @@ Format: `help`
 
 Adds a person to the address book.
 
-Format: `add n/NAME p/PHONE e/EMAIL a/ADDRESS ct/CONTACT_TYPE [t/TAG]`
+Format: `add n/NAME p/PHONE e/EMAIL a/ADDRESS ct/CONTACT_TYPE [t/TAG]...​`
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags, including zero.
@@ -113,7 +113,7 @@ Examples:
 
 Lists contacts that satisfy all supplied criteria.
 
-Format: `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`
+Format: `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...​`
 
 | Prefix | Criterion | Matching rule |
 | ------ | --------- | ------------- |
@@ -141,6 +141,51 @@ Examples:
 * `filter d/science` matches departments such as `Food Science` and `Computer Science`.
 * `filter ct/col d/food sci` selects colleagues whose departments contain `food sci`.
 * `filter n/ali a/clementi t/Student t/Year2` requires the name and address substrings and both exact tags.
+
+### Creating a group: `create_group`
+
+Creates a class or department group.
+
+Format: `create_group GROUP_NAME gt/GROUP_TYPE`
+
+* `GROUP_NAME` may contain letters, digits, and spaces, and must not be blank.
+* `GROUP_TYPE` must be either `class` or `department`.
+* The group name must be unique for its group type.
+* New groups initially have no members and are displayed in the Groups panel.
+
+Examples:
+* `create_group CS2103T T01 gt/class`
+* `create_group Science gt/department`
+
+### Linking a contact to a group: `link`
+
+Assigns a student to a class or a colleague to a department. The group must already exist.
+
+Format: `link n/NAME d/GROUP`
+
+* `NAME` is matched case-insensitively.
+* Students can be assigned only to class groups.
+* Colleagues can be assigned only to department groups.
+* Guardians cannot be assigned to groups.
+* The `d/` prefix identifies the target group, including when the group is a class.
+
+Examples:
+* `link n/Alice Tan d/CS2103T T01`
+* `link n/John Smith d/Science`
+
+### Linking a guardian to a student: `link-guardian`
+
+Links a guardian to a student using their indices in the currently displayed contact list.
+
+Format: `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`
+
+* Both indices must refer to contacts in the currently displayed list.
+* The selected contacts must be a student and a guardian respectively.
+* A contact cannot be linked to itself, and an existing relationship cannot be duplicated.
+* Linked relationships are displayed on the relevant contact cards.
+
+Example:
+* `link-guardian s/1 g/2`
 
 ### Deleting a person: `delete`
 
@@ -212,3 +257,7 @@ Action | Format, Examples
 **Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
 **List** | `list`
 **Help** | `help`
+**Create group** | `create_group GROUP_NAME gt/GROUP_TYPE`<br> e.g., `create_group CS2103T T01 gt/class`
+**Link contact to group** | `link n/NAME d/GROUP`<br> e.g., `link n/Alice Tan d/CS2103T T01`
+**Link guardian to student** | `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`<br> e.g., `link-guardian s/1 g/2`
+**Exit** | `exit`
