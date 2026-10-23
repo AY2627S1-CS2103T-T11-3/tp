@@ -1,0 +1,95 @@
+@startuml
+skinparam ArrowFontStyle plain
+
+Actor User as user
+Participant ":UI" as ui
+Participant ":Logic" as logic
+Participant "AddressBookParser" as parser
+Participant "LinkGroupCommandParser" as linkParser
+Participant "LinkGroupCommand" as command
+Participant ":Model" as model
+Participant "AddressBook" as addressBook
+Participant ":Storage" as storage
+
+user -> ui : "link n/NAME d/GROUP"
+activate ui
+
+ui -> logic : execute(commandText)
+activate logic
+
+logic -> parser : parseCommand(commandText)
+activate parser
+
+parser -> linkParser : parse(arguments)
+activate linkParser
+
+linkParser --> parser : LinkGroupCommand
+deactivate linkParser
+
+parser --> logic : LinkGroupCommand
+deactivate parser
+
+logic -> command : execute(model)
+activate command
+
+command -> model : getAddressBook()
+model --> command : AddressBook
+
+command -> addressBook : find person by name
+addressBook --> command : Person
+
+command -> model : getGroupList()
+model --> command : group list
+
+alt Person is a Student
+    command -> command : create ClassGroup(groupName)
+    command -> model : verify class exists
+    model --> command : class exists
+    command -> command : create updated Student with class
+else Person is a Colleague
+    command -> command : create DepartmentGroup(groupName)
+    command -> model : verify department exists
+    model --> command : department exists
+    command -> command : create updated Colleague with department
+end
+
+command -> model : setPerson(person, updatedPerson)
+activate model
+model -> addressBook : setPerson(person, updatedPerson)
+addressBook --> model : person updated
+deactivate model
+
+command --> logic : CommandResult
+deactivate command
+
+logic -> storage : saveAddressBook(model.getAddressBook())
+activate storage
+storage -> storage : serialize and save to file
+storage --> logic : save successful
+deactivate storage
+
+logic --> ui : CommandResult
+deactivate logic
+
+ui --> user : display success message
+deactivate ui
+
+note over command
+LinkGroupCommand is a generic link command:
+- Student + existing ClassGroup -> updated Student
+- Colleague + existing DepartmentGroup -> updated Colleague
+The original Person is replaced using Model#setPerson.
+end note
+
+alt Contact not found
+    command --> logic : CommandException
+    logic --> ui : display error message
+else Contact is neither a Student nor a Colleague
+    command --> logic : CommandException
+    logic --> ui : display error message
+else Class or department does not exist
+    command --> logic : CommandException
+    logic --> ui : display error message
+end
+
+@enduml
