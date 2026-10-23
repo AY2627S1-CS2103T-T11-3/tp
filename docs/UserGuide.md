@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-AddressBook Level 3 (AB3) is a **desktop application for managing contacts, optimized for use through a Command Line Interface (CLI)** while retaining the benefits of a Graphical User Interface (GUI). If you type quickly, AB3 can help you manage contacts faster than traditional GUI applications.
+CaNvUS is a **desktop application for managing contacts, optimized for use through a Command Line Interface (CLI)** while retaining the benefits of a Graphical User Interface (GUI). If you type quickly, CaNvUS can help you manage contacts faster than traditional GUI applications.
 
 * Table of Contents
 {:toc}
@@ -15,9 +15,9 @@ AddressBook Level 3 (AB3) is a **desktop application for managing contacts, opti
 1. Ensure that Java `25` or later is installed on your computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/se-edu/addressbook-level3/releases).
+1. Download the latest `.jar` file from [here](https://github.com/AY2627S1-CS2103T-T11-3/tp/releases).
 
-1. Copy the file to the folder you want to use as the _home folder_ for your AddressBook.
+1. Copy the file to the folder you want to use as the CaNvUS home folder. This is the folder from which you will run the application.
 
 1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar addressbook.jar`.<br>
    A GUI similar to the one below should appear in a few seconds. Note how the app contains some sample data.<br>
@@ -28,11 +28,11 @@ AddressBook Level 3 (AB3) is a **desktop application for managing contacts, opti
 
    * `list` : Lists all contacts.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
+   * `add n/Alice Tan p/91234567 e/alice@example.com a/1 Clementi Road ct/student t/Year1` : Adds a contact named `Alice Tan` to CaNvUS.
 
    * `delete 3` : Deletes the 3rd contact shown in the current list.
 
-   * `clear` : Deletes all contacts.
+   * `clear` : Deletes all contacts, groups, and guardian–student relationships.
 
    * `exit` : Exits the app.
 
@@ -55,8 +55,10 @@ AddressBook Level 3 (AB3) is a **desktop application for managing contacts, opti
 * Items followed by `…`​ can appear zero or more times.<br>
   For example, `[t/TAG]…​` may be omitted, or written as `t/friend` or `t/friend t/family`.
 
-* Parameters can be in any order.<br>
+* Prefixes can generally be in any order for commands that use prefixed fields.<br>
   For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
+  Positional arguments must still follow the command's format: `edit` requires the index first, `delete` takes an
+  index, and `create_group` requires the group name before `gt/`.
 
 * Extraneous parameters for commands that take no parameters, such as `help`, `list`, `exit`, and `clear`, are ignored.<br>
   For example, `help 123` is interpreted as `help`.
@@ -66,9 +68,7 @@ AddressBook Level 3 (AB3) is a **desktop application for managing contacts, opti
 
 ### Viewing help: `help`
 
-Shows a message explaining how to access the help page.
-
-![help message](images/helpMessage.png)
+Opens the offline command-reference window. You can also open it using the **Help** button or by pressing `F1`.
 
 Format: `help`
 
@@ -77,21 +77,32 @@ Format: `help`
 
 Adds a person to the address book.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+Format: `add n/NAME p/PHONE e/EMAIL a/ADDRESS ct/CONTACT_TYPE [t/TAG]...​`
+
+* `NAME` may contain letters, digits, and spaces, and must not be blank.
+* `PHONE` must contain digits only and be at least 3 digits long.
+* `EMAIL` must be a valid email address.
+* `ADDRESS` must not be blank.
+* `CONTACT_TYPE` must be `student`, `guardian`, or `colleague`.
+* `TAG` may contain letters and digits only.
+
+The application uses `colleague` as the contact type for teaching staff. Use `ct/colleague` in commands.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags, including zero.
 </div>
 
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 ct/student`
+* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Jurong East p/1234567 ct/colleague`
 
 ### Listing all persons: `list`
 
-Shows a list of all persons in the address book.
+Shows a list of all contacts in the address book. Groups are displayed separately in the Groups panel.
 
 Format: `list`
+
+The `list` command also clears any active contact filter and displays all contacts.
 
 ### Editing a person: `edit`
 
@@ -104,6 +115,8 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
 * Existing values will be updated to the input values.
 * When editing tags, all of the person's existing tags are removed; adding tags is not cumulative.
 * To remove all of a person's tags, enter `t/` without a tag after it.
+* After editing, the displayed contact list is reset to show all contacts.
+* The contact type and group membership cannot be changed with this command.
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
@@ -113,7 +126,7 @@ Examples:
 
 Lists contacts that satisfy all supplied criteria.
 
-Format: `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`
+Format: `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...​`
 
 | Prefix | Criterion | Matching rule |
 | ------ | --------- | ------------- |
@@ -142,6 +155,51 @@ Examples:
 * `filter ct/col d/food sci` selects colleagues whose departments contain `food sci`.
 * `filter n/ali a/clementi t/Student t/Year2` requires the name and address substrings and both exact tags.
 
+### Creating a group: `create_group`
+
+Creates a class or department group.
+
+Format: `create_group GROUP_NAME gt/GROUP_TYPE`
+
+* `GROUP_NAME` may contain letters, digits, and spaces, and must not be blank.
+* `GROUP_TYPE` must be either `class` or `department`.
+* The group name must be unique for its group type.
+* New groups initially have no members and are displayed in the Groups panel.
+
+Examples:
+* `create_group CS2103T T01 gt/class`
+* `create_group Science gt/department`
+
+### Linking a contact to a group: `link`
+
+Assigns a student to a class or a colleague to a department. The group must already exist.
+
+Format: `link n/NAME d/GROUP`
+
+* `NAME` is matched case-insensitively.
+* Students can be assigned only to class groups.
+* Colleagues can be assigned only to department groups.
+* Guardians cannot be assigned to groups.
+* The `d/` prefix identifies the target group, including when the group is a class.
+
+Examples:
+* `link n/Alice Tan d/CS2103T T01`
+* `link n/John Smith d/Science`
+
+### Linking a guardian to a student: `link-guardian`
+
+Links a guardian to a student using their indices in the currently displayed contact list.
+
+Format: `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`
+
+* Both indices must refer to contacts in the currently displayed list, which may be filtered.
+* The selected contacts must be a student and a guardian respectively.
+* A contact cannot be linked to itself, and an existing relationship cannot be duplicated.
+* Linked relationships are displayed on the relevant contact cards.
+
+Example:
+* `link-guardian s/1 g/2`
+
 ### Deleting a person: `delete`
 
 Deletes the specified person from the address book.
@@ -155,10 +213,13 @@ Format: `delete INDEX`
 Examples:
 * `list` followed by `delete 2` deletes the 2nd person in the address book.
 * `filter n/Betsy` followed by `delete 1` deletes the 1st person in the filter results.
+* Deleting a contact removes any guardian–student relationships involving that contact.
+
+There is currently no command to delete an individual group.
 
 ### Clearing all entries: `clear`
 
-Clears all entries from the address book.
+Clears all contacts, groups, and guardian–student relationships from the address book.
 
 Format: `clear`
 
@@ -170,15 +231,15 @@ Format: `exit`
 
 ### Saving the data
 
-AddressBook automatically saves data after every command. You do not need to save manually.
+CaNvUS automatically saves data after every successful command. You do not need to save manually.
 
 ### Editing the data file
 
-AddressBook data is saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
+CaNvUS data is saved automatically as the JSON file `data/addressbook.json` relative to the CaNvUS home folder. Advanced users are welcome to update that data file directly.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-If your changes make the data file invalid, AddressBook starts with an empty address book at the next run. The invalid file remains on disk until you run a command (AddressBook saves after every command). Still, we recommend backing up the file before editing it.<br>
-Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
+If your changes make the data file invalid, CaNvUS starts with an empty address book at the next run. The invalid file remains on disk until you run a successful command (CaNvUS saves after every successful command). Still, we recommend backing up the file before editing it.<br>
+Furthermore, certain edits can cause CaNvUS to behave unexpectedly (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
 
 ### Archiving data files `[coming in v2.0]`
@@ -190,7 +251,7 @@ _Details coming soon ..._
 ## FAQ
 
 **Q**: How do I transfer my data to another computer?<br>
-**A**: Install the app on the other computer and overwrite the data file it creates with the data file from your previous AddressBook home folder.
+**A**: Install the app on the other computer and overwrite the data file it creates with the data file from your previous CaNvUS home folder.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -205,10 +266,14 @@ _Details coming soon ..._
 
 Action | Format, Examples
 --------|------------------
-**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ct/CONTACT_TYPE [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 ct/colleague t/friend`
 **Clear** | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
 **Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
 **List** | `list`
 **Help** | `help`
+**Create group** | `create_group GROUP_NAME gt/GROUP_TYPE`<br> e.g., `create_group CS2103T T01 gt/class`
+**Link contact to group** | `link n/NAME d/GROUP`<br> e.g., `link n/Alice Tan d/CS2103T T01`
+**Link guardian to student** | `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`<br> e.g., `link-guardian s/1 g/2`
+**Exit** | `exit`
