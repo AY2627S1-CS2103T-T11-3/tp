@@ -1,95 +1,66 @@
 @startuml
+!include /Users/jyo/my-projects/tp/docs/diagrams/style.puml
 skinparam ArrowFontStyle plain
 
-Actor User as user
-Participant ":UI" as ui
-Participant ":Logic" as logic
-Participant "AddressBookParser" as parser
-Participant "LinkGroupCommandParser" as linkParser
-Participant "LinkGroupCommand" as command
-Participant ":Model" as model
-Participant "AddressBook" as addressBook
-Participant ":Storage" as storage
+Actor User as user USER_COLOR
+Participant ":UI" as ui UI_COLOR
+Participant ":Logic" as logic LOGIC_COLOR
+Participant "AddressBookParser" as parser LOGIC_COLOR
+Participant "LinkGroupCommandParser" as linkParser LOGIC_COLOR
+Participant "LinkGroupCommand" as command LOGIC_COLOR
+Participant ":Model" as model MODEL_COLOR
+Participant "AddressBook" as addressBook MODEL_COLOR
+Participant ":Storage" as storage STORAGE_COLOR
 
-user -> ui : "link n/NAME d/GROUP"
-activate ui
-
-ui -> logic : execute(commandText)
-activate logic
-
-logic -> parser : parseCommand(commandText)
-activate parser
-
-parser -> linkParser : parse(arguments)
-activate linkParser
-
-linkParser --> parser : LinkGroupCommand
+user -[USER_COLOR]> ui : "link n/NAME d/GROUP"
+activate ui UI_COLOR
+ui -[UI_COLOR]> logic : execute(commandText)
+activate logic LOGIC_COLOR
+logic -[LOGIC_COLOR]> parser : parseCommand(commandText)
+activate parser LOGIC_COLOR
+parser -[LOGIC_COLOR]> linkParser : parse(arguments)
+activate linkParser LOGIC_COLOR
+linkParser --[LOGIC_COLOR]> parser : LinkGroupCommand
 deactivate linkParser
-
-parser --> logic : LinkGroupCommand
+parser --[LOGIC_COLOR]> logic : LinkGroupCommand
 deactivate parser
+logic -[LOGIC_COLOR]> command : execute(model)
+activate command LOGIC_COLOR
 
-logic -> command : execute(model)
-activate command
-
-command -> model : getAddressBook()
-model --> command : AddressBook
-
-command -> addressBook : find person by name
-addressBook --> command : Person
-
-command -> model : getGroupList()
-model --> command : group list
+command -[LOGIC_COLOR]> model : getAddressBook()
+model --[MODEL_COLOR]> command : AddressBook
+command -[LOGIC_COLOR]> addressBook : find person by name
+addressBook --[MODEL_COLOR]> command : Person
+command -[LOGIC_COLOR]> model : getGroupList()
+model --[MODEL_COLOR]> command : group list
 
 alt Person is a Student
-    command -> command : create ClassGroup(groupName)
-    command -> model : verify class exists
-    model --> command : class exists
-    command -> command : create updated Student with class
+    command -[LOGIC_COLOR]> command : create ClassGroup(groupName)
+    command -[LOGIC_COLOR]> command : create updated Student with class
 else Person is a Colleague
-    command -> command : create DepartmentGroup(groupName)
-    command -> model : verify department exists
-    model --> command : department exists
-    command -> command : create updated Colleague with department
+    command -[LOGIC_COLOR]> command : create DepartmentGroup(groupName)
+    command -[LOGIC_COLOR]> command : create updated Colleague with department
 end
 
-command -> model : setPerson(person, updatedPerson)
-activate model
-model -> addressBook : setPerson(person, updatedPerson)
-addressBook --> model : person updated
+command -[LOGIC_COLOR]> model : setPerson(person, updatedPerson)
+activate model MODEL_COLOR
+model -[MODEL_COLOR]> addressBook : setPerson(person, updatedPerson)
+addressBook --[MODEL_COLOR]> model : person updated
 deactivate model
-
-command --> logic : CommandResult
+command --[LOGIC_COLOR]> logic : CommandResult
 deactivate command
 
-logic -> storage : saveAddressBook(model.getAddressBook())
-activate storage
-storage -> storage : serialize and save to file
-storage --> logic : save successful
+logic -[LOGIC_COLOR]> storage : saveAddressBook(model.getAddressBook())
+activate storage STORAGE_COLOR
+storage -[STORAGE_COLOR]> storage : Save to file
+activate storage STORAGE_COLOR_T1
+storage --[STORAGE_COLOR]> storage
+deactivate storage
 deactivate storage
 
-logic --> ui : CommandResult
+logic --[LOGIC_COLOR]> ui : CommandResult
 deactivate logic
-
-ui --> user : display success message
+ui --[UI_COLOR]> user : Success message
 deactivate ui
-
-note over command
-LinkGroupCommand is a generic link command:
-- Student + existing ClassGroup -> updated Student
-- Colleague + existing DepartmentGroup -> updated Colleague
-The original Person is replaced using Model#setPerson.
-end note
-
-alt Contact not found
-    command --> logic : CommandException
-    logic --> ui : display error message
-else Contact is neither a Student nor a Colleague
-    command --> logic : CommandException
-    logic --> ui : display error message
-else Class or department does not exist
-    command --> logic : CommandException
-    logic --> ui : display error message
-end
 
 @enduml
