@@ -170,13 +170,14 @@ The filtering flow is:
 The following sequence diagram illustrates the successful execution of
 `filter n/ali ct/stu`:
 
-<div style="overflow-x: auto;">
-  <a href="images/FilterSequenceDiagram.png">
-    <img src="images/FilterSequenceDiagram.png"
-         alt="Sequence diagram for successful execution of filter n/ali ct/stu"
-         style="max-width: none;" />
-  </a>
-</div>
+<a href="images/FilterSequenceDiagram.png">
+  <img src="images/FilterSequenceDiagram.png"
+       alt="Sequence diagram for successful execution of filter n/ali ct/stu"
+       width="900"
+       style="max-width: 100%; height: auto;" />
+</a>
+
+Click the diagram to view it at full size.
 
 Department matching checks `instanceof Colleague` and a non-null department before reading the department text. A supplied department criterion excludes students, guardians, and colleagues without a department. Combining incompatible criteria, such as `ct/student d/Science`, produces an empty list rather than an exception.
 
