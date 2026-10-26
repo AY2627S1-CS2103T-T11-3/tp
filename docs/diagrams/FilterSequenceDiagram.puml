@@ -1,0 +1,94 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+title Filter command: successful execution
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":FilterCommandParser" as FilterCommandParser LOGIC_COLOR
+participant "command:FilterCommand" as FilterCommand LOGIC_COLOR
+participant "result:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("filter n/ali ct/stu")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("filter n/ali ct/stu")
+activate AddressBookParser
+
+create FilterCommandParser
+AddressBookParser -> FilterCommandParser : FilterCommandParser()
+activate FilterCommandParser
+FilterCommandParser --> AddressBookParser
+deactivate FilterCommandParser
+
+AddressBookParser -> FilterCommandParser : parse(" n/ali ct/stu")
+activate FilterCommandParser
+
+note right of FilterCommandParser
+  Validate arguments and create
+  the filter predicate.
+  Criteria and predicate construction
+  are omitted.
+end note
+
+create FilterCommand
+FilterCommandParser -> FilterCommand : FilterCommand(predicate)
+activate FilterCommand
+FilterCommand --> FilterCommandParser
+deactivate FilterCommand
+
+FilterCommandParser --> AddressBookParser : command
+deactivate FilterCommandParser
+
+AddressBookParser --> LogicManager : command
+deactivate AddressBookParser
+
+LogicManager -> FilterCommand : execute(m)
+activate FilterCommand
+
+FilterCommand -> Model : updateFilteredPersonList(predicate)
+activate Model
+
+note right of Model
+  Show only contacts matching
+  all supplied criteria.
+  Internal filtering calls are omitted.
+end note
+
+Model --> FilterCommand
+deactivate Model
+
+FilterCommand -> Model : getFilteredPersonList()
+activate Model
+Model --> FilterCommand : filteredPersons
+deactivate Model
+
+note right of FilterCommand
+  Build feedback from the number
+  of matching contacts.
+end note
+
+create CommandResult
+FilterCommand -> CommandResult : CommandResult(feedback)
+activate CommandResult
+CommandResult --> FilterCommand
+deactivate CommandResult
+
+FilterCommand --> LogicManager : result
+deactivate FilterCommand
+
+note right of LogicManager
+  Storage saving is omitted.
+end note
+
+[<-- LogicManager : result
+deactivate LogicManager
+
+@enduml
