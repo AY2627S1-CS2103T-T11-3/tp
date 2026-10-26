@@ -170,7 +170,7 @@ public class HelpWindowTest {
         runAndWait(helpWindow::show);
         waitUntil(stage::isShowing, "the Help window to be shown");
         runAndWait(() -> stage.setIconified(true));
-        waitUntil(stage::isIconified, "the Help window to be minimised");
+        waitUntil(stage::isIconified, "the Help window to be minimized");
         runAndWait(helpWindow::focus);
         waitUntil(() -> !stage.isIconified(), "the Help window to be restored");
         runAndWait(() -> {

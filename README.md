@@ -9,11 +9,11 @@
 * Delete Contact 
 * Create Group 
 * Persistent Storage 
-- **CaNvUS is a desktop application for secondary school teachers to manage school-related contacts**, optimised for fast interaction through a Command Line Interface (CLI) while retaining the benefits of a Graphical User Interface (GUI).
+- **CaNvUS is a desktop application for secondary school teachers to manage school-related contacts**, optimized for fast interaction through a Command Line Interface (CLI) while retaining the benefits of a Graphical User Interface (GUI).
 
-- Educators often keep student, guardian, and colleague information across separate documents, spreadsheets, and messaging platforms. **CaNvUS keeps these records and their relationships in one place**, making them easier to organise and retrieve.
+- Educators often keep student, guardian, and colleague information across separate documents, spreadsheets, and messaging platforms. **CaNvUS keeps these records and their relationships in one place**, making them easier to organize and retrieve.
 
-  - Users can classify contacts as **students, guardians, or teachers**, link guardians to students, organise students into classes, and associate teachers with departments.
+  - Users can classify contacts as **students, guardians, or teachers**, link guardians to students, organize students into classes, and associate teachers with departments.
 
 - Its core features allow users to **add, display, and delete contacts and groups**. Data is saved automatically and loaded when the application starts, ensuring that records remain available between sessions.
 
