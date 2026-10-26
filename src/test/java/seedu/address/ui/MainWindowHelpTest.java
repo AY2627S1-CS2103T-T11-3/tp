@@ -150,7 +150,7 @@ public class MainWindowHelpTest {
         });
         waitUntil(helpStage::isShowing, "the Help window to be shown");
         runAndWait(() -> helpStage.setIconified(true));
-        waitUntil(helpStage::isIconified, "the Help window to be minimised");
+        waitUntil(helpStage::isIconified, "the Help window to be minimized");
         runAndWait(() -> {
             feedback.setText("Other feedback");
             pressF1(commandField);
