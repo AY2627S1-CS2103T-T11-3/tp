@@ -73,6 +73,15 @@ skinparam Shadowing false
 skinparam DefaultTextAlignment center
 skinparam packageStyle Rectangle
 
+' ParticipantPadding is configured through the modern CSS-style syntax.
+<style>
+sequenceDiagram {
+    participant {
+        Padding 10
+    }
+}
+</style>
+
 hide footbox
 hide members
 hide circle
