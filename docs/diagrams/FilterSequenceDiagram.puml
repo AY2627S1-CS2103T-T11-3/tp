@@ -32,10 +32,10 @@ AddressBookParser -> FilterCommandParser : parse(" n/ali ct/stu")
 activate FilterCommandParser
 
 note right of FilterCommandParser
-  Tokenize and validate the arguments.
-  Create PersonFilterCriteria, then a
-  PersonMatchesFilterPredicate named predicate.
-  Helper calls and objects are omitted.
+  Validate arguments and create
+  the filter predicate.
+  Criteria and predicate construction
+  are omitted.
 end note
 
 create FilterCommand
@@ -57,10 +57,9 @@ FilterCommand -> Model : updateFilteredPersonList(predicate)
 activate Model
 
 note right of Model
-  ModelManager updates the filtered list
-  using filteredPersons.setPredicate(predicate).
-  The predicate combines supplied criteria with AND.
-  Internal interactions are omitted.
+  Show only contacts matching
+  all supplied criteria.
+  Internal filtering calls are omitted.
 end note
 
 Model --> FilterCommand
@@ -72,8 +71,8 @@ Model --> FilterCommand : filteredPersons
 deactivate Model
 
 note right of FilterCommand
-  Use filteredPersons.size() to
-  construct the result-count feedback.
+  Build feedback from the number
+  of matching contacts.
 end note
 
 create CommandResult
@@ -86,8 +85,7 @@ FilterCommand --> LogicManager : result
 deactivate FilterCommand
 
 note right of LogicManager
-  The standard storage-save step
-  is omitted from this diagram.
+  Storage saving is omitted.
 end note
 
 [<-- LogicManager : result
