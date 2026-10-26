@@ -19,13 +19,18 @@ Class Email
 Class Name
 Class Phone
 Class Tag
+Class PersonId
+
+Class Student
+Class Guardian
+Class Colleague
 
 Class UniqueGroupList
 Class "{abstract}\nGroup" as Group
 Class ClassGroup
 Class DepartmentGroup
 Class GroupName
-Class PersonId
+
 
 Class I #FFFFFF
 }
@@ -49,8 +54,17 @@ Person *--> Phone
 Person *--> Email
 Person *--> Address
 Person *--> "*" Tag
+Person "1" *--> "1" PersonId
 
-Person -[hidden]up--> I
+Student --|> Person
+Guardian -left-|> Person
+Colleague --|> Person
+
+Person -[hidden]left-> Group
+Student -[hidden]down-> Guardian
+Student -[hidden]right-> Colleague
+Guardian -[hidden]up-> Colleague
+
 UniquePersonList -[hidden]right-> I
 
 Name -[hidden]right-> Phone
@@ -62,8 +76,9 @@ UniqueGroupList --> "~* all" Group
 Group *--> "1" GroupName
 Group *--> "*" PersonId
 
-ClassGroup -up-|> Group
-DepartmentGroup -up-|> Group
+ClassGroup -right-|> Group
+DepartmentGroup -[hidden]up-> ClassGroup
+DepartmentGroup -right-|> Group
 
 ModelManager --> "~* filtered" Person
 @enduml
