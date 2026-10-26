@@ -167,6 +167,17 @@ The filtering flow is:
 4. `PersonMatchesFilterPredicate` combines all supplied criteria with `AND`. Names, departments, and addresses use contiguous substring matching with `Locale.ROOT` for case conversion. Roles use enum equality, and tags use exact, case-sensitive set membership. All required tags must be present.
 5. `FilterCommand` installs the predicate through `Model#updateFilteredPersonList` and reports the result count. It replaces the previous predicate and filters the full contact list. Absent criteria impose no restrictions, so bare `filter` shows every contact.
 
+The following sequence diagram illustrates the successful execution of
+`filter n/ali ct/stu`:
+
+<div style="overflow-x: auto;">
+  <a href="images/FilterSequenceDiagram.png">
+    <img src="images/FilterSequenceDiagram.png"
+         alt="Sequence diagram for successful execution of filter n/ali ct/stu"
+         style="max-width: none;" />
+  </a>
+</div>
+
 Department matching checks `instanceof Colleague` and a non-null department before reading the department text. A supplied department criterion excludes students, guardians, and colleagues without a department. Combining incompatible criteria, such as `ct/student d/Science`, produces an empty list rather than an exception.
 
 Name searches use `filter n/NAME`. The full supplied phrase is preserved and matched as a case-insensitive, contiguous substring, and can be combined with the other filter criteria.
