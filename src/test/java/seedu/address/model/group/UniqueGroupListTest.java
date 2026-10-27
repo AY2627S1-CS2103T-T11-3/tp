@@ -3,15 +3,10 @@ package seedu.address.model.group;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalGroups.MATH_DPT;
 import static seedu.address.testutil.TypicalGroups.RESPECT_5;
-import static seedu.address.testutil.TypicalPersons.ALICE;
-import static seedu.address.testutil.TypicalPersons.BOB;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -20,10 +15,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.model.group.exceptions.DuplicateGroupException;
 import seedu.address.model.group.exceptions.GroupNotFoundException;
 import seedu.address.model.person.PersonId;
-import seedu.address.model.person.UniquePersonList;
-import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.testutil.GroupBuilder;
-import seedu.address.testutil.PersonBuilder;
 
 public class UniqueGroupListTest {
 
