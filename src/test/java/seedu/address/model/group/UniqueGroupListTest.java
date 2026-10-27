@@ -7,12 +7,15 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalGroups.MATH_DPT;
 import static seedu.address.testutil.TypicalGroups.RESPECT_5;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.model.group.exceptions.DuplicateGroupException;
 import seedu.address.model.group.exceptions.GroupNotFoundException;
+import seedu.address.model.person.PersonId;
+import seedu.address.testutil.GroupBuilder;
 
 public class UniqueGroupListTest {
 
@@ -43,6 +46,57 @@ public class UniqueGroupListTest {
     public void add_duplicateGroup_throwsDuplicateGroupException() {
         uniqueGroupList.add(RESPECT_5);
         assertThrows(DuplicateGroupException.class, () -> uniqueGroupList.add(RESPECT_5));
+    }
+
+    @Test
+    public void setGroup_nullTargetGroup_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> uniqueGroupList.setGroup(null, RESPECT_5));
+    }
+
+    @Test
+    public void setGroup_nullEditedGroup_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> uniqueGroupList.setGroup(RESPECT_5, null));
+    }
+
+    @Test
+    public void setGroup_targetGroupNotInList_throwsGroupNotFoundException() {
+        assertThrows(GroupNotFoundException.class, () -> uniqueGroupList.setGroup(RESPECT_5, RESPECT_5));
+    }
+
+    @Test
+    public void setGroup_editedGroupIsSameGroup_success() {
+        uniqueGroupList.add(RESPECT_5);
+        uniqueGroupList.setGroup(RESPECT_5, RESPECT_5);
+        UniqueGroupList expectedUniqueGroupList = new UniqueGroupList();
+        expectedUniqueGroupList.add(RESPECT_5);
+        assertEquals(expectedUniqueGroupList, uniqueGroupList);
+    }
+
+    @Test
+    public void setGroup_editedGroupHasSameIdentity_success() {
+        uniqueGroupList.add(RESPECT_5);
+        List<PersonId> personIds = List.of(new PersonId());
+        Group editedRespect5 = new GroupBuilder(RESPECT_5).withPersonIds(new HashSet<>(personIds)).build();
+        uniqueGroupList.setGroup(RESPECT_5, editedRespect5);
+        UniqueGroupList expectedUniqueGroupList = new UniqueGroupList();
+        expectedUniqueGroupList.add(editedRespect5);
+        assertEquals(expectedUniqueGroupList, uniqueGroupList);
+    }
+
+    @Test
+    public void setGroup_editedGroupHasDifferentIdentity_success() {
+        uniqueGroupList.add(RESPECT_5);
+        uniqueGroupList.setGroup(RESPECT_5, MATH_DPT);
+        UniqueGroupList expectedUniqueGroupList = new UniqueGroupList();
+        expectedUniqueGroupList.add(MATH_DPT);
+        assertEquals(expectedUniqueGroupList, uniqueGroupList);
+    }
+
+    @Test
+    public void setGroup_editedGroupHasNonUniqueIdentity_throwsDuplicateGroupException() {
+        uniqueGroupList.add(RESPECT_5);
+        uniqueGroupList.add(MATH_DPT);
+        assertThrows(DuplicateGroupException.class, () -> uniqueGroupList.setGroup(RESPECT_5, MATH_DPT));
     }
 
     @Test
