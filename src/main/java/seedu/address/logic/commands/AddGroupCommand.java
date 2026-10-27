@@ -9,9 +9,9 @@ import seedu.address.model.group.Group;
  * Creates a group in the address book.
  * A group can be either a class or a department.
  */
-public class CreateGroupCommand extends Command {
+public class AddGroupCommand extends Command {
 
-    public static final String COMMAND_WORD = "create_group";
+    public static final String COMMAND_WORD = "addgroup";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Creates a new group. Duplicate group names "
@@ -20,14 +20,14 @@ public class CreateGroupCommand extends Command {
             + "Example: " + COMMAND_WORD + " CS2103T-T01 "
             + "gt/ class";
 
-    public static final String MESSAGE_SUCCESS = "create_group command executed successfully";
+    public static final String MESSAGE_SUCCESS = "addgroup command executed successfully";
 
     private final Group toAdd;
 
     /**
      * Creates a CreateGroupCommand to add the specified {@code Group}
      */
-    public CreateGroupCommand(Group group) {
+    public AddGroupCommand(Group group) {
         requireAllNonNull(group);
         this.toAdd = group;
     }
@@ -45,11 +45,11 @@ public class CreateGroupCommand extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof CreateGroupCommand otherCreateGroupCommand)) {
+        if (!(other instanceof AddGroupCommand otherAddGroupCommand)) {
             return false;
         }
 
-        return toAdd.equals(otherCreateGroupCommand.toAdd);
+        return toAdd.equals(otherAddGroupCommand.toAdd);
     }
 
 }

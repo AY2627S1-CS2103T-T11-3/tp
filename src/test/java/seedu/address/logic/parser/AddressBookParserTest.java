@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.ClearCommand;
-import seedu.address.logic.commands.CreateGroupCommand;
+import seedu.address.logic.commands.AddGroupCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
@@ -206,13 +206,13 @@ public class AddressBookParserTest {
     public void parseCommand_createGroup() throws Exception {
         final String groupName = "Math";
         final String groupType = "class";
-        CreateGroupCommand command = (CreateGroupCommand) parser.parseCommand(
-                CreateGroupCommand.COMMAND_WORD + " "
+        AddGroupCommand command = (AddGroupCommand) parser.parseCommand(
+                AddGroupCommand.COMMAND_WORD + " "
                 + groupName + " " + PREFIX_GROUP_TYPE + groupType
         );
         final Group group = new GroupBuilder().withName(groupName)
                 .withType(GroupType.valueOf(groupType.toUpperCase())).build();
-        assertEquals(new CreateGroupCommand(group), command);
+        assertEquals(new AddGroupCommand(group), command);
     }
 
     @Test

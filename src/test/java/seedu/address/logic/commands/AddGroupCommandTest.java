@@ -16,16 +16,16 @@ import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupType;
 import seedu.address.testutil.GroupBuilder;
 
-public class CreateGroupCommandTest {
+public class AddGroupCommandTest {
 
     private Model model = new ModelManager(new AddressBook(), new UserPrefs());
 
     @Test
     public void execute() {
         Group validGroup = new GroupBuilder().build();
-        CommandResult commandResult = new CreateGroupCommand(validGroup).execute(model);
+        CommandResult commandResult = new AddGroupCommand(validGroup).execute(model);
 
-        assertEquals(CreateGroupCommand.MESSAGE_SUCCESS, commandResult.getFeedbackToUser());
+        assertEquals(AddGroupCommand.MESSAGE_SUCCESS, commandResult.getFeedbackToUser());
     }
 
     @Test
@@ -34,25 +34,25 @@ public class CreateGroupCommandTest {
                 .withType(GroupType.CLASS).build();
         Group validGroupBob = new GroupBuilder().withName(VALID_GROUP_NAME_DEPARTMENT)
                 .withType(GroupType.DEPARTMENT).build();
-        CreateGroupCommand createGroupCommandAlice = new CreateGroupCommand(validGroupAmy);
-        CreateGroupCommand createGroupCommandBob = new CreateGroupCommand(validGroupBob);
+        AddGroupCommand addGroupCommandAlice = new AddGroupCommand(validGroupAmy);
+        AddGroupCommand addGroupCommandBob = new AddGroupCommand(validGroupBob);
 
         // same object -> returns true
-        assertTrue(createGroupCommandAlice.equals(createGroupCommandAlice));
+        assertTrue(addGroupCommandAlice.equals(addGroupCommandAlice));
 
         // same values -> returns true
         Group validGroupAmyCopy = new GroupBuilder().withName(VALID_GROUP_NAME_CLASS).withType(GroupType.CLASS).build();
-        CreateGroupCommand createGroupCommandAliceCopy = new CreateGroupCommand(validGroupAmyCopy);
-        assertTrue(createGroupCommandAlice.equals(createGroupCommandAliceCopy));
+        AddGroupCommand addGroupCommandAliceCopy = new AddGroupCommand(validGroupAmyCopy);
+        assertTrue(addGroupCommandAlice.equals(addGroupCommandAliceCopy));
 
         // different types -> returns false
-        assertFalse(createGroupCommandAlice.equals(1));
+        assertFalse(addGroupCommandAlice.equals(1));
 
         // null -> returns false
-        assertFalse(createGroupCommandAlice.equals(null));
+        assertFalse(addGroupCommandAlice.equals(null));
 
         // different person -> returns false
-        assertFalse(createGroupCommandAlice.equals(createGroupCommandBob));
+        assertFalse(addGroupCommandAlice.equals(addGroupCommandBob));
     }
 
 }
