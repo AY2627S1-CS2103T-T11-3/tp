@@ -14,6 +14,7 @@ import seedu.address.model.person.PersonId;
  */
 public abstract class Group {
 
+    private final GroupId id;
     private final GroupName groupName;
     private final Set<PersonId> personIds;
 
@@ -22,8 +23,13 @@ public abstract class Group {
      */
     public Group(GroupName groupName, Set<PersonId> persondIds) {
         requireAllNonNull(groupName, persondIds);
+        this.id = new GroupId();
         this.groupName = groupName;
         this.personIds = Set.copyOf(persondIds);
+    }
+
+    public GroupId getId() {
+        return id;
     }
 
     public GroupName getGroupName() {
