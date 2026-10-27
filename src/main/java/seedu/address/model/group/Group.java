@@ -21,11 +21,11 @@ public abstract class Group {
     /**
      * Constructs a {@code Group}.
      */
-    public Group(GroupName groupName, Set<PersonId> persondIds) {
-        requireAllNonNull(groupName, persondIds);
+    public Group(GroupName groupName, Set<PersonId> personIds) {
+        requireAllNonNull(groupName, personIds);
         this.id = new GroupId();
         this.groupName = groupName;
-        this.personIds = Set.copyOf(persondIds);
+        this.personIds = Set.copyOf(personIds);
     }
 
     public GroupId getId() {
