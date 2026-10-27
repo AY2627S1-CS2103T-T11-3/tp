@@ -2,8 +2,6 @@ package seedu.address.model.group;
 
 import java.util.Objects;
 
-import seedu.address.model.person.PersonId;
-
 /**
  * Represents a group's ID that is automatically assigned when the group is added.
  *
