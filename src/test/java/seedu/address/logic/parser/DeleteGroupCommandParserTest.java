@@ -7,7 +7,6 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_GROUP;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.DeleteGroupCommand;
 
 /**
