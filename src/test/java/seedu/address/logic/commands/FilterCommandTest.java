@@ -13,6 +13,7 @@ import static seedu.address.testutil.TypicalPersons.DANIEL;
 import static seedu.address.testutil.TypicalPersons.getTypicalPersons;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,6 +27,7 @@ import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
+import seedu.address.model.person.PersonId;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.Student;
@@ -45,6 +47,57 @@ public class FilterCommandTest {
     private final Colleague foodScienceColleague = prepareColleague("Alison Goh", "Food Science");
     private final Colleague computerScienceColleague = prepareColleague("Marcus Lee", "Computer Science");
     private final Colleague unlinkedColleague = prepareColleague("Priya Rao", null);
+    private final Student secondYearStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(),
+            ALICE.getAddress(), ALICE.getTags(), 128, null, 2);
+    private final Student twelfthYearStudent = new Student(BENSON.getName(), BENSON.getPhone(), BENSON.getEmail(),
+            BENSON.getAddress(), BENSON.getTags(), 256, null, 12);
+    private final Guardian numericGuardian = new Guardian(BENSON.getName(), BENSON.getPhone(), BENSON.getEmail(),
+            BENSON.getAddress(), BENSON.getTags(), 512);
+
+    /**
+     * Verifies the deduplicated union using permanent IDs that differ from the displayed positions.
+     *
+     * @throws Exception If the valid command unexpectedly cannot be parsed.
+     */
+    @Test
+    public void execute_multiplePersonIds_listsUnionWithoutDuplicates() throws Exception {
+        FilterCommand command = (FilterCommand) new AddressBookParser().parseCommand("filter id/256 id/128 id/128");
+
+        assertFilterSuccess(command, prepareNumericModel(), List.of(secondYearStudent, twelfthYearStudent));
+    }
+
+    /** Verifies that numeric and existing criteria all intersect to select the matching student. */
+    @Test
+    public void execute_personIdsAndYearOfStudy_listsIntersection() {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("ali"), Optional.of(Role.STUDENT),
+                Optional.empty(), Optional.of("jurong"), Set.of(new Tag("friends")), Set.of(128, 256), Optional.of(2));
+        FilterCommand command = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertFilterSuccess(command, prepareNumericModel(), List.of(secondYearStudent));
+    }
+
+    /** Verifies that absent IDs and valid-but-contradictory numeric criteria return a zero count. */
+    @Test
+    public void execute_numericCriteriaWithNoMatch_listsZeroPersons() {
+        Model numericModel = prepareNumericModel();
+
+        assertFilterSuccess(prepareNumericCommand(Set.of(999), Optional.empty()), numericModel, List.of());
+        assertFilterSuccess(prepareNumericCommand(Set.of(512), Optional.of(2)), numericModel, List.of());
+    }
+
+    /** Verifies that filtering out a linked student preserves their relationship and the ID counter. */
+    @Test
+    public void execute_numericFiltering_preservesRelationshipsAndCounter() {
+        Model numericModel = prepareNumericModel();
+        numericModel.linkGuardianToStudent(numericGuardian, secondYearStudent);
+        int nextId = PersonId.getNextId();
+
+        assertFilterSuccess(prepareNumericCommand(Set.of(512), Optional.empty()), numericModel,
+                List.of(numericGuardian));
+        assertEquals(Map.of(numericGuardian, Set.of(secondYearStudent)),
+                numericModel.getAddressBook().getGuardianStudents());
+        assertEquals(nextId, PersonId.getNextId());
+    }
 
     @Test
     public void constructor_nullPredicate_throwsNullPointerException() {
@@ -144,6 +197,7 @@ public class FilterCommandTest {
                 Optional.of("clementi"), Set.of(new Tag("Committee"), new Tag("Missing"))), roleModel, List.of());
     }
 
+    /** Verifies that role and numeric filters replace previous constraints and can still be cleared. */
     @Test
     public void execute_newCriteriaAfterDepartmentFilter_replacesFilter() {
         Model roleModel = prepareRoleModel();
@@ -152,6 +206,9 @@ public class FilterCommandTest {
                 Optional.empty(), Set.of()), roleModel, List.of(foodScienceColleague));
         assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.STUDENT), Optional.empty(),
                 Optional.empty(), Set.of()), roleModel, List.of(student));
+        int colleagueId = computerScienceColleague.getId().getRawId();
+        assertFilterSuccess(prepareNumericCommand(Set.of(colleagueId), Optional.empty()),
+                roleModel, List.of(computerScienceColleague));
         assertFilterSuccess(prepareCommand(Optional.empty(), Set.of()), roleModel,
                 List.of(student, guardian, foodScienceColleague, computerScienceColleague, unlinkedColleague));
     }
@@ -211,13 +268,16 @@ public class FilterCommandTest {
                 List.of(ALICE, BENSON, DANIEL));
     }
 
+    /** Verifies unrestricted and numeric queries against an empty address book without duplicating the fixture. */
     @Test
     public void execute_emptyAddressBook_listsZeroPersons() {
         Model emptyModel = new ModelManager();
-        FilterCommand command = prepareCommand(Optional.empty(), Set.of());
 
-        assertCommandSuccess(command, emptyModel,
-                String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0), new ModelManager());
+        for (FilterCommand command : List.of(prepareCommand(Optional.empty(), Set.of()),
+                prepareNumericCommand(Set.of(128, 256), Optional.of(2)))) {
+            assertCommandSuccess(command, emptyModel,
+                    String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0), new ModelManager());
+        }
     }
 
     @Test
@@ -268,6 +328,22 @@ public class FilterCommandTest {
         PersonFilterCriteria criteria = new PersonFilterCriteria(nameKeyword, contactType, departmentKeyword,
                 addressKeyword, requiredTags);
         return new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+    }
+
+    /** Constructs a command for the exact numeric criteria without involving parser validation. */
+    private FilterCommand prepareNumericCommand(Set<Integer> personIds, Optional<Integer> yearOfStudy) {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Set.of(), personIds, yearOfStudy);
+        return new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+    }
+
+    /** Creates in-memory contacts with explicit IDs unrelated to their displayed positions. */
+    private Model prepareNumericModel() {
+        Model numericModel = new ModelManager();
+        for (Person contact : List.of(secondYearStudent, twelfthYearStudent, numericGuardian)) {
+            numericModel.addPerson(contact);
+        }
+        return numericModel;
     }
 
     /**
