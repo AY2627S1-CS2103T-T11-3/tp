@@ -3,8 +3,6 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 
-import java.util.HashSet;
-
 import seedu.address.logic.commands.AddGroupCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.group.ClassGroup;
@@ -38,8 +36,8 @@ public class AddGroupCommandParser implements Parser<AddGroupCommand> {
         GroupType groupType = ParserUtil.parseGroupType(argMultimap.getValue(PREFIX_GROUP_TYPE).get());
 
         Group group = switch (groupType) {
-            case GroupType.CLASS -> new ClassGroup(groupName, new HashSet<>());
-            case GroupType.DEPARTMENT -> new DepartmentGroup(groupName, new HashSet<>());
+            case GroupType.CLASS -> new ClassGroup(groupName);
+            case GroupType.DEPARTMENT -> new DepartmentGroup(groupName);
             default -> throw new ParseException("Invalid group type given");
         };
 
