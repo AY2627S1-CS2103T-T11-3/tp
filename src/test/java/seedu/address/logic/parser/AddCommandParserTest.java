@@ -262,4 +262,12 @@ public class AddCommandParserTest {
                 + ADDRESS_DESC_BOB + CONTACT_TYPE_STUDENT + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
     }
+
+    @Test
+    public void parse_yearOfStudyWhenNotStudent_failure() {
+        // invalid name
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
+                + CONTACT_TYPE_COLLEAGUE + TAG_DESC_FRIEND + YEAR_OF_STUDY_DESC,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
+    }
 }
