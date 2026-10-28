@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.commands.DeleteGroupCommand;
 
 /**
- * Contains and unit tests for
- * {@code DeleteGroupCommandParser}.
+ * Contains unit tests for {@code DeleteGroupCommandParser}.
  */
 public class DeleteGroupCommandParserTest {
 
