@@ -1,7 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
+import static seedu.address.logic.parser.CliSyntax.*;
 
 import seedu.address.logic.commands.AddGroupCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -32,6 +32,7 @@ public class AddGroupCommandParser implements Parser<AddGroupCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddGroupCommand.MESSAGE_USAGE));
         }
 
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_GROUP_TYPE);
         GroupName groupName = ParserUtil.parseGroupName(argMultimap.getPreamble());
         GroupType groupType = ParserUtil.parseGroupType(argMultimap.getValue(PREFIX_GROUP_TYPE).get());
 
