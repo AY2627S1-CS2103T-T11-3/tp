@@ -189,7 +189,7 @@ public class ParserUtil {
      */
     public static Integer parseYearOfStudy(String yearOfStudy) throws ParseException {
         String trimmedYearOfStudy = yearOfStudy.trim();
-        if (!StringUtil.isNonZeroUnsignedInteger(yearOfStudy)) {
+        if (!StringUtil.isNonZeroUnsignedInteger(trimmedYearOfStudy)) {
             throw new ParseException(MESSAGE_INVALID_YEAR_OF_STUDY);
         }
         return Integer.parseInt(trimmedYearOfStudy);
