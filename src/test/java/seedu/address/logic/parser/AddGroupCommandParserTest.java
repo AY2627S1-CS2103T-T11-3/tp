@@ -28,6 +28,15 @@ public class AddGroupCommandParserTest {
     }
 
     @Test
+    public void parse_departmentGroup_success() {
+        String userInput = nonEmptyGroupName + " " + PREFIX_GROUP_TYPE + "department";
+        Group group = new GroupBuilder().withName(nonEmptyGroupName)
+                .withType(GroupType.DEPARTMENT).build();
+        AddGroupCommand expectedCommand = new AddGroupCommand(group);
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
     public void parse_missingCompulsoryField_failure() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddGroupCommand.MESSAGE_USAGE);
 

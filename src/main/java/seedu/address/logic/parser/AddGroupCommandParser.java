@@ -38,7 +38,6 @@ public class AddGroupCommandParser implements Parser<AddGroupCommand> {
         Group group = switch (groupType) {
             case GroupType.CLASS -> new ClassGroup(groupName);
             case GroupType.DEPARTMENT -> new DepartmentGroup(groupName);
-            default -> throw new ParseException("Invalid group type given");
         };
 
         return new AddGroupCommand(group);

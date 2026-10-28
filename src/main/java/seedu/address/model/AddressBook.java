@@ -192,12 +192,9 @@ public class AddressBook implements ReadOnlyAddressBook {
             return new Student(person.getName(), person.getPhone(), person.getEmail(), person.getAddress(),
                     person.getTags(), person.getId().getRawId(), null, student.getYearOfStudy());
         }
-        if (person instanceof Colleague) {
-            return new Colleague(person.getName(), person.getPhone(), person.getEmail(), person.getAddress(),
-                    person.getTags(), person.getId().getRawId(), null);
-        }
-        return new Person(person.getName(), person.getPhone(), person.getEmail(), person.getAddress(),
-                person.getTags(), person.getRole(), person.getId().getRawId(), null);
+        Colleague colleague = (Colleague) person;
+        return new Colleague(colleague.getName(), colleague.getPhone(), colleague.getEmail(), colleague.getAddress(),
+                colleague.getTags(), colleague.getId().getRawId(), null);
     }
 
     //// util methods
