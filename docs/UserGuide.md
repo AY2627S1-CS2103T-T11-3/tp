@@ -86,8 +86,6 @@ Format: `add n/NAME p/PHONE e/EMAIL a/ADDRESS ct/CONTACT_TYPE [t/TAG]...​`
 * `CONTACT_TYPE` must be `student`, `guardian`, or `colleague`.
 * `TAG` may contain letters and digits only.
 
-The application uses `colleague` as the contact type for teaching staff. Use `ct/colleague` in commands.
-
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags, including zero.
 </div>
