@@ -85,7 +85,6 @@ public class PersonCard extends UiPart<Region> {
         role.setText(roleName.charAt(0) + roleName.substring(1).toLowerCase(Locale.ROOT));
         role.getStyleClass().add("role-" + roleName.toLowerCase(Locale.ROOT));
         person.getTags().stream()
-                .filter(tag -> !tag.tagName.equalsIgnoreCase(roleName))
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
         boolean isGuardian = !studentNames.isEmpty();
