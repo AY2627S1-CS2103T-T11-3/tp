@@ -6,15 +6,19 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACT_TYPE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPARTMENT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PERSON_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR_OF_STUDY;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.PersonFilterCriteria;
@@ -23,12 +27,12 @@ import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 
 /**
- * Parses optional name, contact type, department, address, and tag filter criteria.
+ * Parses optional text, contact type, tag, person ID, and year-of-study filter criteria.
  */
 public class FilterCommandParser implements Parser<FilterCommand> {
 
     // Normalize only separators before prefixes, preserving whitespace inside text phrases.
-    private static final Pattern PREFIX_SEPARATOR_PATTERN = Pattern.compile("\\s+(?=(n/|ct/|d/|a/|t/))");
+    private static final Pattern PREFIX_SEPARATOR_PATTERN = Pattern.compile("\\s+(?=(n/|ct/|d/|a/|t/|id/|yos/))");
 
     /**
      * Parses optional criteria into a {@code FilterCommand}.
@@ -41,22 +45,26 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         requireNonNull(args);
         String normalizedArgs = " " + PREFIX_SEPARATOR_PATTERN.matcher(args).replaceAll(" ");
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(normalizedArgs,
-                PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_ADDRESS, PREFIX_TAG);
+                PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_ADDRESS, PREFIX_TAG,
+                PREFIX_PERSON_ID, PREFIX_YEAR_OF_STUDY);
 
         if (!argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_ADDRESS);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_ADDRESS,
+                PREFIX_YEAR_OF_STUDY);
         Optional<String> nameKeyword = parseTextCriterion(argMultimap, PREFIX_NAME);
         Optional<String> contactTypeKeyword = parseTextCriterion(argMultimap, PREFIX_CONTACT_TYPE);
         Optional<String> departmentKeyword = parseTextCriterion(argMultimap, PREFIX_DEPARTMENT);
         Optional<String> addressKeyword = parseTextCriterion(argMultimap, PREFIX_ADDRESS);
+        Set<Integer> personIds = parsePersonIds(argMultimap);
+        Optional<Integer> yearOfStudy = parseNumericCriterion(argMultimap, PREFIX_YEAR_OF_STUDY);
         Optional<Role> contactType = parseContactType(contactTypeKeyword);
         Set<Tag> requiredTags = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
         PersonFilterCriteria criteria = new PersonFilterCriteria(nameKeyword, contactType,
-                departmentKeyword, addressKeyword, requiredTags);
+                departmentKeyword, addressKeyword, requiredTags, personIds, yearOfStudy);
         PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(criteria);
         return new FilterCommand(predicate);
     }
@@ -72,6 +80,39 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         }
 
         return keyword;
+    }
+
+    /** Parses all supplied person IDs, deduplicating equal numeric values. */
+    private Set<Integer> parsePersonIds(ArgumentMultimap argMultimap) throws ParseException {
+        Set<Integer> personIds = new HashSet<>();
+        for (String value : argMultimap.getAllValues(PREFIX_PERSON_ID)) {
+            personIds.add(parsePositiveInteger(value, PREFIX_PERSON_ID));
+        }
+        return personIds;
+    }
+
+    /** Parses an optional positive integer using the existing numeric validation and leading-zero rules. */
+    private Optional<Integer> parseNumericCriterion(ArgumentMultimap argMultimap, Prefix prefix) throws ParseException {
+        Optional<String> keyword = argMultimap.getValue(prefix);
+        if (keyword.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(parsePositiveInteger(keyword.get(), prefix));
+    }
+
+    /** Parses a required positive integer, rejecting blank, malformed, or out-of-range values. */
+    private int parsePositiveInteger(String value, Prefix prefix) throws ParseException {
+        String keyword = value.strip();
+        if (keyword.isBlank()) {
+            throw new ParseException(String.format(FilterCommand.MESSAGE_EMPTY_CRITERION, prefix)
+                    + "\n" + FilterCommand.MESSAGE_USAGE);
+        }
+        if (!StringUtil.isNonZeroUnsignedInteger(keyword)) {
+            throw new ParseException(String.format(FilterCommand.MESSAGE_INVALID_NUMERIC_CRITERION, prefix));
+        }
+
+        return Integer.parseInt(keyword);
     }
 
     /** Resolves a full contact type or an unambiguous prefix without changing add-command validation. */

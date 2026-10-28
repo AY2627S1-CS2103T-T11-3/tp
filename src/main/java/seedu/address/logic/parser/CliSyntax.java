@@ -16,5 +16,6 @@ public class CliSyntax {
     public static final Prefix PREFIX_CONTACT_TYPE = new Prefix("ct/");
     public static final Prefix PREFIX_DEPARTMENT = new Prefix("d/");
     public static final Prefix PREFIX_GROUP_TYPE = new Prefix("gt/");
+    public static final Prefix PREFIX_PERSON_ID = new Prefix("id/");
     public static final Prefix PREFIX_YEAR_OF_STUDY = new Prefix("yos/");
 }
