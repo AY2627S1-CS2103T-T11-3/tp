@@ -74,7 +74,7 @@ Address -[hidden]right-> Email
 AddressBook *--> "1" UniqueGroupList
 UniqueGroupList --> "~* all" Group
 Group *--> "1" GroupName
-Group *--> "*" PersonId
+Group --> "*" PersonId
 
 ClassGroup -right-|> Group
 DepartmentGroup -[hidden]up-> ClassGroup
