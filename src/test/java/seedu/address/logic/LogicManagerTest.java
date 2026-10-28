@@ -105,7 +105,7 @@ public class LogicManagerTest {
     @Test
     public void getGuardianNames_linkEditDelete_returnsCurrentNames() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
-                ALICE.getTags());
+                ALICE.getTags(), null);
         model.addPerson(aliceStudent);
         Guardian bobGuardian = new Guardian(BOB.getName(), BOB.getPhone(), BOB.getEmail(),
                 BOB.getAddress(), BOB.getTags());

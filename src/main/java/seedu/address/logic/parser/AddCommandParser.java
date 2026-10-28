@@ -7,6 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR_OF_STUDY;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -37,7 +38,7 @@ public class AddCommandParser implements Parser<AddCommand> {
     public AddCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
-                        PREFIX_CONTACT_TYPE, PREFIX_TAG);
+                        PREFIX_CONTACT_TYPE, PREFIX_TAG, PREFIX_YEAR_OF_STUDY);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_ADDRESS, PREFIX_PHONE, PREFIX_EMAIL,
                 PREFIX_CONTACT_TYPE)
@@ -46,19 +47,27 @@ public class AddCommandParser implements Parser<AddCommand> {
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
-                PREFIX_CONTACT_TYPE);
+                PREFIX_CONTACT_TYPE, PREFIX_YEAR_OF_STUDY);
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
         Role role = ParserUtil.parseContactType(argMultimap.getValue(PREFIX_CONTACT_TYPE).get());
+        Integer yearOfStudy = null;
+        if (argMultimap.getValue(PREFIX_YEAR_OF_STUDY).isPresent()) {
+            if (role != Role.STUDENT) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
+            }
+
+            yearOfStudy = ParserUtil.parseYearOfStudy(argMultimap.getValue(PREFIX_YEAR_OF_STUDY).get());
+        }
 
         Person person = switch (role) {
             // TODO: Handle parsing for department
             case Role.COLLEAGUE -> new Colleague(name, phone, email, address, tagList, null);
             case Role.GUARDIAN -> new Guardian(name, phone, email, address, tagList);
-            case Role.STUDENT -> new Student(name, phone, email, address, tagList);
+            case Role.STUDENT -> new Student(name, phone, email, address, tagList, yearOfStudy);
             default -> throw new ParseException("Invalid contact type given");
         };
 

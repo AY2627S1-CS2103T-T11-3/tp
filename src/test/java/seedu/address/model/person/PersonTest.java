@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
@@ -11,6 +12,8 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
+
+import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 
@@ -82,8 +85,30 @@ public class PersonTest {
     }
 
     @Test
+    public void equals_subclasses_returnsFalse() {
+        Person p = new Person(new Name("Person"), new Phone("123"), new Email("person@example.com"),
+                new Address("Average Lane"), new HashSet<>());
+        Student s = new Student(new Name("Student"), new Phone("456"), new Email("student@school.edu"),
+                new Address("Schoolville"), new HashSet<>(), 2026);
+        Guardian g = new Guardian(new Name("Guardian"), new Phone("789"), new Email("guardian@example.net"),
+                new Address("Home Street"), new HashSet<>());
+        Colleague c = new Colleague(new Name("Colleague"), new Phone("321"), new Email("colleague@school.edu"),
+                new Address("Schoolville"), new HashSet<>(), null);
+
+        // They should all not be equals to each other
+        assertNotEquals(p, s);
+        assertNotEquals(p, g);
+        assertNotEquals(p, c);
+
+        assertNotEquals(s, g);
+        assertNotEquals(s, c);
+
+        assertNotEquals(g, c);
+    }
+
+    @Test
     public void toStringMethod() {
-        String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
+        String expected = Student.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
                 + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress() + ", id=" + ALICE.getId()
                 + ", tags=" + ALICE.getTags() + "}";
         assertEquals(expected, ALICE.toString());

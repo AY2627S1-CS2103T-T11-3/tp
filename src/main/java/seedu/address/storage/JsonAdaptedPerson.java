@@ -37,16 +37,17 @@ class JsonAdaptedPerson {
     private final String groupId;
     private final Role role;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
+    private final Integer yearOfStudy;
 
     public JsonAdaptedPerson(String name, String phone, String email, String address,
             List<JsonAdaptedTag> tags, Integer personId) {
-        this(name, phone, email, address, tags, Role.STUDENT, personId, null, null);
+        this(name, phone, email, address, tags, Role.STUDENT, personId, null, null, null);
     }
 
     /** Backwards-compatible constructor for data without an explicit group ID. */
     public JsonAdaptedPerson(String name, String phone, String email, String address,
             List<JsonAdaptedTag> tags, Role role, Integer personId, String department) {
-        this(name, phone, email, address, tags, role, personId, department, null);
+        this(name, phone, email, address, tags, role, personId, department, null, null);
     }
 
     /**
@@ -57,7 +58,7 @@ class JsonAdaptedPerson {
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("role") Role role,
             @JsonProperty("personId") Integer personId, @JsonProperty("department") String department,
-            @JsonProperty("groupId") String groupId) {
+            @JsonProperty("groupId") String groupId, @JsonProperty("yearOfStudy") Integer yearOfStudy) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -69,6 +70,7 @@ class JsonAdaptedPerson {
         if (tags != null) {
             this.tags.addAll(tags);
         }
+        this.yearOfStudy = yearOfStudy;
     }
 
     /**
@@ -89,6 +91,11 @@ class JsonAdaptedPerson {
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
         personId = source.getId().getRawId();
+        if (source instanceof Student) {
+            yearOfStudy = ((Student) source).getYearOfStudy();
+        } else {
+            yearOfStudy = null;
+        }
     }
 
     /**
@@ -154,7 +161,8 @@ class JsonAdaptedPerson {
         }
 
         // Default is student
-        return new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPersonId, groupId);
+        return new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPersonId, groupId,
+                yearOfStudy);
     }
 
 }

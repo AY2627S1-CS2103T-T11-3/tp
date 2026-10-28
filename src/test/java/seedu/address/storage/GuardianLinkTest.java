@@ -36,7 +36,7 @@ public class GuardianLinkTest {
     @Test
     public void link_saveLoadEditDelete_preservesRelationships() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
-                ALICE.getTags());
+                ALICE.getTags(), null);
 
         // The displayed list is [aliceStudent (student), Bob (guardian)], so s/1 g/2 links Bob to aliceStudent.
         AddressBook book = new AddressBook();
@@ -65,7 +65,7 @@ public class GuardianLinkTest {
     @Test
     public void link_invalidInput_reportsErrors() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
-                ALICE.getTags());
+                ALICE.getTags(), null);
 
         AddressBook book = new AddressBook();
         book.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
@@ -91,7 +91,7 @@ public class GuardianLinkTest {
     public void linkGuardianToStudent_validContacts_createsRelationship()
             throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
-                ALICE.getTags());
+                ALICE.getTags(), null);
 
         // Create a real Guardian and place it after the student in the displayed list.
         Guardian guardian = new Guardian(
@@ -134,7 +134,7 @@ public class GuardianLinkTest {
     @Test
     public void editLinkedStudent_preservesGuardianRelationship() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
-                ALICE.getTags());
+                ALICE.getTags(), null);
 
         // Set up a student and Guardian in the displayed order used by s/1 g/2.
         AddressBook addressBook = new AddressBook();
@@ -157,7 +157,7 @@ public class GuardianLinkTest {
     @Test
     public void storage_oldAndInvalidLinks_handlesData() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
-                ALICE.getTags());
+                ALICE.getTags(), null);
 
         // Older files without guardianLinks should still load successfully.
         AddressBook book = new AddressBook();

@@ -4,12 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonId;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Student;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -31,6 +33,7 @@ public class PersonBuilder {
     private Set<Tag> tags;
     private Role role;
     private PersonId personId;
+    private Integer yearOfStudy;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -56,6 +59,9 @@ public class PersonBuilder {
         tags = new HashSet<>(personToCopy.getTags());
         role = personToCopy.getRole();
         personId = personToCopy.getId();
+        if (personToCopy instanceof Student student) {
+            yearOfStudy = student.getYearOfStudy();
+        }
     }
 
     /**
@@ -112,7 +118,26 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the year of study of the student being built.
+     */
+    public PersonBuilder withYearOfStudy(Integer yearOfStudy) {
+        this.yearOfStudy = yearOfStudy;
+        return this;
+    }
+
+    /**
+     * Builds the person.
+     */
     public Person build() {
+        if (role == Role.STUDENT) {
+            return new Student(name, phone, email, address, tags, personId.getRawId(), null, yearOfStudy);
+        }
+
+        if (role == Role.COLLEAGUE) {
+            return new Colleague(name, phone, email, address, tags, personId.getRawId(), null);
+        }
+
         return new Person(name, phone, email, address, tags, role, personId.getRawId(), null);
     }
 
