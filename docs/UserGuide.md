@@ -58,7 +58,7 @@ CaNvUS is a **desktop application for managing contacts, optimized for use throu
 * Prefixes can generally be in any order for commands that use prefixed fields.<br>
   For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
   Positional arguments must still follow the command's format: `edit` requires the index first, `delete` takes an
-  index, and `create_group` requires the group name before `gt/`.
+  index, and `addgroup` requires the group name before `gt/`.
 
 * Extraneous parameters for commands that take no parameters, such as `help`, `list`, `exit`, and `clear`, are ignored.<br>
   For example, `help 123` is interpreted as `help`.
@@ -153,11 +153,11 @@ Examples:
 * `filter ct/col d/food sci` selects colleagues whose departments contain `food sci`.
 * `filter n/ali a/clementi t/Student t/Year2` requires the name and address substrings and both exact tags.
 
-### Creating a group: `create_group`
+### Creating a group: `addgroup`
 
 Creates a class or department group.
 
-Format: `create_group GROUP_NAME gt/GROUP_TYPE`
+Format: `addgroup GROUP_NAME gt/GROUP_TYPE`
 
 * `GROUP_NAME` may contain letters, digits, and spaces, and must not be blank.
 * `GROUP_TYPE` must be either `class` or `department`.
@@ -165,8 +165,8 @@ Format: `create_group GROUP_NAME gt/GROUP_TYPE`
 * New groups initially have no members and are displayed in the Groups panel.
 
 Examples:
-* `create_group CS2103T T01 gt/class`
-* `create_group Science gt/department`
+* `addgroup CS2103T T01 gt/class`
+* `addgroup Science gt/department`
 
 ### Linking a contact to a group: `link`
 
@@ -213,7 +213,20 @@ Examples:
 * `filter n/Betsy` followed by `delete 1` deletes the 1st person in the filter results.
 * Deleting a contact removes any guardian–student relationships involving that contact.
 
-There is currently no command to delete an individual group.
+### Deleting a group: `deletegroup`
+
+Deletes a group from the address book and unassigns all contacts belonging to that group.
+
+Format: `deletegroup INDEX`
+
+* `INDEX` refers to the 1-based index displayed beside each group in the Groups panel.
+* `INDEX` must be a positive integer: 1, 2, 3, …​
+* Students assigned to a deleted class and colleagues assigned to a deleted department are unassigned.
+* A class and department may have the same name; deleting one affects only the matching group type.
+
+Example:
+
+* `deletegroup 1` deletes the first group shown in the Groups panel.
 
 ### Clearing all entries: `clear`
 
@@ -271,7 +284,8 @@ Action | Format, Examples
 **Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
 **List** | `list`
 **Help** | `help`
-**Create group** | `create_group GROUP_NAME gt/GROUP_TYPE`<br> e.g., `create_group CS2103T T01 gt/class`
+**Add group** | `addgroup GROUP_NAME gt/GROUP_TYPE`<br> e.g., `addgroup CS2103T T01 gt/class`
+**Delete group** | `deletegroup INDEX`<br> e.g., `deletegroup 1`
 **Link contact to group** | `link n/NAME d/GROUP`<br> e.g., `link n/Alice Tan d/CS2103T T01`
 **Link guardian to student** | `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`<br> e.g., `link-guardian s/1 g/2`
 **Exit** | `exit`
