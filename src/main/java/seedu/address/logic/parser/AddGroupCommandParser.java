@@ -5,7 +5,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 
 import java.util.HashSet;
 
-import seedu.address.logic.commands.CreateGroupCommand;
+import seedu.address.logic.commands.AddGroupCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.group.ClassGroup;
 import seedu.address.model.group.DepartmentGroup;
@@ -16,7 +16,7 @@ import seedu.address.model.group.GroupType;
 /**
  * Parses input arguments and creates a new CreateGroupCommand object
  */
-public class CreateGroupCommandParser implements Parser<CreateGroupCommand> {
+public class AddGroupCommandParser implements Parser<AddGroupCommand> {
 
     /**
      * Parses the given {@code String} of arguments in the context of the CreateGroupCommand
@@ -25,13 +25,13 @@ public class CreateGroupCommandParser implements Parser<CreateGroupCommand> {
      * @return CreateGroupCommand object for execution
      * @throws ParseException if the user input does not conform to the expected format
      */
-    public CreateGroupCommand parse(String args) throws ParseException {
+    public AddGroupCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_GROUP_TYPE);
 
         if (argMultimap.getValue(PREFIX_GROUP_TYPE).isEmpty()
                 || argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, CreateGroupCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddGroupCommand.MESSAGE_USAGE));
         }
 
         GroupName groupName = ParserUtil.parseGroupName(argMultimap.getPreamble());
@@ -43,7 +43,7 @@ public class CreateGroupCommandParser implements Parser<CreateGroupCommand> {
             default -> throw new ParseException("Invalid group type given");
         };
 
-        return new CreateGroupCommand(group);
+        return new AddGroupCommand(group);
     }
 
 }

@@ -7,14 +7,14 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.CreateGroupCommand;
+import seedu.address.logic.commands.AddGroupCommand;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupType;
 import seedu.address.testutil.GroupBuilder;
 
-public class CreateGroupCommandParserTest {
+public class AddGroupCommandParserTest {
 
-    private CreateGroupCommandParser parser = new CreateGroupCommandParser();
+    private AddGroupCommandParser parser = new AddGroupCommandParser();
     private final String nonEmptyGroupName = "Math";
     private final String nonEmptyGroupType = "class";
 
@@ -23,21 +23,21 @@ public class CreateGroupCommandParserTest {
         String userInput = nonEmptyGroupName + " " + PREFIX_GROUP_TYPE + nonEmptyGroupType;
         Group group = new GroupBuilder().withName(nonEmptyGroupName)
                 .withType(GroupType.valueOf(nonEmptyGroupType.toUpperCase())).build();
-        CreateGroupCommand expectedCommand = new CreateGroupCommand(group);
+        AddGroupCommand expectedCommand = new AddGroupCommand(group);
         assertParseSuccess(parser, userInput, expectedCommand);
     }
 
     @Test
     public void parse_missingCompulsoryField_failure() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, CreateGroupCommand.MESSAGE_USAGE);
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddGroupCommand.MESSAGE_USAGE);
 
         // no parameters
-        assertParseFailure(parser, CreateGroupCommand.COMMAND_WORD, expectedMessage);
+        assertParseFailure(parser, AddGroupCommand.COMMAND_WORD, expectedMessage);
 
         // no group type
         assertParseFailure(
                 parser,
-                CreateGroupCommand.COMMAND_WORD + nonEmptyGroupName,
+                AddGroupCommand.COMMAND_WORD + nonEmptyGroupName,
                 expectedMessage
         );
     }
