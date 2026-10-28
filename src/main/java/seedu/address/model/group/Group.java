@@ -14,16 +14,22 @@ import seedu.address.model.person.PersonId;
  */
 public abstract class Group {
 
+    private final GroupId id;
     private final GroupName groupName;
     private final Set<PersonId> personIds;
 
     /**
      * Constructs a {@code Group}.
      */
-    public Group(GroupName groupName, Set<PersonId> persondIds) {
-        requireAllNonNull(groupName, persondIds);
+    public Group(GroupName groupName, Set<PersonId> personIds) {
+        requireAllNonNull(groupName, personIds);
+        this.id = new GroupId();
         this.groupName = groupName;
-        this.personIds = Set.copyOf(persondIds);
+        this.personIds = Set.copyOf(personIds);
+    }
+
+    public GroupId getId() {
+        return id;
     }
 
     public GroupName getGroupName() {
