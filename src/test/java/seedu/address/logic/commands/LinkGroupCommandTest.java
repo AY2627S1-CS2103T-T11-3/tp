@@ -32,7 +32,7 @@ public class LinkGroupCommandTest {
     @Test
     public void execute_existingStudent_updatesClass() throws Exception {
         AddressBook addressBook = new AddressBook();
-        addressBook.addGroup(new ClassGroup(new GroupName("CS2103T T01"), new HashSet<>()));
+        addressBook.addGroup(new ClassGroup(new GroupName("CS2103T T01")));
         addressBook.addPerson(new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
                 new HashSet<>(), null));
@@ -48,7 +48,7 @@ public class LinkGroupCommandTest {
     @Test
     public void execute_existingColleague_updatesDepartment() throws Exception {
         AddressBook addressBook = new AddressBook();
-        addressBook.addGroup(new DepartmentGroup(new GroupName("Computer Science"), new HashSet<>()));
+        addressBook.addGroup(new DepartmentGroup(new GroupName("Computer Science")));
         addressBook.addPerson(new Colleague(new Name("Bob Tan"), new Phone("91234568"),
                 new Email("bob@example.com"), new Address("123, Jurong West Ave 6, #08-112"),
                 new HashSet<>(), null));
@@ -74,7 +74,7 @@ public class LinkGroupCommandTest {
     @Test
     public void execute_wrongGroupType_throwsCommandException() {
         AddressBook addressBook = new AddressBook();
-        addressBook.addGroup(new DepartmentGroup(new GroupName("Computer Science"), new HashSet<>()));
+        addressBook.addGroup(new DepartmentGroup(new GroupName("Computer Science")));
         addressBook.addPerson(new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
                 new HashSet<>(), null));

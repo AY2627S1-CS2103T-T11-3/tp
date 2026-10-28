@@ -24,7 +24,7 @@ public class DeleteGroupCommand extends Command {
 
     public static final String MESSAGE_INVALID_GROUP_INDEX = "The group index provided is invalid.";
 
-    public static final String MESSAGE_DELETE_GROUP_SUCCESS = "Group deleted successfully.";
+    public static final String MESSAGE_DELETE_GROUP_SUCCESS = "Deleted group: %1$s";
 
     private final Index targetIndex;
 
@@ -43,7 +43,7 @@ public class DeleteGroupCommand extends Command {
 
         Group groupToDelete = shownGroupList.get(targetIndex.getZeroBased());
         model.deleteGroup(groupToDelete);
-        return new CommandResult(MESSAGE_DELETE_GROUP_SUCCESS);
+        return new CommandResult(String.format(MESSAGE_DELETE_GROUP_SUCCESS, groupToDelete.getGroupName()));
     }
 
     @Override

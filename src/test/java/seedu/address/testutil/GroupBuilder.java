@@ -1,14 +1,10 @@
 package seedu.address.testutil;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import seedu.address.model.group.ClassGroup;
 import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
-import seedu.address.model.person.PersonId;
 
 /**
  * A utility class to help with building Group objects.
@@ -20,7 +16,6 @@ public class GroupBuilder {
 
     private GroupName groupName;
     private GroupType groupType;
-    private Set<PersonId> personIds;
 
     /**
      * Creates a {@code GroupBuilder} with the default details.
@@ -28,7 +23,6 @@ public class GroupBuilder {
     public GroupBuilder() {
         groupName = new GroupName(DEFAULT_GROUP_NAME);
         groupType = DEFAULT_GROUP_TYPE;
-        personIds = new HashSet<>();
     }
 
     /**
@@ -37,7 +31,6 @@ public class GroupBuilder {
     public GroupBuilder(Group groupToCopy) {
         groupName = groupToCopy.getGroupName();
         groupType = groupToCopy.getGroupType();
-        personIds = groupToCopy.getPersonIds();
     }
 
     /**
@@ -57,20 +50,12 @@ public class GroupBuilder {
     }
 
     /**
-     * Sets the {@code GroupType} of the {@code Group} that we are building.
-     */
-    public GroupBuilder withPersonIds(Set<PersonId> personIds) {
-        this.personIds = Set.copyOf(personIds);
-        return this;
-    }
-
-    /**
      * Builds the Group
      */
     public Group build() {
         return switch (groupType) {
-            case CLASS -> new ClassGroup(groupName, personIds);
-            case DEPARTMENT -> new DepartmentGroup(groupName, personIds);
+            case CLASS -> new ClassGroup(groupName);
+            case DEPARTMENT -> new DepartmentGroup(groupName);
         };
     }
 
