@@ -13,11 +13,11 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
+import java.util.HashSet;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.testutil.PersonBuilder;
-
-import java.util.HashSet;
 
 public class PersonTest {
 
@@ -92,7 +92,7 @@ public class PersonTest {
                 new Address("Schoolville"), new HashSet<>(), 2026);
         Guardian g = new Guardian(new Name("Guardian"), new Phone("789"), new Email("guardian@example.net"),
                 new Address("Home Street"), new HashSet<>());
-        Colleague c = new Colleague(new Name("Colleague"),new Phone("321"), new Email("colleague@school.edu"),
+        Colleague c = new Colleague(new Name("Colleague"), new Phone("321"), new Email("colleague@school.edu"),
                 new Address("Schoolville"), new HashSet<>(), null);
 
         // They should all not be equals to each other
