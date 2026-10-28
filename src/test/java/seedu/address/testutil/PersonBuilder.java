@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import seedu.address.model.person.Address;
+import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
@@ -131,6 +132,10 @@ public class PersonBuilder {
     public Person build() {
         if (role == Role.STUDENT) {
             return new Student(name, phone, email, address, tags, personId.getRawId(), null, yearOfStudy);
+        }
+
+        if (role == Role.COLLEAGUE) {
+            return new Colleague(name, phone, email, address, tags, personId.getRawId(), null);
         }
 
         return new Person(name, phone, email, address, tags, role, personId.getRawId(), null);
