@@ -172,8 +172,7 @@ Creates a class or department group.
 Format: `addgroup GROUP_NAME gt/GROUP_TYPE`
 
 * `GROUP_NAME` may contain letters, digits, and spaces, and must not be blank.
-* `GROUP_TYPE` must be either `class` or `department` (case-insensitive). Group names do not allow hyphens.
-* Duplicate group names and group types are allowed.
+* `GROUP_TYPE` must be either `class` or `department`.
 * New groups initially have no members and are displayed in the Groups panel.
 
 Examples:
@@ -198,17 +197,16 @@ Assigns a student to a class or a colleague to a department. The group must alre
 
 Format: `link pid/PERSON_INDEX gid/GROUP_INDEX`
 
-* `PERSON_INDEX` is the positive position in the currently displayed contact list, including filtered results. It is not the permanent contact ID.
-* `GROUP_INDEX` is the positive position in the Groups panel, counting from 1. It is not a permanent group ID.
-* Both prefixes are required, may be in either order, and must appear once each.
 * Students can be assigned only to class groups.
 * Colleagues can be assigned only to department groups.
 * Guardians cannot be assigned to groups.
-* Linking to another group replaces the previous group assignment.
+* Person index refers to the index number shown in the displayed person list.
+* Group index refers to the index number shown in the displayed group list.
+* Both indexes **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `link pid/1 gid/2` links the first displayed contact to the second group, provided their types are compatible.
-* After filtering contacts, use their new displayed positions when linking.
+* `link pid/1 gid/1`
+* `link pid/2 gid/3`
 
 ### Linking a guardian to a student: `link-guardian`
 
@@ -241,18 +239,18 @@ Examples:
 
 ### Deleting a group: `deletegroup`
 
-Deletes a group from the address book and unassigns all contacts belonging to that group.
+Deletes the specified group from the address book.
 
 Format: `deletegroup INDEX`
 
-* `INDEX` refers to the 1-based index displayed beside each group in the Groups panel.
-* `INDEX` must be a positive integer: 1, 2, 3, …​
-* Students assigned to a deleted class and colleagues assigned to a deleted department are unassigned.
-* A class and department may have the same name; deleting one affects only the matching group type.
+* Deletes the group at the specified `INDEX`.
+* The index refers to the index number shown in the displayed group list.
+* The index **must be a positive integer** 1, 2, 3, …​
+* Deleting a group removes all contacts from that group.
+* Deleting a group keeps its contacts and removes their assignment to that group.
 
-Example:
-
-* `deletegroup 1` deletes the first group shown in the Groups panel.
+Examples:
+* `deletegroup 2` deletes the 2nd group in the address book.
 
 ### Clearing all entries: `clear`
 
@@ -307,15 +305,14 @@ _Details coming soon ..._
 Action | Format, Examples
 --------|------------------
 **Add** | `add n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_OF_STUDY] [t/TAG]…​` <br> e.g., `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 ct/student yos/2 t/groupLeader`
+**Add group** | `addgroup GROUP_NAME gt/GROUP_TYPE`<br> e.g., `add CS2103T T01 gt/class`
 **Clear** | `clear`
-**Delete group** | `deletegroup INDEX`<br> e.g., `deletegroup 1`
-**Edit group** | `editgroup GROUP_INDEX NEW_GROUP_NAME`<br> e.g., `editgroup 1 CS2103T T02`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
+**Delete group** | `deletegroup INDEX`<br> e.g., `deletegroup 1`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
 **Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
-**List** | `list`
 **Help** | `help`
-**Create group** | `addgroup GROUP_NAME gt/GROUP_TYPE`<br> e.g., `addgroup CS2103T T01 gt/class`
 **Link contact to group** | `link pid/PERSON_INDEX gid/GROUP_INDEX`<br> e.g., `link pid/1 gid/2`
 **Link guardian to student** | `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`<br> e.g., `link-guardian s/1 g/2`
+**List** | `list`
 **Exit** | `exit`
