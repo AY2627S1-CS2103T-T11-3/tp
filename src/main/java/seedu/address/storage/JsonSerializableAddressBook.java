@@ -24,7 +24,6 @@ import seedu.address.model.person.Student;
 class JsonSerializableAddressBook {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
-    public static final String MESSAGE_DUPLICATE_GROUP = "Group list contains duplicate groups(s).";
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
     private final List<JsonAdaptedGroup> groups = new ArrayList<>();
@@ -139,9 +138,6 @@ class JsonSerializableAddressBook {
 
         for (JsonAdaptedGroup jsonAdaptedGroup : groups) {
             Group group = jsonAdaptedGroup.toModelType();
-            if (addressBook.hasGroup(group)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_GROUP);
-            }
             addressBook.addGroup(group);
         }
         return addressBook;

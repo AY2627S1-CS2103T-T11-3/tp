@@ -57,7 +57,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     /**
      * Replaces the contents of the group list with {@code groups}.
-     * {@code groups} must not contain duplicate groups.
+     * {@code groups} may contain groups with the same name and type.
      */
     public void setGroups(List<Group> groups) {
         this.groups.setGroups(groups);
