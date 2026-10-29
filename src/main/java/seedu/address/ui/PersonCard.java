@@ -78,9 +78,25 @@ public class PersonCard extends UiPart<Region> {
         index.setText(displayedIndex + ". ");
         id.setText("ID: " + person.getId().toString());
         name.setText(person.getName().fullName);
-        phone.setText("☎  " + person.getPhone().value);
-        address.setText("📍  " + person.getAddress().value);
-        email.setText("✉  " + person.getEmail().value);
+
+        if (person.getPhone() != null) {
+            phone.setText("☎  " + person.getPhone().value);
+        } else {
+            phone.setText("☎  Not added");
+        }
+
+        if (person.getAddress() != null) {
+            address.setText("📍  " + person.getAddress().value);
+        } else {
+            address.setText("📍  Not added");
+        }
+
+        if (person.getEmail() != null) {
+            email.setText("✉  " + person.getEmail().value);
+        } else {
+            email.setText("✉  Not added");
+        }
+
         String roleName = person.getRole().name();
         role.setText(roleName.charAt(0) + roleName.substring(1).toLowerCase(Locale.ROOT));
         role.getStyleClass().add("role-" + roleName.toLowerCase(Locale.ROOT));

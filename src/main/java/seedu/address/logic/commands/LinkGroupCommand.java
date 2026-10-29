@@ -58,7 +58,7 @@ public class LinkGroupCommand extends Command {
         }
         if (!model.getGroupList().contains(group)) {
             if (person instanceof Colleague
-                    && model.getGroupList().contains(new ClassGroup(new GroupName(groupName), Set.of()))) {
+                    && model.getGroupList().contains(new ClassGroup(new GroupName(groupName)))) {
                 throw new CommandException(MESSAGE_COLLEAGUE_WRONG_GROUP_TYPE);
             }
             throw new CommandException(String.format(MESSAGE_GROUP_NOT_FOUND, groupName));
