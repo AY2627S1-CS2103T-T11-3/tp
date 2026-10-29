@@ -55,10 +55,12 @@ CaNvUS is a **desktop application for managing contacts, optimized for use throu
 * Items followed by `…`​ can appear zero or more times.<br>
   For example, `[t/TAG]…​` may be omitted, or written as `t/friend` or `t/friend t/family`.
 
+* Command names are case-insensitive (for example, `HELP` and `help` are equivalent). Prefixes are case-sensitive.
+
 * Prefixes can generally be in any order for commands that use prefixed fields.<br>
   For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
   Positional arguments must still follow the command's format: `edit` requires the index first, `delete` takes an
-  index, and `create_group` requires the group name before `gt/`.
+  index, and `addgroup` requires the group name before `gt/`.
 
 * Extraneous parameters for commands that take no parameters, such as `help`, `list`, `exit`, and `clear`, are ignored.<br>
   For example, `help 123` is interpreted as `help`.
@@ -72,27 +74,37 @@ Opens the offline command-reference window. You can also open it using the **Hel
 
 Format: `help`
 
+Opening Help again reuses the existing window and restores it if minimized. The feedback is `Opened help window.`
+
 
 ### Adding a person: `add`
 
 Adds a person to the address book.
 
-Format: `add n/NAME p/PHONE e/EMAIL a/ADDRESS ct/CONTACT_TYPE [t/TAG]...​`
+Format: `add n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_OF_STUDY] [t/TAG]...​`
 
+* Only `n/NAME` is required. Phone, email, address, contact type, year of study, and tags may be omitted. Except for tags, all fields may only be given at most once. The following field constraints apply when a value is supplied.
 * `NAME` may contain letters, digits, and spaces, and must not be blank.
 * `PHONE` must contain digits only and be at least 3 digits long.
 * `EMAIL` must be a valid email address.
-* `ADDRESS` must not be blank.
-* `CONTACT_TYPE` must be `student`, `guardian`, or `colleague`.
+* `ADDRESS` must not be blank if supplied.
+* `CONTACT_TYPE` must be `student`, `guardian`, or `colleague` (case-insensitive); omitting it defaults to `student`.
+* `YEAR_OF_STUDY` is optional for students, including when the year is unknown. If supplied, it must be a positive integer from 1 to 2147483647. It is rejected for guardians and colleagues. 
 * `TAG` may contain letters and digits only.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags, including zero.
 </div>
 
+<div markdown="span" class="alert alert-primary">:bulb: **Tip:**
+If you don't have all the information for a contact right now, you can add them first then edit their information later.
+</div>
+
+
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 ct/student`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Jurong East p/1234567 ct/colleague`
+* `add n/Alice Tan` adds a student named "Alice Tan" with no other information recorded.
+* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 ct/student yos/2 t/groupLeader` adds a student named "John Doe" with phone number 98765432, email address johnd@example.com, address John Street, block  123, #01-01, year of study of 2 and a tag of "groupLeader".
+* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Jurong East p/1234567 ct/colleague t/neighbor` adds a colleague named "Betsy Crowe" with email betsycrowe@example.com, address Jurong East, phone number 1234567 and two tags "friend" and "neighbor".
 
 ### Listing all persons: `list`
 
@@ -153,36 +165,38 @@ Examples:
 * `filter ct/col d/food sci` selects colleagues whose departments contain `food sci`.
 * `filter n/ali a/clementi t/Student t/Year2` requires the name and address substrings and both exact tags.
 
-### Creating a group: `create_group`
+### Creating a group: `addgroup`
 
 Creates a class or department group.
 
-Format: `create_group GROUP_NAME gt/GROUP_TYPE`
+Format: `addgroup GROUP_NAME gt/GROUP_TYPE`
 
 * `GROUP_NAME` may contain letters, digits, and spaces, and must not be blank.
-* `GROUP_TYPE` must be either `class` or `department`.
+* `GROUP_TYPE` must be either `class` or `department` (case-insensitive). Group names do not allow hyphens.
 * The group name must be unique for its group type.
 * New groups initially have no members and are displayed in the Groups panel.
 
 Examples:
-* `create_group CS2103T T01 gt/class`
-* `create_group Science gt/department`
+* `addgroup CS2103T T01 gt/class`
+* `addgroup Science gt/department`
 
 ### Linking a contact to a group: `link`
 
 Assigns a student to a class or a colleague to a department. The group must already exist.
 
-Format: `link n/NAME d/GROUP`
+Format: `link pid/PERSON_INDEX gid/GROUP_INDEX`
 
-* `NAME` is matched case-insensitively.
+* `PERSON_INDEX` is the positive position in the currently displayed contact list, including filtered results. It is not the permanent contact ID.
+* `GROUP_INDEX` is the positive position in the Groups panel, counting from 1. It is not a permanent group ID.
+* Both prefixes are required, may be in either order, and must appear once each.
 * Students can be assigned only to class groups.
 * Colleagues can be assigned only to department groups.
 * Guardians cannot be assigned to groups.
-* The `d/` prefix identifies the target group, including when the group is a class.
+* Linking to another group replaces the previous group assignment.
 
 Examples:
-* `link n/Alice Tan d/CS2103T T01`
-* `link n/John Smith d/Science`
+* `link pid/1 gid/2` links the first displayed contact to the second group, provided their types are compatible.
+* After filtering contacts, use their new displayed positions when linking.
 
 ### Linking a guardian to a student: `link-guardian`
 
@@ -213,7 +227,15 @@ Examples:
 * `filter n/Betsy` followed by `delete 1` deletes the 1st person in the filter results.
 * Deleting a contact removes any guardian–student relationships involving that contact.
 
-There is currently no command to delete an individual group.
+### Deleting a group: `deletegroup`
+
+Format: `deletegroup INDEX`
+
+* `INDEX` is the positive position in the Groups panel, counting from 1, rather than a contact index or permanent ID.
+* The current Groups panel does not display numeric labels; count the groups from the top.
+* Deleting a group keeps its contacts and removes their assignment to that group.
+
+Example: `deletegroup 1` deletes the first group, if one exists.
 
 ### Clearing all entries: `clear`
 
@@ -256,7 +278,6 @@ _Details coming soon ..._
 ## Known issues
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
-2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -264,14 +285,15 @@ _Details coming soon ..._
 
 Action | Format, Examples
 --------|------------------
-**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS ct/CONTACT_TYPE [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 ct/colleague t/friend`
+**Add** | `add n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_OF_STUDY] [t/TAG]…​` <br> e.g., `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 ct/student yos/2 t/groupLeader`
 **Clear** | `clear`
+**Delete group** | `deletegroup INDEX`<br> e.g., `deletegroup 1`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
 **Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
 **List** | `list`
 **Help** | `help`
-**Create group** | `create_group GROUP_NAME gt/GROUP_TYPE`<br> e.g., `create_group CS2103T T01 gt/class`
-**Link contact to group** | `link n/NAME d/GROUP`<br> e.g., `link n/Alice Tan d/CS2103T T01`
+**Create group** | `addgroup GROUP_NAME gt/GROUP_TYPE`<br> e.g., `addgroup CS2103T T01 gt/class`
+**Link contact to group** | `link pid/PERSON_INDEX gid/GROUP_INDEX`<br> e.g., `link pid/1 gid/2`
 **Link guardian to student** | `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`<br> e.g., `link-guardian s/1 g/2`
 **Exit** | `exit`

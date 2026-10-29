@@ -9,7 +9,7 @@ import seedu.address.commons.util.ToStringBuilder;
 
 /**
  * Tests whether a person satisfies all supplied filter criteria.
- * Text uses case-insensitive substring matching; contact types and tags match exactly.
+ * Text uses case-insensitive substring matching; contact types, tags, and numeric values match exactly.
  */
 public class PersonMatchesFilterPredicate implements Predicate<Person> {
 
@@ -27,11 +27,26 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
     @Override
     public boolean test(Person person) {
         requireNonNull(person);
-        return matchesName(person)
+        return matchesPersonIds(person)
+                && matchesYearOfStudy(person)
+                && matchesName(person)
                 && matchesContactType(person)
                 && matchesDepartment(person)
                 && matchesAddress(person)
                 && matchesTags(person);
+    }
+
+    /** Returns true if any supplied permanent person ID matches, or no IDs were supplied. */
+    private boolean matchesPersonIds(Person person) {
+        return criteria.getPersonIds().isEmpty()
+                || criteria.getPersonIds().contains(person.getId().getRawId());
+    }
+
+    /** Returns false for non-students or students without a year when a year criterion is supplied. */
+    private boolean matchesYearOfStudy(Person person) {
+        return criteria.getYearOfStudy()
+                .map(year -> person instanceof Student student && year.equals(student.getYearOfStudy()))
+                .orElse(true);
     }
 
     /** Returns true if the name contains the keyword, or no name criterion was supplied. */

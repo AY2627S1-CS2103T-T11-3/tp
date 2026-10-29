@@ -6,11 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_GROUP;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.index.Index;
+import seedu.address.logic.Messages;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -18,6 +22,7 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.group.ClassGroup;
 import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.GroupName;
+import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
@@ -25,6 +30,7 @@ import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Role;
 import seedu.address.model.person.Student;
 
 public class LinkGroupCommandTest {
@@ -38,7 +44,7 @@ public class LinkGroupCommandTest {
                 new HashSet<>(), null));
         Model model = new ModelManager(addressBook, new UserPrefs());
 
-        assertCommandSuccess(new LinkGroupCommand("Alice Pauline", "CS2103T T01"), model,
+        assertCommandSuccess(new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP), model,
                 "Alice Pauline linked to class: CS2103T T01", model);
         Person linked = model.getAddressBook().getPersonList().getFirst();
         assertInstanceOf(Student.class, linked);
@@ -54,21 +60,21 @@ public class LinkGroupCommandTest {
                 new HashSet<>(), null));
         Model model = new ModelManager(addressBook, new UserPrefs());
 
-        assertCommandSuccess(new LinkGroupCommand("Bob Tan", "Computer Science"), model,
+        assertCommandSuccess(new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP), model,
                 "Bob Tan linked to department: Computer Science", model);
         assertEquals("Computer Science", model.getAddressBook().getPersonList().getFirst().getGroupId());
     }
 
     @Test
-    public void execute_missingGroup_throwsCommandException() {
+    public void execute_invalidGroupIndex_throwsCommandException() {
         AddressBook addressBook = new AddressBook();
         addressBook.addPerson(new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
                 new HashSet<>(), null));
         Model model = new ModelManager(addressBook, new UserPrefs());
 
-        assertCommandFailure(new LinkGroupCommand("Alice Pauline", "Missing Class"), model,
-                "Group not found: Missing Class");
+        assertCommandFailure(new LinkGroupCommand(INDEX_FIRST_PERSON, Index.fromOneBased(2)), model,
+                LinkGroupCommand.MESSAGE_INVALID_GROUP_INDEX);
     }
 
     @Test
@@ -80,60 +86,52 @@ public class LinkGroupCommandTest {
                 new HashSet<>(), null));
         Model model = new ModelManager(addressBook, new UserPrefs());
 
-        assertCommandFailure(new LinkGroupCommand("Alice Pauline", "Computer Science"), model,
-                "Group not found: Computer Science");
+        assertCommandFailure(new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP), model,
+                String.format(LinkGroupCommand.MESSAGE_MISMATCH_PERSON_ROLE_GROUP_TYPE,
+                        Role.STUDENT.toString().toLowerCase(), GroupType.DEPARTMENT.toString().toLowerCase()));
     }
 
     @Test
-    public void execute_missingPerson_throwsCommandException() {
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
-
-        assertCommandFailure(new LinkGroupCommand("Unknown Person", "Computer Science"), model,
-                "Contact not found: Unknown Person");
-    }
-
-    @Test
-    public void execute_invalidGroupName_throwsCommandException() {
+    public void execute_invalidPersonIndex_throwsCommandException() {
         AddressBook addressBook = new AddressBook();
-        addressBook.addPerson(new Student(new Name("Alice Pauline"), new Phone("91234567"),
-                new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
-                new HashSet<>(), null));
+        addressBook.addGroup(new ClassGroup(new GroupName("CS2103T T01")));
         Model model = new ModelManager(addressBook, new UserPrefs());
 
-        assertCommandFailure(new LinkGroupCommand("Alice Pauline", "!invalid"), model,
-                "Group not found: !invalid");
+        assertCommandFailure(new LinkGroupCommand(Index.fromOneBased(2), INDEX_FIRST_GROUP), model,
+                Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
     }
 
     @Test
     public void execute_guardian_throwsCommandException() {
         AddressBook addressBook = new AddressBook();
+        addressBook.addGroup(new ClassGroup(new GroupName("CS2103T T01")));
         addressBook.addPerson(new Guardian(new Name("Carol Lim"), new Phone("91234569"),
                 new Email("carol@example.com"), new Address("123, Jurong West Ave 6, #08-113"),
                 new HashSet<>()));
         Model model = new ModelManager(addressBook, new UserPrefs());
 
-        assertCommandFailure(new LinkGroupCommand("Carol Lim", "Computer Science"), model,
-                "Selected contact cannot be linked to a class or department.");
+        assertCommandFailure(new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP), model,
+                LinkGroupCommand.MESSAGE_INVALID_PERSON_ROLE);
     }
 
     @Test
     public void equals_sameObject_returnsTrue() {
-        LinkGroupCommand command = new LinkGroupCommand("Alice Pauline", "CS2103T T01");
+        LinkGroupCommand command = new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP);
 
         assertTrue(command.equals(command));
     }
 
     @Test
     public void equals_unrelatedObject_returnsFalse() {
-        LinkGroupCommand command = new LinkGroupCommand("Alice Pauline", "CS2103T T01");
+        LinkGroupCommand command = new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP);
 
         assertFalse(command.equals("not a command"));
     }
 
     @Test
     public void hashCode_sameValues_returnsSameHashCode() {
-        LinkGroupCommand first = new LinkGroupCommand("Alice Pauline", "CS2103T T01");
-        LinkGroupCommand second = new LinkGroupCommand("Alice Pauline", "CS2103T T01");
+        LinkGroupCommand first = new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP);
+        LinkGroupCommand second = new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP);
 
         assertEquals(first.hashCode(), second.hashCode());
     }
