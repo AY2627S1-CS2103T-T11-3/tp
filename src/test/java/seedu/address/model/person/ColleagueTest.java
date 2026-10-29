@@ -7,14 +7,17 @@ import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.group.GroupId;
+
 public class ColleagueTest {
     @Test
     public void equals() {
         Person alice = new Colleague(new Name("Alice Pauline"), new Phone("91234567"), new Email("alice@example.com"),
-                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1, "Computer Science");
+                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1,
+                GroupId.createFromRawId(0));
         Person aliceCopy = new Colleague(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(),
-                1, "Computer Science");
+                1, GroupId.createFromRawId(0));
 
         Person bob = new Person(new Name("Bob"), new Phone("99887766"), new Email("bob@example.org"),
                 new Address("456, Banana Lane, #01-23"), new HashSet<>(), Role.STUDENT, 2, null);

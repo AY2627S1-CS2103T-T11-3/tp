@@ -121,7 +121,7 @@ public class LogicManagerTest {
                 logic.getGuardianNames(aliceStudent));
 
         // A guardian outside the filtered list must still appear on the student card.
-        model.updateFilteredPersonList(person -> person.equals(aliceStudent));
+        model.updateFilteredPersonList((person, groups) -> person.equals(aliceStudent));
         assertEquals(bobGuardian.getName().fullName + ", " + carlGuardian.getName().fullName,
                 logic.getGuardianNames(aliceStudent));
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);

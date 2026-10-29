@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -20,6 +21,7 @@ import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.group.ClassGroup;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
@@ -29,6 +31,11 @@ import seedu.address.model.person.Student;
 
 public class JsonAddressBookStorageTest {
     private static final Path TEST_DATA_FOLDER = Paths.get("src", "test", "data", "JsonAddressBookStorageTest");
+
+    @BeforeAll
+    public static void resetGroupId() {
+        GroupId.setNextId(0);
+    }
 
     @TempDir
     public Path testFolder;
@@ -97,10 +104,11 @@ public class JsonAddressBookStorageTest {
     @Test
     public void readAndSaveAddressBook_preservesPersonGroupId() throws Exception {
         AddressBook original = new AddressBook();
-        original.addGroup(new ClassGroup(new GroupName("CS2103T T01")));
+        ClassGroup classGroup = new ClassGroup(new GroupName("CS2103T T01"));
+        original.addGroup(classGroup);
         original.addPerson(new Student(new Name("Alice Pauline"), new Phone("94351253"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), Set.of(), 1,
-                "CS2103T T01", 2));
+                classGroup.getId(), 2));
 
         Path filePath = testFolder.resolve("GroupedAddressBook.json");
         JsonAddressBookStorage jsonAddressBookStorage = new JsonAddressBookStorage(filePath);
@@ -108,7 +116,7 @@ public class JsonAddressBookStorageTest {
 
         ReadOnlyAddressBook readBack = jsonAddressBookStorage.readAddressBook(filePath).get();
 
-        assertEquals("CS2103T T01", readBack.getPersonList().getFirst().getGroupId());
+        assertEquals(0, readBack.getPersonList().getFirst().getGroupId().getRawId());
     }
 
     @Test

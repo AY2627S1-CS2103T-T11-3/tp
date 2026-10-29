@@ -22,6 +22,7 @@ import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
@@ -42,8 +43,8 @@ public class FilterCommandTest {
             ALICE.getAddress(), ALICE.getTags(), null);
     private final Guardian guardian = new Guardian(BENSON.getName(), BENSON.getPhone(), BENSON.getEmail(),
             BENSON.getAddress(), BENSON.getTags());
-    private final Colleague foodScienceColleague = prepareColleague("Alison Goh", "Food Science");
-    private final Colleague computerScienceColleague = prepareColleague("Marcus Lee", "Computer Science");
+    private final Colleague mathColleague = prepareColleague("Alison Goh",
+            model.getGroupList().get(1).getId());
     private final Colleague unlinkedColleague = prepareColleague("Priya Rao", null);
 
     @Test
@@ -65,7 +66,7 @@ public class FilterCommandTest {
 
     @Test
     public void execute_emptyCriteriaAfterFiltering_restoresAllPersons() {
-        model.updateFilteredPersonList(person -> false);
+        model.updateFilteredPersonList((p, gs) -> false);
         assertTrue(model.getFilteredPersonList().isEmpty());
 
         assertFilterSuccess(prepareCommand(Optional.empty(), Set.of()), getTypicalPersons());
@@ -84,7 +85,7 @@ public class FilterCommandTest {
         Model roleModel = prepareRoleModel();
 
         assertFilterSuccess(prepareCommand(Optional.of("ALI"), Optional.empty(), Optional.empty(),
-                Optional.empty(), Set.of()), roleModel, List.of(student, foodScienceColleague));
+                Optional.empty(), Set.of()), roleModel, List.of(student, mathColleague));
     }
 
     @Test
@@ -97,17 +98,17 @@ public class FilterCommandTest {
                 Optional.empty(), Set.of()), roleModel, List.of(guardian));
         assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.COLLEAGUE), Optional.empty(),
                 Optional.empty(), Set.of()), roleModel,
-                List.of(foodScienceColleague, computerScienceColleague, unlinkedColleague));
+                List.of(mathColleague, unlinkedColleague));
     }
 
     @Test
     public void execute_partialMixedCaseDepartment_listsMatchingColleagues() {
         Model roleModel = prepareRoleModel();
 
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("SCIENCE"),
-                Optional.empty(), Set.of()), roleModel, List.of(foodScienceColleague, computerScienceColleague));
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("fOoD sCi"),
-                Optional.empty(), Set.of()), roleModel, List.of(foodScienceColleague));
+        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("MATH"),
+                Optional.empty(), Set.of()), roleModel, List.of(mathColleague));
+        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("mAtH"),
+                Optional.empty(), Set.of()), roleModel, List.of(mathColleague));
         assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("Mathematics"),
                 Optional.empty(), Set.of()), roleModel, List.of());
     }
@@ -116,18 +117,18 @@ public class FilterCommandTest {
     public void execute_allCriteria_listsIntersection() {
         Model roleModel = prepareRoleModel();
         FilterCommand command = prepareCommand(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
-                Optional.of("food sci"), Optional.of("clementi"), Set.of(new Tag("Committee"), new Tag("Staff")));
+                Optional.of("Math"), Optional.of("clementi"), Set.of(new Tag("Committee"), new Tag("Staff")));
 
-        assertFilterSuccess(command, roleModel, List.of(foodScienceColleague));
+        assertFilterSuccess(command, roleModel, List.of(mathColleague));
     }
 
     @Test
     public void execute_parsedChainedCriteria_listsIntersection() throws Exception {
         Model roleModel = prepareRoleModel();
         FilterCommand command = (FilterCommand) new AddressBookParser().parseCommand(
-                "filter t/Staff d/FOOD SCI n/ALI a/CLEMENTI ct/cOl t/Committee");
+                "filter t/Staff d/Math n/ALI a/CLEMENTI ct/cOl t/Committee");
 
-        assertFilterSuccess(command, roleModel, List.of(foodScienceColleague));
+        assertFilterSuccess(command, roleModel, List.of(mathColleague));
     }
 
     @Test
@@ -148,12 +149,12 @@ public class FilterCommandTest {
     public void execute_newCriteriaAfterDepartmentFilter_replacesFilter() {
         Model roleModel = prepareRoleModel();
 
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("food sci"),
-                Optional.empty(), Set.of()), roleModel, List.of(foodScienceColleague));
+        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("Math"),
+                Optional.empty(), Set.of()), roleModel, List.of(mathColleague));
         assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.STUDENT), Optional.empty(),
                 Optional.empty(), Set.of()), roleModel, List.of(student));
         assertFilterSuccess(prepareCommand(Optional.empty(), Set.of()), roleModel,
-                List.of(student, guardian, foodScienceColleague, computerScienceColleague, unlinkedColleague));
+                List.of(student, guardian, mathColleague, unlinkedColleague));
     }
 
     @Test
@@ -282,7 +283,7 @@ public class FilterCommandTest {
      */
     private void assertFilterSuccess(FilterCommand command, Model actualModel, List<Person> expectedPersons) {
         Model expectedModel = new ModelManager(actualModel.getAddressBook(), actualModel.getUserPrefs());
-        expectedModel.updateFilteredPersonList(expectedPersons::contains);
+        expectedModel.updateFilteredPersonList((p, gs) -> expectedPersons.contains(p));
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, expectedPersons.size());
 
         assertCommandSuccess(command, actualModel, expectedMessage, expectedModel);
@@ -294,8 +295,7 @@ public class FilterCommandTest {
      */
     private Model prepareRoleModel() {
         Model roleModel = new ModelManager();
-        for (Person contact : List.of(student, guardian, foodScienceColleague, computerScienceColleague,
-                unlinkedColleague)) {
+        for (Person contact : List.of(student, guardian, mathColleague, unlinkedColleague)) {
             roleModel.addPerson(contact);
         }
         return roleModel;
@@ -304,10 +304,10 @@ public class FilterCommandTest {
     /**
      * Constructs a colleague with shared address and tags, and an optional department.
      */
-    private Colleague prepareColleague(String name, String department) {
+    private Colleague prepareColleague(String name, GroupId groupId) {
         Person details = new PersonBuilder().withName(name).withAddress("311, Clementi Ave 2")
                 .withTags("Committee", "Staff").build();
         return new Colleague(details.getName(), details.getPhone(), details.getEmail(), details.getAddress(),
-                details.getTags(), department);
+                details.getTags(), groupId);
     }
 }

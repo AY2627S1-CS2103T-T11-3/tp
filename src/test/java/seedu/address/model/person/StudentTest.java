@@ -9,20 +9,23 @@ import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.group.GroupId;
+
 public class StudentTest {
     @Test
     public void equals() {
+        GroupId sharedGroupId = new GroupId();
         Person alice = new Student(new Name("Alice Pauline"), new Phone("91234567"), new Email("alice@example.com"),
-                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1, "Computer Science", 2016);
+                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1, sharedGroupId, 2016);
         Person aliceCopy = new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1,
-                "Computer Science", 2016);
+                sharedGroupId, 2016);
         Person aliceNoYearOfStudy = new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1,
-                "Computer Science", null);
+                sharedGroupId, null);
         Person aliceNoYearOfStudyCopy = new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1,
-                "Computer Science", null);
+                sharedGroupId, null);
 
 
         Person bob = new Person(new Name("Bob"), new Phone("99887766"), new Email("bob@example.org"),

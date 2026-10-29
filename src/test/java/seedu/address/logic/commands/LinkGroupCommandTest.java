@@ -11,6 +11,7 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import java.util.HashSet;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -21,6 +22,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.group.ClassGroup;
 import seedu.address.model.group.DepartmentGroup;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Address;
@@ -35,6 +37,11 @@ import seedu.address.model.person.Student;
 
 public class LinkGroupCommandTest {
 
+    @BeforeAll
+    public static void resetGroupId() {
+        GroupId.setNextId(0);
+    }
+
     @Test
     public void execute_existingStudent_updatesClass() throws Exception {
         AddressBook addressBook = new AddressBook();
@@ -48,7 +55,7 @@ public class LinkGroupCommandTest {
                 "Alice Pauline linked to class: CS2103T T01", model);
         Person linked = model.getAddressBook().getPersonList().getFirst();
         assertInstanceOf(Student.class, linked);
-        assertEquals("CS2103T T01", linked.getGroupId());
+        assertEquals(0, linked.getGroupId().getRawId());
     }
 
     @Test
@@ -62,7 +69,7 @@ public class LinkGroupCommandTest {
 
         assertCommandSuccess(new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP), model,
                 "Bob Tan linked to department: Computer Science", model);
-        assertEquals("Computer Science", model.getAddressBook().getPersonList().getFirst().getGroupId());
+        assertEquals(0, model.getAddressBook().getPersonList().getFirst().getGroupId().getRawId());
     }
 
     @Test

@@ -129,7 +129,7 @@ public class CommandTestUtil {
         assertTrue(targetIndex.getZeroBased() < model.getFilteredPersonList().size());
 
         Person person = model.getFilteredPersonList().get(targetIndex.getZeroBased());
-        model.updateFilteredPersonList(person::equals);
+        model.updateFilteredPersonList((p, gs) -> person.equals(p));
 
         assertEquals(1, model.getFilteredPersonList().size());
     }

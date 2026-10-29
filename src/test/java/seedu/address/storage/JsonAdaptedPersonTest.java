@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
@@ -56,6 +57,7 @@ public class JsonAdaptedPersonTest {
                 VALID_TAGS,
                 null,
                 1,
+                null,
                 null);
         String expectedMessage = String.format(
                 MISSING_FIELD_MESSAGE_FORMAT,
@@ -91,7 +93,7 @@ public class JsonAdaptedPersonTest {
     @Test
     public void toModelType_nullPhone_returnsValidPerson() throws IllegalValueException {
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, null, VALID_EMAIL, VALID_ADDRESS, VALID_TAGS,
-                Role.STUDENT, 1, null, null, 1);
+                Role.STUDENT, 1, null, null);
         Set<Tag> expectedTags = new HashSet<>();
 
         for (JsonAdaptedTag tag : VALID_TAGS) {
@@ -99,7 +101,7 @@ public class JsonAdaptedPersonTest {
         }
 
         Student expectedPerson = new Student(new Name(VALID_NAME), null, new Email(VALID_EMAIL),
-                new Address(VALID_ADDRESS), expectedTags, 1, null, 1);
+                new Address(VALID_ADDRESS), expectedTags, 1, null, null);
         assertEquals(expectedPerson, person.toModelType());
     }
 
@@ -115,7 +117,7 @@ public class JsonAdaptedPersonTest {
     @Test
     public void toModelType_nullEmail_returnsValidPerson() throws IllegalValueException {
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, null, VALID_ADDRESS, VALID_TAGS,
-                Role.STUDENT, 1, null, null, 1);
+                Role.STUDENT, 1, null, null);
         Set<Tag> expectedTags = new HashSet<>();
 
         for (JsonAdaptedTag tag : VALID_TAGS) {
@@ -123,7 +125,7 @@ public class JsonAdaptedPersonTest {
         }
 
         Student expectedPerson = new Student(new Name(VALID_NAME), new Phone(VALID_PHONE), null,
-                new Address(VALID_ADDRESS), expectedTags, 1, null, 1);
+                new Address(VALID_ADDRESS), expectedTags, 1, null, null);
         assertEquals(expectedPerson, person.toModelType());
     }
 
@@ -138,7 +140,7 @@ public class JsonAdaptedPersonTest {
     @Test
     public void toModelType_nullAddress_returnsValidPerson() throws IllegalValueException {
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, null, VALID_TAGS,
-                Role.STUDENT, 1, null, null, 1);
+                Role.STUDENT, 1, null, null);
         Set<Tag> expectedTags = new HashSet<>();
 
         for (JsonAdaptedTag tag : VALID_TAGS) {
@@ -146,7 +148,7 @@ public class JsonAdaptedPersonTest {
         }
 
         Student expectedPerson = new Student(new Name(VALID_NAME), new Phone(VALID_PHONE), new Email(VALID_EMAIL),
-                null, expectedTags, 1, null, 1);
+                null, expectedTags, 1, null, null);
         assertEquals(expectedPerson, person.toModelType());
     }
 
@@ -171,7 +173,7 @@ public class JsonAdaptedPersonTest {
     @Test
     public void toModelType_validColleague_returnsColleague() throws Exception {
         Colleague charlie = new Colleague(new Name("Charlie"), new Phone("91234567"), new Email("charlie@example.com"),
-                new Address("123, Pine Street, #01-23"), new HashSet<>(), "Computer Science");
+                new Address("123, Pine Street, #01-23"), new HashSet<>(), new GroupId());
         JsonAdaptedPerson person = new JsonAdaptedPerson(charlie);
         assertEquals(charlie, person.toModelType());
     }

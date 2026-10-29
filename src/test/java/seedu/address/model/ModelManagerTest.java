@@ -106,7 +106,7 @@ public class ModelManagerTest {
         assertFalse(modelManager.equals(new ModelManager(differentAddressBook, userPrefs)));
 
         // different filteredList -> returns false
-        modelManager.updateFilteredPersonList(ALICE::equals);
+        modelManager.updateFilteredPersonList((p, gs) -> ALICE.equals(p));
         assertFalse(modelManager.equals(new ModelManager(addressBook, userPrefs)));
 
         // resets modelManager to initial state for upcoming tests

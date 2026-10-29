@@ -27,6 +27,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
@@ -143,9 +144,9 @@ public class EditCommandTest {
     @Test
     public void execute_colleague_success() {
         Person alice = new Colleague(new Name("Alice Pauline"), new Phone("91234567"), new Email("alice@example.com"),
-                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<Tag>(), 1, "Computer Science");
+                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<Tag>(), 1, null);
         Person charlie = new Colleague(new Name("Charlie"), new Phone("91234567"), new Email("charlie@example.com"),
-                new Address("123, Pine Street, #01-23"), new HashSet<>(), 1, "Computer Science");
+                new Address("123, Pine Street, #01-23"), new HashSet<>(), 1, null);
 
         AddressBook expectedAb = new AddressBook();
         expectedAb.addPerson(charlie);
