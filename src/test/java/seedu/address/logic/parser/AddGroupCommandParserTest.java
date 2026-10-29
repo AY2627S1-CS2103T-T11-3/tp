@@ -63,6 +63,14 @@ public class AddGroupCommandParserTest {
                         + PREFIX_GROUP_TYPE + "department",
                 expectedMessage
         );
+
+        assertParseFailure(
+                parser,
+                AddGroupCommand.COMMAND_WORD + nonEmptyGroupName + " "
+                        + PREFIX_GROUP_TYPE + "class" + " "
+                        + PREFIX_GROUP_TYPE + "class",
+                expectedMessage
+        );
     }
 
 }
