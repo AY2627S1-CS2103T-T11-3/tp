@@ -5,6 +5,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACT_TYPE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPARTMENT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PERSON_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR_OF_STUDY;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.FilterCommand;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.person.PersonFilterCriteria;
 import seedu.address.model.person.PersonId;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
@@ -27,7 +29,7 @@ import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 
 /**
- * Tests parsing and validation of text, contact type, tag, person ID, and year-of-study criteria.
+ * Tests parsing and validation of text, contact type, tag, person ID, group ID, and year-of-study criteria.
  */
 public class FilterCommandParserTest {
 
@@ -67,21 +69,33 @@ public class FilterCommandParserTest {
         assertParseSuccess(parser,
                 " \t yos/ 02 \t t/Student \t id/0013 \t ct/STU \t a/Clementi \t id/0012 \t n/ali \t ",
                 expectedCommand);
+
+        FilterCommand groupedCommand = prepareCommand(Optional.of("ali"), Optional.of(Role.STUDENT),
+                Optional.empty(), Optional.of("Clementi"), Set.of(new Tag("Student")), Set.of(12, 13),
+                Optional.of(2), Optional.of(128));
+        assertParseSuccess(parser, " gid/128 id/12 id/13 yos/2 n/ali ct/student a/Clementi t/Student", groupedCommand);
+        assertParseSuccess(parser,
+                " \t yos/02\t t/Student\t gid/00128\t id/0013\t ct/STU\t a/Clementi\t id/0012\t n/ali ",
+                groupedCommand);
     }
 
-    /** Verifies the positive lower bound, larger boxed values, and the upper int bound for both prefixes. */
+    /** Verifies positive numeric boundaries and leading zeros for the optional group ID. */
     @Test
     public void parse_numericBoundaries_acceptsPositiveInts() {
         for (int value : List.of(1, 128, Integer.MAX_VALUE)) {
             assertParseSuccess(parser, " id/" + value, prepareNumericCommand(Set.of(value), Optional.empty()));
             assertParseSuccess(parser, " yos/" + value, prepareNumericCommand(Set.of(), Optional.of(value)));
+            assertParseSuccess(parser, " gid/" + value,
+                    prepareNumericCommand(Set.of(), Optional.empty(), Optional.of(value)));
         }
+        assertParseSuccess(parser, " gid/00128",
+                prepareNumericCommand(Set.of(), Optional.empty(), Optional.of(128)));
     }
 
-    /** Verifies that malformed numbers and overflow report ParseException for either numeric prefix. */
+    /** Verifies that malformed numbers and overflow report ParseException for every numeric prefix. */
     @Test
     public void parse_invalidNumericValues_throwsParseException() {
-        for (Prefix prefix : List.of(PREFIX_PERSON_ID, PREFIX_YEAR_OF_STUDY)) {
+        for (Prefix prefix : List.of(PREFIX_PERSON_ID, PREFIX_YEAR_OF_STUDY, PREFIX_GROUP_ID)) {
             String expectedMessage = String.format(FilterCommand.MESSAGE_INVALID_NUMERIC_CRITERION, prefix);
             for (String value : List.of("0", "-1", "+1", "2.5", "1e2", "abc", "1 2", "2147483648",
                     "9999999999999999999999999999")) {
@@ -105,14 +119,18 @@ public class FilterCommandParserTest {
         }
     }
 
-    /** Verifies that numeric filter parsing never allocates a permanent contact ID. */
+    /** Verifies that parsing numeric criteria never allocates contact or group IDs. */
     @Test
-    public void parse_numericCriteria_doesNotAdvancePersonIdCounter() {
+    public void parse_numericCriteria_doesNotAdvanceIdCounters() {
         int nextId = PersonId.getNextId();
+        int nextGroupId = GroupId.getNextId();
 
         assertParseSuccess(parser, " id/128 id/256 yos/128",
                 prepareNumericCommand(Set.of(128, 256), Optional.of(128)));
+        assertParseSuccess(parser, " id/128 id/256 yos/128 gid/256",
+                prepareNumericCommand(Set.of(128, 256), Optional.of(128), Optional.of(256)));
         assertEquals(nextId, PersonId.getNextId());
+        assertEquals(nextGroupId, GroupId.getNextId());
     }
 
     @Test
@@ -186,7 +204,7 @@ public class FilterCommandParserTest {
     @Test
     public void parse_emptyNewCriteria_throwsParseException() {
         for (Prefix prefix : List.of(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT,
-                PREFIX_PERSON_ID, PREFIX_YEAR_OF_STUDY)) {
+                PREFIX_PERSON_ID, PREFIX_YEAR_OF_STUDY, PREFIX_GROUP_ID)) {
             String expectedMessage = String.format(FilterCommand.MESSAGE_EMPTY_CRITERION, prefix)
                     + "\n" + FilterCommand.MESSAGE_USAGE;
 
@@ -196,17 +214,18 @@ public class FilterCommandParserTest {
         }
     }
 
-    /** Verifies that all single-valued criteria, including identical years, reject repeated prefixes. */
+    /** Verifies that single-valued criteria reject repeated prefixes, including equivalent numeric values. */
     @Test
     public void parse_duplicateNewCriteria_throwsParseException() {
-        for (Prefix prefix : List.of(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_YEAR_OF_STUDY)) {
+        for (Prefix prefix : List.of(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_YEAR_OF_STUDY,
+                PREFIX_GROUP_ID)) {
             String expectedMessage = Messages.getErrorMessageForDuplicatePrefixes(prefix);
             String firstValue = "Alice";
             String secondValue = "Bob";
             if (prefix.equals(PREFIX_CONTACT_TYPE)) {
                 firstValue = "stu";
                 secondValue = "guar";
-            } else if (prefix.equals(PREFIX_YEAR_OF_STUDY)) {
+            } else if (prefix.equals(PREFIX_YEAR_OF_STUDY) || prefix.equals(PREFIX_GROUP_ID)) {
                 firstValue = "2";
                 secondValue = "3";
             }
@@ -215,6 +234,9 @@ public class FilterCommandParserTest {
             assertParseFailure(parser, " " + prefix + firstValue + " t/Student " + prefix + secondValue,
                     expectedMessage);
             assertParseFailure(parser, " " + prefix + " " + prefix + firstValue, expectedMessage);
+            if (prefix.equals(PREFIX_GROUP_ID)) {
+                assertParseFailure(parser, " gid/3 gid/003", expectedMessage);
+            }
         }
     }
 
@@ -391,14 +413,29 @@ public class FilterCommandParserTest {
     private FilterCommand prepareCommand(Optional<String> nameKeyword, Optional<Role> contactType,
             Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags,
             Set<Integer> personIds, Optional<Integer> yearOfStudy) {
+        return prepareCommand(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
+                personIds, yearOfStudy, Optional.empty());
+    }
+
+    /** Constructs an expected command with an optional group restriction independently of parsing. */
+    private FilterCommand prepareCommand(Optional<String> nameKeyword, Optional<Role> contactType,
+            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags,
+            Set<Integer> personIds, Optional<Integer> yearOfStudy, Optional<Integer> groupId) {
         PersonFilterCriteria criteria = new PersonFilterCriteria(nameKeyword, contactType, departmentKeyword,
                 addressKeyword, requiredTags, personIds, yearOfStudy);
-        return new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+        return new FilterCommand(new PersonMatchesFilterPredicate(criteria), groupId);
     }
 
     /** Constructs numeric-only expected commands without reusing parser output as the oracle. */
     private FilterCommand prepareNumericCommand(Set<Integer> personIds, Optional<Integer> yearOfStudy) {
         return prepareCommand(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Set.of(),
                 personIds, yearOfStudy);
+    }
+
+    /** Constructs numeric-only expected commands with a group ID and no parser dependency. */
+    private FilterCommand prepareNumericCommand(Set<Integer> personIds, Optional<Integer> yearOfStudy,
+            Optional<Integer> groupId) {
+        return prepareCommand(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Set.of(),
+                personIds, yearOfStudy, groupId);
     }
 }
