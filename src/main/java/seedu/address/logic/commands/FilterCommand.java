@@ -28,7 +28,7 @@ public class FilterCommand extends Command {
             + "Names, addresses, and departments use case-insensitive substring matching.\n"
             + "Contact types accept a full value or unambiguous prefix of student, guardian, or colleague "
             + "(case-insensitive). Tags use case-sensitive exact matching.\n"
-            + "All criteria must match. Omit all criteria to list all persons.\n"
+            + "At least one criterion must be supplied.\n"
             + "Department criteria only match colleagues with a department.\n"
             + "Each prefix except " + PREFIX_TAG + " may appear at most once; repeat " + PREFIX_TAG
             + " to require multiple tags. Supplied values must not be empty.\n"

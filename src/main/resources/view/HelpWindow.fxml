@@ -145,7 +145,7 @@
                   <Label text="t/TAG" styleClass="help-field-name" GridPane.rowIndex="4" GridPane.columnIndex="0" />
                   <Label text="Tag; exact, case-sensitive matching. Repeat to require more tags." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="4" GridPane.columnIndex="1" />
                 </GridPane>
-                <Label text="All fields are optional. Repeat t/TAG to require multiple tags; omit all fields to show every contact."
+                <Label text="At least one field is required. Repeat t/TAG to require multiple tags."
                        wrapText="true" styleClass="help-note" />
               </VBox>
 

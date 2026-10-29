@@ -38,6 +38,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.EditCommand;
+import seedu.address.logic.commands.FilterCommand;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.testutil.FxTestUtil;
 
@@ -146,7 +147,9 @@ public class HelpWindowTest {
             Map<String, TextArea> formats = documentedFormats();
             for (String command : ALL_COMMAND_NAMES) {
                 if (!command.equals(AddCommand.COMMAND_WORD) && !command.equals(EditCommand.COMMAND_WORD)) {
-                    assertFormatAcceptedByParser(formats.get(command).getText(), "student", Map.of());
+                    String format = command.equals(FilterCommand.COMMAND_WORD)
+                            ? "filter n/student" : formats.get(command).getText();
+                    assertFormatAcceptedByParser(format, "student", Map.of());
                 }
             }
         });
