@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR_OF_STUDY;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Collections;
@@ -46,6 +47,7 @@ public class EditCommand extends Command {
             + "[" + PREFIX_PHONE + "PHONE] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
+            + "[" + PREFIX_YEAR_OF_STUDY + "YEAR OF STUDY (ONLY IF STUDENT)] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
@@ -110,14 +112,14 @@ public class EditCommand extends Command {
         }
 
         if (personToEdit instanceof Colleague personToEditColleague) {
-            // TODO: Integrate department into EditPersonDescriptor and EditCommand
             return new Colleague(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
                     personToEditColleague.getDepartment());
         }
 
         Student student = (Student) personToEdit;
+        Integer updatedYearOfStudy = editPersonDescriptor.getYearOfStudy().orElse(student.getYearOfStudy());
         return new Student(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
-                student.getGroupId(), student.getYearOfStudy());
+                student.getGroupId(), updatedYearOfStudy);
     }
 
     @Override
@@ -153,6 +155,7 @@ public class EditCommand extends Command {
         private Email email;
         private Address address;
         private Set<Tag> tags;
+        private Integer yearOfStudy;
 
         public EditPersonDescriptor() {}
 
@@ -166,13 +169,14 @@ public class EditCommand extends Command {
             setEmail(toCopy.email);
             setAddress(toCopy.address);
             setTags(toCopy.tags);
+            setYearOfStudy(toCopy.yearOfStudy);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags, yearOfStudy);
         }
 
         public void setName(Name name) {
@@ -224,6 +228,14 @@ public class EditCommand extends Command {
             return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
         }
 
+        public void setYearOfStudy(Integer yearOfStudy) {
+            this.yearOfStudy = yearOfStudy;
+        }
+
+        public Optional<Integer> getYearOfStudy() {
+            return Optional.ofNullable(yearOfStudy);
+        }
+
         @Override
         public boolean equals(Object other) {
             if (other == this) {
@@ -239,7 +251,8 @@ public class EditCommand extends Command {
                     && Objects.equals(phone, otherEditPersonDescriptor.phone)
                     && Objects.equals(email, otherEditPersonDescriptor.email)
                     && Objects.equals(address, otherEditPersonDescriptor.address)
-                    && Objects.equals(tags, otherEditPersonDescriptor.tags);
+                    && Objects.equals(tags, otherEditPersonDescriptor.tags)
+                    && Objects.equals(yearOfStudy, otherEditPersonDescriptor.yearOfStudy);
         }
 
         @Override
