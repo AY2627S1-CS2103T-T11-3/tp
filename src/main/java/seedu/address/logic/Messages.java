@@ -20,6 +20,16 @@ public class Messages {
                 "Multiple values specified for the following single-valued field(s): ";
     public static final String MESSAGE_OPTIONAL_EMPTY_PLACEHOLDER = "NA";
     /**
+     * Returns a grammatically appropriate message for the number of persons found.
+     */
+    public static String getPersonsFoundMessage(int count) {
+        if (count == 0) {
+            return "No persons found.";
+        }
+        return String.format("%d person%s found.", count, count == 1 ? "" : "s");
+    }
+
+    /**
      * Returns an error message indicating the duplicate prefixes.
      */
     public static String getErrorMessageForDuplicatePrefixes(Prefix... duplicatePrefixes) {
