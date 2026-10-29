@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,6 +49,7 @@ public class PersonFilterCriteriaTest {
                 Optional.empty(), Optional.empty(), tagsWithNull));
     }
 
+    /** Verifies that legacy criteria leave both numeric restrictions absent. */
     @Test
     public void constructor_emptyCriteria_storesNoRestrictions() {
         PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Set.of());
@@ -56,14 +59,90 @@ public class PersonFilterCriteriaTest {
         assertEquals(Optional.empty(), criteria.getDepartmentKeyword());
         assertEquals(Optional.empty(), criteria.getAddressKeyword());
         assertTrue(criteria.getRequiredTags().isEmpty());
+        assertTrue(criteria.getPersonIds().isEmpty());
+        assertEquals(Optional.empty(), criteria.getYearOfStudy());
     }
 
+    /** Verifies that all constructor overloads agree when numeric restrictions are absent. */
     @Test
     public void constructor_emptyExtendedCriteria_matchesLegacyConstructor() {
         PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Optional.empty(), Optional.empty(),
                 Optional.empty(), Set.of());
 
         assertEquals(new PersonFilterCriteria(Optional.empty(), Set.of()), criteria);
+        assertEquals(criteria, prepareNumericCriteria(Set.of(), Optional.empty()));
+    }
+
+    /** Verifies that the numeric constructor preserves both supplied values. */
+    @Test
+    public void constructor_numericCriteria_preservesValues() {
+        PersonFilterCriteria criteria = prepareNumericCriteria(Set.of(1, 128), Optional.of(2));
+
+        assertEquals(Set.of(1, 128), criteria.getPersonIds());
+        assertEquals(Optional.of(2), criteria.getYearOfStudy());
+    }
+
+    /** Verifies null protection for the new numeric arguments and individual IDs. */
+    @Test
+    public void constructor_nullNumericArguments_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> prepareNumericCriteria(null, Optional.empty()));
+        assertThrows(NullPointerException.class, () -> prepareNumericCriteria(Set.of(), null));
+
+        Set<Integer> idsWithNull = new HashSet<>(Set.of(1));
+        idsWithNull.add(null);
+        assertThrows(NullPointerException.class, () -> prepareNumericCriteria(idsWithNull, Optional.empty()));
+    }
+
+    /** Verifies that later changes to the caller's ID set cannot change stored criteria. */
+    @Test
+    public void constructor_inputPersonIdsModified_keepsDefensiveCopy() {
+        Set<Integer> originalIds = new HashSet<>(Set.of(1, 2));
+        PersonFilterCriteria criteria = prepareNumericCriteria(originalIds, Optional.empty());
+
+        originalIds.clear();
+        originalIds.add(3);
+
+        assertEquals(Set.of(1, 2), criteria.getPersonIds());
+    }
+
+    /** Verifies that callers cannot mutate the ID set through its getter. */
+    @Test
+    public void getPersonIds_modifySet_throwsUnsupportedOperationException() {
+        PersonFilterCriteria criteria = prepareNumericCriteria(Set.of(1), Optional.empty());
+
+        assertThrows(UnsupportedOperationException.class, () -> criteria.getPersonIds().add(2));
+        assertThrows(UnsupportedOperationException.class, () -> criteria.getPersonIds().remove(1));
+        assertThrows(UnsupportedOperationException.class, () -> criteria.getPersonIds().clear());
+    }
+
+    /** Verifies that numeric values and their absence participate in equality. */
+    @Test
+    public void equals_numericCriteriaDiffer_returnsFalse() {
+        PersonFilterCriteria criteria = prepareNumericCriteria(Set.of(1, 2), Optional.of(2));
+
+        assertFalse(criteria.equals(prepareNumericCriteria(Set.of(1, 3), Optional.of(2))));
+        assertFalse(criteria.equals(prepareNumericCriteria(Set.of(), Optional.of(2))));
+        assertFalse(criteria.equals(prepareNumericCriteria(Set.of(1, 2), Optional.of(12))));
+        assertFalse(criteria.equals(prepareNumericCriteria(Set.of(1, 2), Optional.empty())));
+    }
+
+    /** Verifies that ID insertion order affects neither equality nor the hash-code contract. */
+    @Test
+    public void equalsAndHashCode_reorderedPersonIds_preserveValueSemantics() {
+        PersonFilterCriteria criteria = prepareNumericCriteria(new LinkedHashSet<>(List.of(1, 2)), Optional.of(128));
+        PersonFilterCriteria reordered = prepareNumericCriteria(new LinkedHashSet<>(List.of(2, 1)), Optional.of(128));
+
+        assertEquals(criteria, reordered);
+        assertEquals(criteria.hashCode(), reordered.hashCode());
+    }
+
+    /** Verifies numeric debug fields without depending on multi-element set iteration order. */
+    @Test
+    public void toStringMethod_numericCriteria_includesSuppliedValues() {
+        String description = prepareNumericCriteria(Set.of(128), Optional.of(2)).toString();
+
+        assertTrue(description.contains("personIds=[128]"));
+        assertTrue(description.contains("yearOfStudy=Optional[2]"));
     }
 
     @Test
@@ -185,5 +264,11 @@ public class PersonFilterCriteriaTest {
                 + "addressKeyword=Optional[Clementi], requiredTags=[[Committee]]}";
 
         assertEquals(expected, criteria.toString());
+    }
+
+    /** Constructs numeric criteria without introducing unrelated text, type, or tag restrictions. */
+    private PersonFilterCriteria prepareNumericCriteria(Set<Integer> personIds, Optional<Integer> yearOfStudy) {
+        return new PersonFilterCriteria(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Set.of(), personIds, yearOfStudy);
     }
 }
