@@ -180,6 +180,18 @@ Examples:
 * `addgroup CS2103T T01 gt/class`
 * `addgroup Science gt/department`
 
+### Editing a group: `editgroup`
+
+Edits the name of an existing group without changing its group type.
+
+Format: `editgroup GROUP_INDEX NEW_GROUP_NAME`
+
+* `GROUP_INDEX` is the positive position in the Groups panel, counting from 1. It is not a permanent group ID.
+* `NEW_GROUP_NAME` may contain letters, digits, and spaces, and must not be blank.
+* The new group name must be unique for its group type.
+
+Example: `editgroup 1 CS2103T T02` renames the first group to `CS2103T T02`.
+
 ### Linking a contact to a group: `link`
 
 Assigns a student to a class or a colleague to a department. The group must already exist.
@@ -297,6 +309,7 @@ Action | Format, Examples
 **Add** | `add n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_OF_STUDY] [t/TAG]…​` <br> e.g., `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 ct/student yos/2 t/groupLeader`
 **Clear** | `clear`
 **Delete group** | `deletegroup INDEX`<br> e.g., `deletegroup 1`
+**Edit group** | `editgroup GROUP_INDEX NEW_GROUP_NAME`<br> e.g., `editgroup 1 CS2103T T02`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
 **Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
