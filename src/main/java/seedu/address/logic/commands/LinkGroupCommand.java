@@ -22,6 +22,8 @@ public class LinkGroupCommand extends Command {
             + "Parameters: n/NAME d/GROUP";
     public static final String MESSAGE_NOT_FOUND = "Contact not found: %s";
     public static final String MESSAGE_GROUP_NOT_FOUND = "Group not found: %s";
+    public static final String MESSAGE_COLLEAGUE_WRONG_GROUP_TYPE =
+            "Colleagues can only be linked to department groups.";
 
     private final String personName;
     private final String groupName;
@@ -55,6 +57,10 @@ public class LinkGroupCommand extends Command {
             throw new CommandException(String.format(MESSAGE_GROUP_NOT_FOUND, groupName));
         }
         if (!model.getGroupList().contains(group)) {
+            if (person instanceof Colleague
+                    && model.getGroupList().contains(new ClassGroup(new GroupName(groupName), Set.of()))) {
+                throw new CommandException(MESSAGE_COLLEAGUE_WRONG_GROUP_TYPE);
+            }
             throw new CommandException(String.format(MESSAGE_GROUP_NOT_FOUND, groupName));
         }
 
