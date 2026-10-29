@@ -354,7 +354,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 1. Teacher requests to create a new group
-2. CaNvUS validates group name and group type
+2. CaNvUS validates the group name and group type without rejecting duplicate groups
 3. CaNvUS displays that new group was successfully created 
  
    Use case ends.

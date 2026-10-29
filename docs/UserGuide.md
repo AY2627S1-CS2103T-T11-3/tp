@@ -173,7 +173,7 @@ Format: `addgroup GROUP_NAME gt/GROUP_TYPE`
 
 * `GROUP_NAME` may contain letters, digits, and spaces, and must not be blank.
 * `GROUP_TYPE` must be either `class` or `department` (case-insensitive). Group names do not allow hyphens.
-* The group name must be unique for its group type.
+* Duplicate group names and group types are allowed.
 * New groups initially have no members and are displayed in the Groups panel.
 
 Examples:

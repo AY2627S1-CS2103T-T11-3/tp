@@ -26,7 +26,7 @@ Class Student
 Class Guardian
 Class Colleague
 
-Class UniqueGroupList
+Class GroupList
 Class "{abstract}\nGroup" as Group
 Class ClassGroup
 Class DepartmentGroup
@@ -73,8 +73,8 @@ Name -[hidden]right-> Phone
 Phone -[hidden]right-> Address
 Address -[hidden]right-> Email
 
-AddressBook *--> "1" UniqueGroupList
-UniqueGroupList --> "~* all" Group
+AddressBook *--> "1" GroupList
+GroupList --> "~* all" Group
 Group *--> "1" GroupName
 Group --> "*" PersonId
 

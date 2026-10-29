@@ -21,7 +21,7 @@ public interface ReadOnlyAddressBook {
 
     /**
      * Returns an unmodifiable view of the groups list.
-     * This list will not contain any duplicate groups.
+     * This list may contain groups with the same name and type.
      */
     ObservableList<Group> getGroupList();
 
