@@ -354,7 +354,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 1. Teacher requests to create a new group
-2. CaNvUS validates group name and group type
+2. CaNvUS validates the group name and group type without rejecting duplicate groups
 3. CaNvUS displays that new group was successfully created 
  
    Use case ends.
@@ -370,8 +370,31 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case ends.
 
+**Use Case: UC3 - Edit an existing group**
 
-**Use case: UC3 - Delete an existing contact**
+**MSS**
+
+1. Teacher requests to edit a group by providing its displayed group index and a new name.
+2. CaNvUS validates that the group index and new group name are valid.
+3. CaNvUS checks that no other group of the same type already has the new name.
+4. CaNvUS replaces the selected group with the renamed group, preserving its group type.
+5. CaNvUS displays that the group was successfully edited.
+
+   Use case ends.
+
+**Extensions**
+* 2a. The group index does not refer to an existing group.
+  * 2a1. CaNvUS shows an error message.
+
+    Use case ends.
+
+* 2b. The new group name is invalid or duplicates an existing group of the same type.
+  * 2b1. CaNvUS shows an error message.
+
+    Use case ends.
+
+
+**Use case: UC4 - Delete an existing contact**
 
 **MSS**
 
@@ -389,7 +412,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     
     Use case ends.
 
-**Use case: UC4 - Link guardian to student**
+**Use case: UC5 - Link guardian to student**
 
 **MSS**
 
@@ -412,7 +435,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * Use case ends.
 
 
-**Use case: UC5 - Link colleague to department**
+**Use case: UC6 - Link colleague to department**
 
 1. Teacher requests to link a colleague to a department.
 2. CaNvUS validates that both the department and the colleague exist.
@@ -427,7 +450,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 2a1. CaNvUS shows an error message.
     Use case ends.
 
-**Use case: UC6 -  List all contacts**
+**Use case: UC7 -  List all contacts**
 
 **MSS**
 
@@ -443,7 +466,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 2a1. CaNvUS informs the teacher that there are no contacts stored.
     Use case ends.
 
-**Use case: UC7 -  Filter contacts**
+**Use case: UC8 -  Filter contacts**
 
 **MSS**
 

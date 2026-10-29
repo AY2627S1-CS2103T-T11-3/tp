@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,6 +44,8 @@ import javafx.stage.Window;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.EditCommand;
+import seedu.address.logic.commands.FilterCommand;
+import seedu.address.logic.commands.LinkGroupCommand;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -64,7 +67,7 @@ public class HelpWindowTest {
             Map.entry("GROUP_NAME", "Group"), Map.entry("YEAR_OF_STUDY", "2"),
             Map.entry("GROUP_TYPE", "class"), Map.entry("STUDENT_INDEX", "1"),
             Map.entry("GUARDIAN_INDEX", "2"), Map.entry("PERSON_INDEX", "1"),
-            Map.entry("GROUP_INDEX", "1"));
+            Map.entry("GROUP_INDEX", "1"), Map.entry("PERSON_ID", "1"), Map.entry("GROUP_ID", "3"));
     private static final Pattern OPTIONAL_FIELD = Pattern.compile("\\[[^\\]]+](?:\\.\\.\\.)?");
     private static final Pattern UNRESOLVED_PLACEHOLDER = Pattern.compile("\\b[A-Z][A-Z_]*\\b");
 
@@ -157,6 +160,56 @@ public class HelpWindowTest {
                 }
                 assertAddFormat(format, fields, role);
             }
+        });
+    }
+
+    /**
+     * Verifies the displayed filter format supports each numeric criterion and combined repeatable fields.
+     *
+     * @throws Exception If the JavaFX test cannot run.
+     */
+    @Test
+    public void reference_filterFormat_acceptsNumericFieldsAndCombinations() throws Exception {
+        runAndWait(() -> {
+            String format = documentedFormats().get(FilterCommand.COMMAND_WORD).getText();
+            Map<String, String> numericFields = Map.of(
+                    "[id/PERSON_ID]...", "id/PERSON_ID", "[gid/GROUP_ID]", "gid/GROUP_ID",
+                    "[yos/YEAR_OF_STUDY]", "yos/YEAR_OF_STUDY");
+            for (Map.Entry<String, String> field : numericFields.entrySet()) {
+                assertTrue(format.contains(field.getKey()), "Missing filter field: " + field.getKey());
+                assertFormatAcceptedByParser(format, Map.of(field.getKey(), field.getValue()));
+            }
+            Map<String, String> combinedFields = new HashMap<>(numericFields);
+            combinedFields.put("[id/PERSON_ID]...", "id/PERSON_ID id/2 id/0001");
+            combinedFields.put("[a/ADDRESS]", "a/ADDRESS");
+            combinedFields.put("[t/TAG]...", "t/TAG t/School");
+            assertFormatAcceptedByParser(format, combinedFields);
+        });
+    }
+
+    /**
+     * Verifies visible descriptions explain numeric matching, combinations, and ID versus index semantics.
+     *
+     * @throws Exception If the JavaFX test cannot run.
+     */
+    @Test
+    public void reference_filterNotes_describeMatchingAndIndexRules() throws Exception {
+        runAndWait(() -> {
+            String reference = documentedEntryText(FilterCommand.COMMAND_WORD);
+            for (String explanation : List.of("id/PERSON_ID", "gid/GROUP_ID", "yos/YEAR_OF_STUDY",
+                    "Exact numeric Person ID, not a displayed contact-list index",
+                    "Exact numeric Group ID, not its position in the Groups panel",
+                    "only students with a recorded year match", "numeric duplicates are ignored",
+                    "Different criteria combine using AND", "Repeated id/ values are alternatives (OR)",
+                    "repeated t/ values must all match (AND)", "Only id/ and t/ may repeat",
+                    "including gid/ and yos/, may appear at most once", "positive integers from 1 to 2147483647",
+                    "leading zeros do not change their value", "Omit all fields to show all contacts",
+                    "replacing the previous filter", "filter gid/ selects an actual numeric Group ID",
+                    "link gid/ selects a displayed group-list index", "Group IDs may change after restarting")) {
+                assertTrue(reference.contains(explanation), "Missing filter explanation: " + explanation);
+            }
+            assertFalse(reference.contains("Use each prefix at most once except t/."));
+            assertTrue(documentedEntryText(LinkGroupCommand.COMMAND_WORD).contains("not a permanent group ID"));
         });
     }
 
@@ -274,13 +327,34 @@ public class HelpWindowTest {
             });
             waitUntil(() -> Math.abs(stage.getScene().getWidth() - width) < 40,
                     "the Help scene to resize");
+            waitUntil(this::wrappedTextFitsViewport, "the wrapped Help fields to finish resizing");
             runAndWait(this::assertReferenceFitsViewport);
         }
         runAndWait(() -> {
             Parent root = stage.getScene().getRoot();
             root.lookupAll(".text-area").forEach(node -> node.setStyle("-fx-font-size: 20px;"));
-            assertReferenceFitsViewport();
         });
+        waitUntil(this::wrappedTextFitsViewport, "the larger Help text to finish resizing");
+        runAndWait(this::assertReferenceFitsViewport);
+    }
+
+    /** Checks rendered text bounds while JavaFX settles width-dependent wrapping and field heights. */
+    private boolean wrappedTextFitsViewport() {
+        Parent root = helpWindow.getRoot().getScene().getRoot();
+        root.applyCss();
+        root.layout();
+        return root.lookupAll(".text-area").stream().map(TextArea.class::cast)
+                .allMatch(area -> {
+                    ScrollPane inner = (ScrollPane) area.lookup(".scroll-pane");
+                    if (inner == null) {
+                        return false;
+                    }
+                    Bounds content = inner.getContent().getLayoutBounds();
+                    Bounds viewport = inner.getViewportBounds();
+                    return viewport.getWidth() > 0 && viewport.getHeight() > 0
+                            && content.getWidth() <= viewport.getWidth() + 1
+                            && content.getHeight() <= viewport.getHeight() + 1;
+                });
     }
 
     private void assertReferenceFitsViewport() {
@@ -332,6 +406,16 @@ public class HelpWindowTest {
         }
         assertEquals(Set.copyOf(ALL_COMMAND_NAMES), formats.keySet());
         return formats;
+    }
+
+    /** Returns the visible labels for one command's Help entry, excluding its selectable syntax and examples. */
+    private String documentedEntryText(String command) {
+        Parent root = helpWindow.getRoot().getScene().getRoot();
+        Parent entry = root.lookupAll(".command-entry").stream().map(Parent.class::cast)
+                .filter(card -> ((Label) card.lookup(".help-command-name")).getText().equals(command))
+                .findFirst().orElseThrow();
+        return entry.lookupAll(".label").stream().map(node -> ((Label) node).getText())
+                .collect(Collectors.joining(" "));
     }
 
     private void assertAddFormat(String format, Map<String, String> fields, Role expectedRole) {

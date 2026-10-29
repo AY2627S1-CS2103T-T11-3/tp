@@ -179,6 +179,18 @@ Examples:
 * `addgroup CS2103T T01 gt/class`
 * `addgroup Science gt/department`
 
+### Editing a group: `editgroup`
+
+Edits the name of an existing group without changing its group type.
+
+Format: `editgroup GROUP_INDEX NEW_GROUP_NAME`
+
+* `GROUP_INDEX` is the positive position in the Groups panel, counting from 1. It is not a permanent group ID.
+* `NEW_GROUP_NAME` may contain letters, digits, and spaces, and must not be blank.
+* The new group name must be unique for its group type.
+
+Example: `editgroup 1 CS2103T T02` renames the first group to `CS2103T T02`.
+
 ### Linking a contact to a group: `link`
 
 Assigns a student to a class or a colleague to a department. The group must already exist.
@@ -281,6 +293,10 @@ _Details coming soon ..._
 ## Known issues
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
+
+2. **Unrecognized filter parameters:** Unsupported prefixes following a text criterion may be treated as part of its
+   value instead of producing an error. For example, `filter n/Alice p/9123` searches for the name text `Alice p/9123`;
+   it does not filter by phone number. Use only the prefixes documented for `filter`.
 
 --------------------------------------------------------------------------------------------------------------------
 

@@ -19,7 +19,6 @@ public class EditGroupCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Edits a group's name. Parameters: INDEX NEW_GROUP_NAME";
     public static final String MESSAGE_INVALID_GROUP_INDEX = "The group index provided is invalid.";
-    public static final String MESSAGE_DUPLICATE_GROUP = "This group already exists in the address book.";
     public static final String MESSAGE_SUCCESS = "Edited group: %1$s";
 
     private final Index index;
@@ -44,9 +43,6 @@ public class EditGroupCommand extends Command {
         }
         Group target = groups.get(index.getZeroBased());
         Group edited = target instanceof ClassGroup ? new ClassGroup(newName) : new DepartmentGroup(newName);
-        if (!target.isSameGroup(edited) && model.hasGroup(edited)) {
-            throw new CommandException(MESSAGE_DUPLICATE_GROUP);
-        }
         model.setGroup(target, edited);
         return new CommandResult(String.format(MESSAGE_SUCCESS, newName));
     }

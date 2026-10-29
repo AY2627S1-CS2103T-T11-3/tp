@@ -73,11 +73,12 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
     }
 
     /**
-     * Returns true if the address contains the keyword, or no address criterion was supplied.
+     * Returns false for contacts without an address when an address criterion is supplied.
      */
     private boolean matchesAddress(Person person) {
         return criteria.getAddressKeyword()
-                .map(keyword -> containsIgnoreCase(person.getAddress().value, keyword))
+                .map(keyword -> person.getAddress() != null
+                        && containsIgnoreCase(person.getAddress().value, keyword))
                 .orElse(true);
     }
 
