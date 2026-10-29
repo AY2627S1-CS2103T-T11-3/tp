@@ -78,9 +78,25 @@ class JsonAdaptedPerson {
      */
     public JsonAdaptedPerson(Person source) {
         name = source.getName().fullName;
-        phone = source.getPhone().value;
-        email = source.getEmail().value;
-        address = source.getAddress().value;
+
+        if (source.getPhone() != null) {
+            phone = source.getPhone().value;
+        } else {
+            phone = null;
+        }
+
+        if (source.getEmail() != null) {
+            email = source.getEmail().value;
+        } else {
+            email = null;
+        }
+
+        if (source.getAddress() != null) {
+            address = source.getAddress().value;
+        } else {
+            address = null;
+        }
+
         if (source instanceof Colleague sourceColleague) {
             groupId = sourceColleague.getGroupId();
         } else {
