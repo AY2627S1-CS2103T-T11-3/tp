@@ -92,6 +92,8 @@ Format: `add n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_
 * `YEAR_OF_STUDY` is optional for students, including when the year is unknown. If supplied, it must be a positive integer from 1 to 2147483647. It is rejected for guardians and colleagues. 
 * `TAG` may contain letters and digits only.
 
+Note that only the format of emails is checked. CaNvUS does not check if the emails are valid.
+
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags, including zero.
 </div>
