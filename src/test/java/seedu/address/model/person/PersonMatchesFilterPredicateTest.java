@@ -18,7 +18,7 @@ import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
 /**
- * Tests text substring matching, role and tag matching, and the intersection of all filter criteria.
+ * Tests text, role, tag, and numeric matching, including OR within IDs and AND across criteria.
  */
 public class PersonMatchesFilterPredicateTest {
 
@@ -29,6 +29,134 @@ public class PersonMatchesFilterPredicateTest {
     private final Guardian guardian = new Guardian(person.getName(), person.getPhone(), person.getEmail(),
             person.getAddress(), person.getTags());
     private final Colleague colleague = prepareColleague("Food Science");
+
+    /** Verifies exact ID matching rather than textual-prefix matching. */
+    @Test
+    public void test_singlePersonId_matchesCompleteId() {
+        PersonMatchesFilterPredicate predicate = prepareNumericPredicate(Set.of(1), Optional.empty());
+
+        assertTrue(predicate.test(person));
+        for (int id : List.of(10, 12)) {
+            assertFalse(predicate.test(new PersonBuilder(person).withPersonId(id).build()));
+        }
+    }
+
+    /** Verifies that any supplied ID can match, while a contact outside the set cannot. */
+    @Test
+    public void test_multiplePersonIds_matchesAnyAlternative() {
+        PersonMatchesFilterPredicate predicate = prepareNumericPredicate(Set.of(1, 10), Optional.empty());
+
+        assertTrue(predicate.test(person));
+        assertTrue(predicate.test(new PersonBuilder(person).withPersonId(10).build()));
+        assertFalse(predicate.test(new PersonBuilder(person).withPersonId(12).build()));
+    }
+
+    /** Verifies that permanent IDs identify contacts independently of their runtime category. */
+    @Test
+    public void test_personIds_matchAllContactTypes() {
+        Person numericStudent = new PersonBuilder(person).withPersonId(128).build();
+        Guardian numericGuardian = new Guardian(person.getName(), person.getPhone(), person.getEmail(),
+                person.getAddress(), person.getTags(), 129);
+        Colleague numericColleague = new Colleague(person.getName(), person.getPhone(), person.getEmail(),
+                person.getAddress(), person.getTags(), 130, "Food Science");
+        PersonMatchesFilterPredicate predicate = prepareNumericPredicate(Set.of(128, 129, 130), Optional.empty());
+
+        for (Person contact : List.of(numericStudent, numericGuardian, numericColleague)) {
+            assertTrue(predicate.test(contact));
+        }
+    }
+
+    /** Verifies exact year matching rather than matching a digit within another year. */
+    @Test
+    public void test_yearOfStudy_matchesExactNumericValue() {
+        PersonMatchesFilterPredicate predicate = prepareNumericPredicate(Set.of(), Optional.of(2));
+
+        assertTrue(predicate.test(new PersonBuilder(person).withYearOfStudy(2).build()));
+        assertFalse(predicate.test(new PersonBuilder(person).withYearOfStudy(12).build()));
+    }
+
+    /** Verifies safe rejection of absent student years and contacts without a student year field. */
+    @Test
+    public void test_missingYearOrNonStudent_returnsFalse() {
+        PersonMatchesFilterPredicate predicate = prepareNumericPredicate(Set.of(), Optional.of(2));
+
+        for (Person contact : List.of(student, guardian, colleague)) {
+            assertFalse(predicate.test(contact));
+        }
+    }
+
+    /** Uses values outside the usual Integer cache to detect identity-based comparisons. */
+    @Test
+    public void test_largeNumericCriteria_compareByValue() {
+        Person largeYearStudent = new PersonBuilder(person).withPersonId(128).withYearOfStudy(1000).build();
+        PersonMatchesFilterPredicate predicate = prepareNumericPredicate(Set.of(128), Optional.of(1000));
+
+        assertTrue(predicate.test(largeYearStudent));
+        assertFalse(predicate.test(new PersonBuilder(largeYearStudent).withYearOfStudy(1001).build()));
+    }
+
+    /** Verifies that satisfying the ID alternatives cannot bypass the year criterion, or vice versa. */
+    @Test
+    public void test_personIdsAndYearOfStudy_requireBothCriteria() {
+        PersonMatchesFilterPredicate predicate = prepareNumericPredicate(Set.of(1, 10), Optional.of(2));
+
+        assertTrue(predicate.test(new PersonBuilder(person).withYearOfStudy(2).build()));
+        assertFalse(predicate.test(new PersonBuilder(person).withPersonId(10).withYearOfStudy(12).build()));
+        assertFalse(predicate.test(new PersonBuilder(person).withPersonId(12).withYearOfStudy(2).build()));
+    }
+
+    /** Verifies that a matching ID cannot bypass a non-matching name, role, or address. */
+    @Test
+    public void test_personIdsAndExistingFields_requireEveryCriterion() {
+        Set<Integer> ids = Set.of(1, 10);
+
+        assertFalse(preparePredicate(Optional.of("Bob"), Optional.empty(), Optional.empty(),
+                Optional.empty(), Set.of(), ids, Optional.empty()).test(person));
+        assertFalse(preparePredicate(Optional.empty(), Optional.of(Role.GUARDIAN), Optional.empty(),
+                Optional.empty(), Set.of(), ids, Optional.empty()).test(person));
+        assertFalse(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.of("Bugis"), Set.of(), ids, Optional.empty()).test(person));
+    }
+
+    /** Verifies that numeric matching still requires every exact, case-sensitive tag. */
+    @Test
+    public void test_numericCriteriaWithTags_requireAllExactTags() {
+        Person secondYearStudent = new PersonBuilder(person).withYearOfStudy(2).build();
+        Set<Integer> ids = Set.of(1, 10);
+
+        assertTrue(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Set.of(new Tag("Student"), new Tag("Year2")), ids, Optional.of(2)).test(secondYearStudent));
+        assertFalse(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Set.of(new Tag("Student"), new Tag("Missing")), ids, Optional.of(2)).test(secondYearStudent));
+        assertFalse(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Set.of(new Tag("student"), new Tag("Year2")), ids, Optional.of(2)).test(secondYearStudent));
+    }
+
+    /** Verifies that an ID alternative cannot make a student satisfy a colleague department criterion. */
+    @Test
+    public void test_personIdsAndDepartment_matchOnlyLinkedColleagues() {
+        Colleague linkedColleague = new Colleague(person.getName(), person.getPhone(), person.getEmail(),
+                person.getAddress(), person.getTags(), 128, "Food Science");
+        Person numericStudent = new PersonBuilder(person).withPersonId(129).build();
+        PersonMatchesFilterPredicate predicate = preparePredicate(Optional.empty(), Optional.empty(),
+                Optional.of("food sci"), Optional.empty(), Set.of(), Set.of(128, 129), Optional.empty());
+
+        assertTrue(predicate.test(linkedColleague));
+        assertFalse(predicate.test(numericStudent));
+    }
+
+    /** Verifies that the valid but incompatible department and year criteria cannot match either subtype. */
+    @Test
+    public void test_yearOfStudyAndDepartment_returnsFalse() {
+        Person secondYearStudent = new PersonBuilder(person).withPersonId(128).withYearOfStudy(2).build();
+        Colleague linkedColleague = new Colleague(person.getName(), person.getPhone(), person.getEmail(),
+                person.getAddress(), person.getTags(), 129, "Food Science");
+        PersonMatchesFilterPredicate predicate = preparePredicate(Optional.empty(), Optional.empty(),
+                Optional.of("science"), Optional.empty(), Set.of(), Set.of(128, 129), Optional.of(2));
+
+        assertFalse(predicate.test(secondYearStudent));
+        assertFalse(predicate.test(linkedColleague));
+    }
 
     @Test
     public void constructor_nullCriteria_throwsNullPointerException() {
@@ -351,8 +479,23 @@ public class PersonMatchesFilterPredicateTest {
      */
     private PersonMatchesFilterPredicate preparePredicate(Optional<String> nameKeyword, Optional<Role> contactType,
             Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags) {
+        return preparePredicate(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
+                Set.of(), Optional.empty());
+    }
+
+    /** Constructs a predicate including ID alternatives and an optional exact year. */
+    private PersonMatchesFilterPredicate preparePredicate(Optional<String> nameKeyword, Optional<Role> contactType,
+            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags,
+            Set<Integer> personIds, Optional<Integer> yearOfStudy) {
         return new PersonMatchesFilterPredicate(new PersonFilterCriteria(nameKeyword, contactType, departmentKeyword,
-                addressKeyword, requiredTags));
+                addressKeyword, requiredTags, personIds, yearOfStudy));
+    }
+
+    /** Constructs numeric predicates without adding unrelated matching restrictions. */
+    private PersonMatchesFilterPredicate prepareNumericPredicate(Set<Integer> personIds,
+            Optional<Integer> yearOfStudy) {
+        return preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Set.of(),
+                personIds, yearOfStudy);
     }
 
     /**

@@ -18,6 +18,16 @@ public class Messages {
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d person(s) listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
+    public static final String MESSAGE_OPTIONAL_EMPTY_PLACEHOLDER = "NA";
+    /**
+     * Returns a grammatically appropriate message for the number of persons found.
+     */
+    public static String getPersonsFoundMessage(int count) {
+        if (count == 0) {
+            return "No persons found.";
+        }
+        return String.format("%d person%s found.", count, count == 1 ? "" : "s");
+    }
 
     /**
      * Returns an error message indicating the duplicate prefixes.
@@ -38,11 +48,11 @@ public class Messages {
         final StringBuilder builder = new StringBuilder();
         builder.append(person.getName())
                 .append("; Phone: ")
-                .append(person.getPhone())
+                .append(person.getPhone() == null ? MESSAGE_OPTIONAL_EMPTY_PLACEHOLDER : person.getPhone())
                 .append("; Email: ")
-                .append(person.getEmail())
+                .append(person.getEmail() == null ? MESSAGE_OPTIONAL_EMPTY_PLACEHOLDER : person.getEmail())
                 .append("; Address: ")
-                .append(person.getAddress())
+                .append(person.getAddress() == null ? MESSAGE_OPTIONAL_EMPTY_PLACEHOLDER : person.getAddress())
                 .append("; Tags: ");
         person.getTags().forEach(builder::append);
         return builder.toString();

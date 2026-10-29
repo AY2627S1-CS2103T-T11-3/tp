@@ -17,7 +17,7 @@ public class AddGroupCommand extends Command {
             + ": Creates a new group.\n"
             + "Parameters: GROUP_NAME gt/[GROUP_TYPE]\n"
             + "Example: " + COMMAND_WORD + " CS2103T-T01 "
-            + "gt/ class";
+            + "gt/class";
 
     public static final String MESSAGE_SUCCESS = "addgroup command executed successfully";
 
