@@ -390,6 +390,8 @@ public class FilterCommandParserTest {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE);
 
         assertParseFailure(parser, " p/91234567", expectedMessage);
+        assertParseFailure(parser, " n/megan p/91234567", expectedMessage);
+        assertParseFailure(parser, " n/megan unknown/value", expectedMessage);
         assertParseFailure(parser, " /t Student", expectedMessage);
     }
 

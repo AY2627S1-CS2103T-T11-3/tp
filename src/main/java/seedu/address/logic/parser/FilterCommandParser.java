@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import seedu.address.commons.util.StringUtil;
@@ -34,6 +35,12 @@ public class FilterCommandParser implements Parser<FilterCommand> {
 
     // Normalize only separators before prefixes, preserving whitespace inside text phrases.
     private static final Pattern PREFIX_SEPARATOR_PATTERN = Pattern.compile("\\s+(?=(n/|ct/|d/|a/|t/|id/|gid/|yos/))");
+    // Reject unknown parameter-like tokens instead of allowing them to be absorbed into a preceding value.
+    private static final Pattern PREFIX_TOKEN_PATTERN = Pattern.compile("(?<!\\S)([A-Za-z][A-Za-z0-9]*/)");
+    private static final Set<String> SUPPORTED_PREFIXES = Set.of(
+            PREFIX_NAME.getPrefix(), PREFIX_CONTACT_TYPE.getPrefix(), PREFIX_DEPARTMENT.getPrefix(),
+            PREFIX_ADDRESS.getPrefix(), PREFIX_TAG.getPrefix(), PREFIX_PERSON_ID.getPrefix(),
+            PREFIX_GROUP_ID.getPrefix(), PREFIX_YEAR_OF_STUDY.getPrefix());
 
     /**
      * Parses optional criteria into a {@code FilterCommand}.
@@ -44,6 +51,7 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     @Override
     public FilterCommand parse(String args) throws ParseException {
         requireNonNull(args);
+        verifyNoUnsupportedPrefixes(args);
         String normalizedArgs = " " + PREFIX_SEPARATOR_PATTERN.matcher(args).replaceAll(" ");
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(normalizedArgs,
                 PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_ADDRESS, PREFIX_TAG,
@@ -69,6 +77,18 @@ public class FilterCommandParser implements Parser<FilterCommand> {
                 departmentKeyword, addressKeyword, requiredTags, personIds, yearOfStudy);
         PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(criteria);
         return new FilterCommand(predicate, groupId);
+    }
+
+    /**
+     * Rejects unknown prefix-shaped tokens before the tokenizer can absorb them into a preceding value.
+     */
+    private static void verifyNoUnsupportedPrefixes(String args) throws ParseException {
+        Matcher matcher = PREFIX_TOKEN_PATTERN.matcher(args);
+        while (matcher.find()) {
+            if (!SUPPORTED_PREFIXES.contains(matcher.group(1))) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
+            }
+        }
     }
 
     /**
