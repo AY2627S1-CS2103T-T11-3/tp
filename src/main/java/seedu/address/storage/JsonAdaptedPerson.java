@@ -165,7 +165,7 @@ class JsonAdaptedPerson {
         final Address modelAddress;
 
         // Prefer nested ifs here to make intent clearer, instead of making it sequential.
-        if (email != null) {
+        if (address != null) {
             if (!Address.isValidAddress(address)) {
                 throw new IllegalValueException(Address.MESSAGE_CONSTRAINTS);
             }
