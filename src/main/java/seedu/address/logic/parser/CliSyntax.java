@@ -18,4 +18,5 @@ public class CliSyntax {
     public static final Prefix PREFIX_GROUP_TYPE = new Prefix("gt/");
     public static final Prefix PREFIX_YEAR_OF_STUDY = new Prefix("yos/");
     public static final Prefix PREFIX_PERSON_INDEX = new Prefix("pid/");
+    public static final Prefix PREFIX_GROUP_INDEX = new Prefix("gid/");
 }
