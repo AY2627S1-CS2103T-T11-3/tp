@@ -157,32 +157,32 @@ Examples:
 
 Creates a class or department group.
 
-Format: `create_group GROUP_NAME gt/GROUP_TYPE`
+Format: `addgroup GROUP_NAME gt/GROUP_TYPE`
 
 * `GROUP_NAME` may contain letters, digits, and spaces, and must not be blank.
 * `GROUP_TYPE` must be either `class` or `department`.
-* The group name must be unique for its group type.
 * New groups initially have no members and are displayed in the Groups panel.
 
 Examples:
-* `create_group CS2103T T01 gt/class`
-* `create_group Science gt/department`
+* `addgroup CS2103T T01 gt/class`
+* `addgroup Science gt/department`
 
 ### Linking a contact to a group: `link`
 
 Assigns a student to a class or a colleague to a department. The group must already exist.
 
-Format: `link n/NAME d/GROUP`
+Format: `link pid/PERSON_INDEX gid/GROUP_INDEX`
 
-* `NAME` is matched case-insensitively.
 * Students can be assigned only to class groups.
 * Colleagues can be assigned only to department groups.
 * Guardians cannot be assigned to groups.
-* The `d/` prefix identifies the target group, including when the group is a class.
+* Person index refers to the index number shown in the displayed person list.
+* Group index refers to the index number shown in the displayed group list.
+* Both indexes **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `link n/Alice Tan d/CS2103T T01`
-* `link n/John Smith d/Science`
+* `link pid/1 gid/1`
+* `link pid/2 gid/3`
 
 ### Linking a guardian to a student: `link-guardian`
 
@@ -213,7 +213,19 @@ Examples:
 * `filter n/Betsy` followed by `delete 1` deletes the 1st person in the filter results.
 * Deleting a contact removes any guardian–student relationships involving that contact.
 
-There is currently no command to delete an individual group.
+### Deleting a group: `deletegroup`
+
+Deletes the specified group from the address book.
+
+Format: `deletegroup INDEX`
+
+* Deletes the group at the specified `INDEX`.
+* The index refers to the index number shown in the displayed group list.
+* The index **must be a positive integer** 1, 2, 3, …​
+
+Examples:
+* `delete 2` deletes the 2nd group in the address book.
+* Deleting a group removes all contacts from that group.
 
 ### Clearing all entries: `clear`
 
@@ -271,7 +283,8 @@ Action | Format, Examples
 **Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
 **List** | `list`
 **Help** | `help`
-**Create group** | `create_group GROUP_NAME gt/GROUP_TYPE`<br> e.g., `create_group CS2103T T01 gt/class`
-**Link contact to group** | `link n/NAME d/GROUP`<br> e.g., `link n/Alice Tan d/CS2103T T01`
+**Add group** | `addgroup GROUP_NAME gt/GROUP_TYPE`<br> e.g., `add CS2103T T01 gt/class`
+**Delete group** | `deletegroup INDEX`<br> e.g., `deletegroup 2`
+**Link contact to group** | `link pid/PERSON_INDEX gid/GROUP_INDEX`<br> e.g., `link pid/1 gid/2`
 **Link guardian to student** | `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`<br> e.g., `link-guardian s/1 g/2`
 **Exit** | `exit`
