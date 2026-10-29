@@ -29,14 +29,15 @@ public class AddCommand extends Command {
             + PREFIX_EMAIL + "EMAIL "
             + PREFIX_ADDRESS + "ADDRESS "
             + PREFIX_CONTACT_TYPE + "CONTACT TYPE "
-            + PREFIX_YEAR_OF_STUDY + "YEAR OF STUDY (ONLY IF STUDENT)"
+            + "[" + PREFIX_YEAR_OF_STUDY + "YEAR OF STUDY (ONLY IF STUDENT)] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "John Doe "
             + PREFIX_PHONE + "98765432 "
             + PREFIX_EMAIL + "johnd@example.com "
             + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 "
-            + PREFIX_CONTACT_TYPE + "colleague "
+            + PREFIX_CONTACT_TYPE + "student "
+            + PREFIX_YEAR_OF_STUDY + "2026 "
             + PREFIX_TAG + "friends "
             + PREFIX_TAG + "owesMoney";
 
