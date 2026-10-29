@@ -48,9 +48,14 @@ public class HelpWindowTest {
     private static final Map<String, String> OPTIONAL_FIELDS = Map.of(
             "[n/NAME]", "n/NAME", "[p/PHONE]", "p/PHONE", "[e/EMAIL]", "e/EMAIL",
             "[a/ADDRESS]", "a/ADDRESS", "[t/TAG]...", "t/TAG");
-    private static final Map<String, String> PLACEHOLDER_VALUES = Map.of(
-            "NAME", "Help Example", "PHONE", "12345678", "EMAIL", "help@example.com",
-            "ADDRESS", "12 Help Street", "INDEX", "1", "TAG", "Friends");
+    private static final Map<String, String> PLACEHOLDER_VALUES = Map.ofEntries(
+            Map.entry("NAME", "Help Example"), Map.entry("PHONE", "12345678"),
+            Map.entry("EMAIL", "help@example.com"), Map.entry("ADDRESS", "12 Help Street"),
+            Map.entry("INDEX", "1"), Map.entry("TAG", "Friends"),
+            Map.entry("CONTACT_TYPE", "student"), Map.entry("DEPARTMENT", "Science"),
+            Map.entry("GROUP", "Class"), Map.entry("GROUP_NAME", "Group"),
+            Map.entry("GROUP_TYPE", "class"), Map.entry("STUDENT_INDEX", "1"),
+            Map.entry("GUARDIAN_INDEX", "2"));
     private static final Pattern UNRESOLVED_PLACEHOLDER = Pattern.compile("\\b[A-Z][A-Z_]*\\b");
 
     private HelpWindow helpWindow;
@@ -262,7 +267,12 @@ public class HelpWindowTest {
         for (String field : OPTIONAL_FIELDS.keySet()) {
             example = example.replace(field, optionalFields.getOrDefault(field, ""));
         }
+        for (String field : List.of("[ct/CONTACT_TYPE]", "[d/DEPARTMENT]", "[a/ADDRESS]")) {
+            example = example.replace(field, "");
+        }
         example = example.replace("CONTACT_TYPE", role);
+        example = example.replace("STUDENT_INDEX", "1").replace("GUARDIAN_INDEX", "2");
+        example = example.replace("GROUP_NAME", "Group").replace("GROUP_TYPE", "class");
         for (Map.Entry<String, String> placeholder : PLACEHOLDER_VALUES.entrySet()) {
             example = example.replace(placeholder.getKey(), placeholder.getValue());
         }
