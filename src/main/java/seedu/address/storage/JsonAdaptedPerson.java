@@ -120,6 +120,10 @@ class JsonAdaptedPerson {
      * @throws IllegalValueException if there were any data constraints violated in the adapted person.
      */
     public Person toModelType() throws IllegalValueException {
+        return toModelType(false);
+    }
+
+    private Person toModelType(boolean allowLegacyDefaults) throws IllegalValueException {
         final List<Tag> personTags = new ArrayList<>();
         for (JsonAdaptedTag tag : tags) {
             personTags.add(tag.toModelType());
@@ -175,28 +179,39 @@ class JsonAdaptedPerson {
             modelAddress = null;
         }
 
-        if (role == null) {
+        if (role == null && !allowLegacyDefaults) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Role.class.getSimpleName()));
         }
 
-        if (personId == null) {
+        if (personId == null && !allowLegacyDefaults) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     PersonId.class.getSimpleName()));
         }
-        final Integer modelPersonId = personId;
+        final Role modelRole = role == null ? Role.STUDENT : role;
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
-        if (role == Role.GUARDIAN) {
-            return new Guardian(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPersonId);
+        if (modelRole == Role.GUARDIAN) {
+            return personId == null
+                    ? new Guardian(modelName, modelPhone, modelEmail, modelAddress, modelTags)
+                    : new Guardian(modelName, modelPhone, modelEmail, modelAddress, modelTags, personId);
         }
 
-        if (role == Role.COLLEAGUE) {
-            return new Colleague(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPersonId, groupId);
+        if (modelRole == Role.COLLEAGUE) {
+            return personId == null
+                    ? new Colleague(modelName, modelPhone, modelEmail, modelAddress, modelTags, groupId)
+                    : new Colleague(modelName, modelPhone, modelEmail, modelAddress, modelTags, personId, groupId);
         }
 
         // Default is student
-        return new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelPersonId, groupId,
-                yearOfStudy);
+        return personId == null
+                ? new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags, groupId, yearOfStudy)
+                : new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags, personId, groupId,
+                        yearOfStudy);
+    }
+
+    /** Converts a contact from the legacy address-book format. */
+    public Person toLegacyModelType() throws IllegalValueException {
+        return toModelType(true);
     }
 
 }
