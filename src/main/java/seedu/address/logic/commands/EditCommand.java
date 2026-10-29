@@ -112,7 +112,7 @@ public class EditCommand extends Command {
         if (personToEdit instanceof Colleague personToEditColleague) {
             // TODO: Integrate department into EditPersonDescriptor and EditCommand
             return new Colleague(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
-                    personToEditColleague.getDepartment());
+                    personToEditColleague.getGroupId());
         }
 
         Student student = (Student) personToEdit;

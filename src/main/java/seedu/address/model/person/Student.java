@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -25,9 +26,9 @@ public class Student extends Person {
     /**
      * Creates a student with an optional class identifier and year of study.
      */
-    public Student(Name name, Phone phone, Email email, Address address, Set<Tag> tags, String className,
+    public Student(Name name, Phone phone, Email email, Address address, Set<Tag> tags, GroupId groupId,
             Integer yearOfStudy) {
-        super(name, phone, email, address, tags, Role.STUDENT, className);
+        super(name, phone, email, address, tags, Role.STUDENT, groupId);
         this.yearOfStudy = yearOfStudy;
     }
 
@@ -35,8 +36,8 @@ public class Student extends Person {
      * Creates a student with a specified person ID instead of an automatically assigned one.
      */
     public Student(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Integer rawPersonId,
-            String className, Integer yearOfStudy) {
-        super(name, phone, email, address, tags, Role.STUDENT, rawPersonId, className);
+            GroupId groupId, Integer yearOfStudy) {
+        super(name, phone, email, address, tags, Role.STUDENT, rawPersonId, groupId);
         this.yearOfStudy = yearOfStudy;
     }
 

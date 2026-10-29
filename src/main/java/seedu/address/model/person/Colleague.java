@@ -3,6 +3,7 @@ package seedu.address.model.person;
 import java.util.Objects;
 import java.util.Set;
 
+import seedu.address.model.group.GroupId;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -10,29 +11,19 @@ import seedu.address.model.tag.Tag;
  */
 public class Colleague extends Person {
 
-    // Data fields
-    private final String department;
-
     /**
      * Creates a new colleague with an optional department.
      */
-    public Colleague(Name name, Phone phone, Email email, Address address, Set<Tag> tags, String department) {
-        super(name, phone, email, address, tags, Role.COLLEAGUE, department);
-        this.department = department;
+    public Colleague(Name name, Phone phone, Email email, Address address, Set<Tag> tags, GroupId groupId) {
+        super(name, phone, email, address, tags, Role.COLLEAGUE, groupId);
     }
 
     /**
      * Creates a new colleague with a specified person ID instead of an automatically assigned one.
      */
     public Colleague(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Integer rawPersonId,
-                     String department) {
-        super(name, phone, email, address, tags, Role.COLLEAGUE, rawPersonId, department);
-        this.department = department;
-    }
-
-
-    public String getDepartment() {
-        return department;
+                     GroupId groupId) {
+        super(name, phone, email, address, tags, Role.COLLEAGUE, rawPersonId, groupId);
     }
 
     @Override
@@ -41,16 +32,11 @@ public class Colleague extends Person {
             return false;
         }
 
-        if (!super.equals(o)) {
-            return false;
-        }
-
-        Colleague otherColleague = (Colleague) o;
-        return Objects.equals(department, otherColleague.department);
+        return super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), department);
+        return Objects.hash(super.hashCode());
     }
 }

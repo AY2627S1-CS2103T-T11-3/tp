@@ -81,11 +81,11 @@ public class LinkGroupCommand extends Command {
         if (personToLink instanceof Student student) {
             linked = new Student(personToLink.getName(), personToLink.getPhone(), personToLink.getEmail(),
                     personToLink.getAddress(), personToLink.getTags(), personToLink.getId().getRawId(),
-                    groupToLink.getGroupName().groupName, student.getYearOfStudy());
+                    groupToLink.getId(), student.getYearOfStudy());
         } else {
             linked = new Colleague(personToLink.getName(), personToLink.getPhone(), personToLink.getEmail(),
                     personToLink.getAddress(), personToLink.getTags(), personToLink.getId().getRawId(),
-                    groupToLink.getGroupName().groupName);
+                    groupToLink.getId());
         }
         model.setPerson(personToLink, linked);
         return new CommandResult(String.format(MESSAGE_LINK_GROUP_SUCCESS, personToLink.getName(),

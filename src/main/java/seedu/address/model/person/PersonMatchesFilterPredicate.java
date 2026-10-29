@@ -2,16 +2,18 @@ package seedu.address.model.person;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.group.Group;
 
 /**
  * Tests whether a person satisfies all supplied filter criteria.
  * Text uses case-insensitive substring matching; contact types and tags match exactly.
  */
-public class PersonMatchesFilterPredicate implements Predicate<Person> {
+public class PersonMatchesFilterPredicate implements BiPredicate<Person, List<Group>> {
 
     private final PersonFilterCriteria criteria;
 
@@ -25,11 +27,11 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
     }
 
     @Override
-    public boolean test(Person person) {
+    public boolean test(Person person, List<Group> groupList) {
         requireNonNull(person);
         return matchesName(person)
                 && matchesContactType(person)
-                && matchesDepartment(person)
+                && matchesDepartment(person, groupList)
                 && matchesAddress(person)
                 && matchesTags(person);
     }
@@ -49,11 +51,12 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
     }
 
     /** Returns false for contacts without a department when a department criterion is supplied. */
-    private boolean matchesDepartment(Person person) {
+    private boolean matchesDepartment(Person person, List<Group> groupList) {
         return criteria.getDepartmentKeyword()
                 .map(keyword -> person instanceof Colleague colleague
-                        && colleague.getDepartment() != null
-                        && containsIgnoreCase(colleague.getDepartment(), keyword))
+                        && groupList.stream()
+                                .anyMatch(g -> g.getId().equals(colleague.getGroupId())
+                                && containsIgnoreCase(g.getGroupName().groupName, keyword)))
                 .orElse(true);
     }
 

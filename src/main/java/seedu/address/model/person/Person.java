@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -24,7 +25,7 @@ public class Person {
 
     // Data fields
     private final Address address;
-    private final String groupId;
+    private final GroupId groupId;
     private final Role role;
     private final Set<Tag> tags = new HashSet<>();
 
@@ -44,7 +45,7 @@ public class Person {
 
     /** Creates a person with an optional group identifier. */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
-            Role role, String groupId) {
+            Role role, GroupId groupId) {
         requireAllNonNull(name, tags, role);
         this.name = name;
         this.phone = phone;
@@ -60,7 +61,7 @@ public class Person {
      * Creates a person with a specified person ID instead of an automatically assigned one.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Role role, Integer rawPersonId,
-                  String groupId) {
+                  GroupId groupId) {
         requireAllNonNull(name, tags, role, rawPersonId);
         this.name = name;
         this.phone = phone;
@@ -89,7 +90,7 @@ public class Person {
     }
 
     /** Returns the identifier of the group this person belongs to, if any. */
-    public String getGroupId() {
+    public GroupId getGroupId() {
         return groupId;
     }
 

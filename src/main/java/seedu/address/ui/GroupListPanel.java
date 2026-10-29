@@ -9,6 +9,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.person.Person;
 
 /** Displays groups and the contacts currently assigned to them. */
@@ -42,10 +43,11 @@ public class GroupListPanel extends UiPart<Region> {
                 return;
             }
 
+            GroupId groupId = group.getId();
             String groupName = group.getGroupName().groupName;
             String type = group.getGroupType().name().toLowerCase(Locale.ROOT);
             String members = persons.stream()
-                    .filter(person -> groupName.equals(person.getGroupId()))
+                    .filter(person -> groupId.equals(person.getGroupId()))
                     .map(person -> person.getName().fullName)
                     .sorted(String.CASE_INSENSITIVE_ORDER)
                     .reduce((left, right) -> left + ", " + right)

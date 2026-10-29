@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
@@ -34,20 +35,14 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final Integer personId;
-    private final String groupId;
+    private final GroupId groupId;
     private final Role role;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
     private final Integer yearOfStudy;
 
     public JsonAdaptedPerson(String name, String phone, String email, String address,
             List<JsonAdaptedTag> tags, Integer personId) {
-        this(name, phone, email, address, tags, Role.STUDENT, personId, null, null, null);
-    }
-
-    /** Backwards-compatible constructor for data without an explicit group ID. */
-    public JsonAdaptedPerson(String name, String phone, String email, String address,
-            List<JsonAdaptedTag> tags, Role role, Integer personId, String department) {
-        this(name, phone, email, address, tags, role, personId, department, null, null);
+        this(name, phone, email, address, tags, Role.STUDENT, personId, null, null);
     }
 
     /**
@@ -57,15 +52,15 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("role") Role role,
-            @JsonProperty("personId") Integer personId, @JsonProperty("department") String department,
-            @JsonProperty("groupId") String groupId, @JsonProperty("yearOfStudy") Integer yearOfStudy) {
+            @JsonProperty("personId") Integer personId, @JsonProperty("groupId") GroupId groupId,
+            @JsonProperty("yearOfStudy") Integer yearOfStudy) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.personId = personId;
         // department is retained as a backwards-compatible name for older data files.
-        this.groupId = groupId != null ? groupId : department;
+        this.groupId = groupId;
         this.role = role;
         if (tags != null) {
             this.tags.addAll(tags);
@@ -97,11 +92,7 @@ class JsonAdaptedPerson {
             address = null;
         }
 
-        if (source instanceof Colleague sourceColleague) {
-            groupId = sourceColleague.getGroupId();
-        } else {
-            groupId = source.getGroupId();
-        }
+        groupId = source.getGroupId();
         role = source.getRole();
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)

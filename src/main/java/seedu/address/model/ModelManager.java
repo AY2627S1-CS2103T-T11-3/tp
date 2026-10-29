@@ -3,6 +3,8 @@ package seedu.address.model;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -134,9 +136,9 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void updateFilteredPersonList(Predicate<Person> predicate) {
-        requireNonNull(predicate);
-        filteredPersons.setPredicate(predicate);
+    public void updateFilteredPersonList(BiPredicate<Person, List<Group>> biPredicate) {
+        requireNonNull(biPredicate);
+        filteredPersons.setPredicate(p -> biPredicate.test(p, getGroupList()));
     }
 
     @Override
