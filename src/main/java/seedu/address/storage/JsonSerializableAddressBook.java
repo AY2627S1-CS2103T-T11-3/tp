@@ -102,7 +102,9 @@ class JsonSerializableAddressBook {
 
         AddressBook addressBook = new AddressBook();
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
-            Person person = jsonAdaptedPerson.toModelType();
+            Person person = nextId == null
+                    ? jsonAdaptedPerson.toLegacyModelType()
+                    : jsonAdaptedPerson.toModelType();
             if (addressBook.hasPerson(person)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
             }

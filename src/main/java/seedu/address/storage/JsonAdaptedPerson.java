@@ -104,6 +104,10 @@ class JsonAdaptedPerson {
      * @throws IllegalValueException if there were any data constraints violated in the adapted person.
      */
     public Person toModelType() throws IllegalValueException {
+        return toModelType(false);
+    }
+
+    private Person toModelType(boolean allowLegacyDefaults) throws IllegalValueException {
         final List<Tag> personTags = new ArrayList<>();
         for (JsonAdaptedTag tag : tags) {
             personTags.add(tag.toModelType());
@@ -141,9 +145,14 @@ class JsonAdaptedPerson {
         }
         final Address modelAddress = new Address(address);
 
-        // Files written before roles and stable IDs were introduced contain neither field.
-        // Keep those contacts usable by applying the original defaults: student role and
-        // an automatically assigned ID.
+        if (role == null && !allowLegacyDefaults) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Role.class.getSimpleName()));
+        }
+
+        if (personId == null && !allowLegacyDefaults) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    PersonId.class.getSimpleName()));
+        }
         final Role modelRole = role == null ? Role.STUDENT : role;
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
@@ -164,6 +173,11 @@ class JsonAdaptedPerson {
                 ? new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags, groupId, yearOfStudy)
                 : new Student(modelName, modelPhone, modelEmail, modelAddress, modelTags, personId, groupId,
                         yearOfStudy);
+    }
+
+    /** Converts a contact from the legacy address-book format. */
+    public Person toLegacyModelType() throws IllegalValueException {
+        return toModelType(true);
     }
 
 }
