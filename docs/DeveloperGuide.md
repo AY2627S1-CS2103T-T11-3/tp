@@ -183,6 +183,18 @@ Department matching checks `instanceof Colleague` and a non-null department befo
 
 Name searches use `filter n/NAME`. The full supplied phrase is preserved and matched as a case-insensitive, contiguous substring, and can be combined with the other filter criteria.
 
+### Person and Group IDs
+
+PersonId and GroupId Using IDs for Person and Group allows users to be able to add persons and groups with the same names, which can be the case in their daily usage. 
+These people or groups with the same name can still be distinguished through the unique IDs assigned to them. 
+
+PersonId and GroupId's automatic assignment works by tracking a static counter variable to determine the next ID to assign. When a new person or group is added, the internal counter is incremented so that the next person or group has a different ID. 
+When CaNvUS first starts up, the next ID is loaded and passed to the PersonId class to configure the next ID to assign through PersonId#setNextId.
+
+Note:
+* The IDS for Person and Group do not necessarily correspond to the indexes of the shown person and group lists.
+* There is currently no error handling for the case where number of Persons or Groups exceeds maximum integer size. 
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
