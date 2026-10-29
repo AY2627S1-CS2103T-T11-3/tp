@@ -45,7 +45,7 @@
                 <Insets top="20" right="24" bottom="24" left="24" />
               </padding>
 
-              <Label text="UPPERCASE = value to supply   [ ] = optional   ... = repeatable. Type literal prefixes such as n/; omit the brackets. Commands and prefixes are case-sensitive."
+              <Label text="UPPERCASE = value to supply   [ ] = optional   ... = repeatable. Type literal prefixes such as n/; omit the brackets. Command names are case-insensitive. Prefixes are case-sensitive."
                      wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-notation" />
 
               <!-- Command entry template: copy this VBox for each additional command. -->
@@ -62,8 +62,8 @@
 
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
-                  <!-- The five contact fields are required; year of study is optional for students. -->
-                  <TextArea text="add n/NAME p/PHONE e/EMAIL a/ADDRESS ct/CONTACT_TYPE [yos/YEAR_OF_STUDY] [t/TAG]..."
+                  <!-- Only the name is required; omitted contact type defaults to student. -->
+                  <TextArea text="add n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_OF_STUDY] [t/TAG]..."
                             editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
 
@@ -76,32 +76,9 @@
                     </columnConstraints>
                     <Label text="n/NAME" GridPane.rowIndex="0" GridPane.columnIndex="0"
                            styleClass="help-field-name" />
-                    <Label text="Name; letters, digits and spaces."
-                           wrapText="true" minWidth="0" maxWidth="Infinity"
+                    <Label text="Name; letters, digits and spaces. Must not be blank." wrapText="true" minWidth="0" maxWidth="Infinity"
                            GridPane.rowIndex="0" GridPane.columnIndex="1" />
-                    <Label text="p/PHONE" GridPane.rowIndex="1" GridPane.columnIndex="0"
-                           styleClass="help-field-name" />
-                    <Label text="Phone number; at least 3 digits."
-                           wrapText="true" minWidth="0" maxWidth="Infinity"
-                           GridPane.rowIndex="1" GridPane.columnIndex="1" />
-                    <Label text="e/EMAIL" GridPane.rowIndex="2" GridPane.columnIndex="0"
-                           styleClass="help-field-name" />
-                    <Label text="Email address in local-part@domain format."
-                           wrapText="true" minWidth="0" maxWidth="Infinity"
-                           GridPane.rowIndex="2" GridPane.columnIndex="1" />
-                    <Label text="a/ADDRESS" GridPane.rowIndex="3" GridPane.columnIndex="0"
-                           styleClass="help-field-name" />
-                    <Label text="Address; must not be blank."
-                           wrapText="true" minWidth="0" maxWidth="Infinity"
-                           GridPane.rowIndex="3" GridPane.columnIndex="1" />
-                    <Label text="ct/CONTACT_TYPE" GridPane.rowIndex="4" GridPane.columnIndex="0"
-                           styleClass="help-field-name" />
-                    <Label text="student, guardian or colleague. Use a full value; case-insensitive."
-                           wrapText="true" minWidth="0" maxWidth="Infinity"
-                           GridPane.rowIndex="4" GridPane.columnIndex="1" />
                   </GridPane>
-                  <Label text="Use each required prefix once, in any order. Values must not be blank."
-                         wrapText="true" styleClass="help-note" />
                 </VBox>
 
                 <VBox spacing="10">
@@ -111,12 +88,30 @@
                       <ColumnConstraints minWidth="136" prefWidth="136" />
                       <ColumnConstraints minWidth="0" hgrow="ALWAYS" />
                     </columnConstraints>
-                    <Label text="yos/YEAR_OF_STUDY" GridPane.columnIndex="0" styleClass="help-field-name" />
-                    <Label text="Optional for students only. Positive integer from 1 to 2147483647; omit if unknown. Rejected for guardians and colleagues."
-                           wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
-                    <Label text="t/TAG" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="help-field-name" />
-                    <Label text="Tag; letters and digits only. Repeat t/ to add more tags."
-                           wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                    <Label text="p/PHONE" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Phone number; at least 3 digits if supplied. Omit if unknown." wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                    <Label text="e/EMAIL" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Email address in local-part@domain format if supplied. Omit if unknown." wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                    <Label text="a/ADDRESS" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Address; must not be blank if supplied. Omit if unknown." wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                    <Label text="ct/CONTACT_TYPE" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="student, guardian or colleague; case-insensitive full value. Defaults to student when omitted." wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                    <Label text="yos/YEAR_OF_STUDY" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Optional for students only. Positive integer from 1 to 2147483647; omit if unknown. Rejected for guardians and colleagues." wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="4" GridPane.columnIndex="1" />
+                    <Label text="t/TAG" GridPane.rowIndex="5" GridPane.columnIndex="0"
+                           styleClass="help-field-name" />
+                    <Label text="Tag; letters and digits only. Repeat t/ to add more tags." wrapText="true" minWidth="0" maxWidth="Infinity"
+                           GridPane.rowIndex="5" GridPane.columnIndex="1" />
                   </GridPane>
                 </VBox>
 
@@ -234,23 +229,23 @@
                 </VBox>
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
-                  <TextArea text="link n/NAME d/GROUP"
+                  <TextArea text="link pid/PERSON_INDEX gid/GROUP_INDEX"
                             editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
                 <Label text="Required fields" styleClass="help-section-title" />
                 <GridPane hgap="16" vgap="10">
                   <columnConstraints><ColumnConstraints minWidth="136" prefWidth="136" /><ColumnConstraints minWidth="0" hgrow="ALWAYS" /></columnConstraints>
-                  <Label text="n/NAME" styleClass="help-field-name" GridPane.columnIndex="0" />
-                  <Label text="Full contact name, matched case-insensitively across all contacts. If names repeat, the first match is used." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
-                  <Label text="d/GROUP" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                  <Label text="Exact existing group name, including case. Use d/ for both classes and departments." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                  <Label text="pid/PERSON_INDEX" styleClass="help-field-name" GridPane.columnIndex="0" />
+                  <Label text="Positive position of the student or colleague in the currently displayed contact list, including filtered results; not the permanent contact ID." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                  <Label text="gid/GROUP_INDEX" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                  <Label text="Positive position of an existing class or department in the Groups panel, counting from 1; not a permanent group ID." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
                 </GridPane>
                 <Label text="Students join classes; colleagues join departments; guardians cannot join groups. Linking to another group replaces the previous assignment. Use each prefix once."
                        wrapText="true" styleClass="help-note" />
 
                 <VBox spacing="8">
-                  <Label text="Example: requires student Alice Tan and class Class 2A to exist." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
-                  <TextArea text="link n/Alice Tan d/Class 2A" editable="false" wrapText="true"
+                  <Label text="Example: requires a student at contact-list position 1 and a class at group-list position 2." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
+                  <TextArea text="link pid/1 gid/2" editable="false" wrapText="true"
                             minWidth="0" maxWidth="Infinity" styleClass="help-example" />
                 </VBox>
               </VBox>
