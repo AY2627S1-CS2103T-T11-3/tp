@@ -204,18 +204,18 @@
                 </VBox>
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
-                  <TextArea text="link n/NAME d/GROUP"
+                  <TextArea text="link pid/PERSON_INDEX gid/GROUP_INDEX"
                             editable="false" wrapText="true" prefRowCount="1" minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
                 </VBox>
                 <Label text="Required fields" styleClass="help-section-title" />
                 <GridPane hgap="16" vgap="10">
                   <columnConstraints><ColumnConstraints minWidth="136" prefWidth="136" /><ColumnConstraints minWidth="0" hgrow="ALWAYS" /></columnConstraints>
-                  <Label text="n/NAME" styleClass="help-field-name" GridPane.columnIndex="0" />
-                  <Label text="Name of the student or colleague." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
-                  <Label text="d/GROUP" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                  <Label text="Existing class or department name." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                  <Label text="pid/PERSON_INDEX" styleClass="help-field-name" GridPane.columnIndex="0" />
+                  <Label text="Positive student or colleague number in the currently displayed list." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                  <Label text="gid/GROUP_INDEX" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                  <Label text="Positive class or department number in the currently displayed group list." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
                 </GridPane>
-                <Label text="NAME identifies the contact; GROUP identifies the existing class or department."
+                <Label text="PERSON_INDEX identifies the contact; GROUP_INDEX identifies the existing class or department."
                        wrapText="true" styleClass="help-note" />
               </VBox>
 

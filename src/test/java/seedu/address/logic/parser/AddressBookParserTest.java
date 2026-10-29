@@ -67,14 +67,12 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_link() throws Exception {
-        final String colleagueName = "Alice Pauline";
-        final String department = "Computer Science";
         LinkGroupCommand command = (LinkGroupCommand) parser.parseCommand(
                 LinkGroupCommand.COMMAND_WORD + " "
-                + CliSyntax.PREFIX_NAME + colleagueName + " "
-                + CliSyntax.PREFIX_DEPARTMENT + department
+                + CliSyntax.PREFIX_PERSON_INDEX + 1 + " "
+                + CliSyntax.PREFIX_GROUP_INDEX + 1
         );
-        assertEquals(new LinkGroupCommand(colleagueName, department), command);
+        assertEquals(new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP), command);
     }
 
     @Test
