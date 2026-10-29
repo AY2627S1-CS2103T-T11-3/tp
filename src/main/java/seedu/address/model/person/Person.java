@@ -45,7 +45,7 @@ public class Person {
     /** Creates a person with an optional group identifier. */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
             Role role, String groupId) {
-        requireAllNonNull(name, phone, email, address, tags, role);
+        requireAllNonNull(name, tags, role);
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -61,7 +61,7 @@ public class Person {
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Role role, Integer rawPersonId,
                   String groupId) {
-        requireAllNonNull(name, phone, email, address, tags, role, rawPersonId);
+        requireAllNonNull(name, tags, role, rawPersonId);
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -139,9 +139,9 @@ public class Person {
         Person otherPerson = (Person) other;
 
         return name.equals(otherPerson.name)
-                && phone.equals(otherPerson.phone)
-                && email.equals(otherPerson.email)
-                && address.equals(otherPerson.address)
+                && Objects.equals(phone, otherPerson.phone)
+                && Objects.equals(email, otherPerson.email)
+                && Objects.equals(address, otherPerson.address)
                 && Objects.equals(groupId, otherPerson.groupId)
                 && role == otherPerson.role
                 && tags.equals(otherPerson.tags)

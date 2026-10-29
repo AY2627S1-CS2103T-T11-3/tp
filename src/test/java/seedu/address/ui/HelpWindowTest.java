@@ -55,7 +55,8 @@ public class HelpWindowTest {
             Map.entry("CONTACT_TYPE", "student"), Map.entry("DEPARTMENT", "Science"),
             Map.entry("GROUP", "Class"), Map.entry("GROUP_NAME", "Group"),
             Map.entry("GROUP_TYPE", "class"), Map.entry("STUDENT_INDEX", "1"),
-            Map.entry("GUARDIAN_INDEX", "2"));
+            Map.entry("GUARDIAN_INDEX", "2"), Map.entry("PERSON_INDEX", "1"),
+            Map.entry("GROUP_INDEX", "1"));
     private static final Pattern UNRESOLVED_PLACEHOLDER = Pattern.compile("\\b[A-Z][A-Z_]*\\b");
 
     private HelpWindow helpWindow;
@@ -273,6 +274,7 @@ public class HelpWindowTest {
         example = example.replace("CONTACT_TYPE", role);
         example = example.replace("STUDENT_INDEX", "1").replace("GUARDIAN_INDEX", "2");
         example = example.replace("GROUP_NAME", "Group").replace("GROUP_TYPE", "class");
+        example = example.replace("PERSON_INDEX", "1").replace("GROUP_INDEX", "1");
         for (Map.Entry<String, String> placeholder : PLACEHOLDER_VALUES.entrySet()) {
             example = example.replace(placeholder.getKey(), placeholder.getValue());
         }
