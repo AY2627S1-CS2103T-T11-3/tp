@@ -274,6 +274,10 @@ _Details coming soon ..._
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 
+2. **Unrecognized filter parameters:** Unsupported prefixes following a text criterion may be treated as part of its
+   value instead of producing an error. For example, `filter n/Alice p/9123` searches for the name text `Alice p/9123`;
+   it does not filter by phone number. Use only the prefixes documented for `filter`.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Command summary
