@@ -14,14 +14,8 @@ public class AddGroupCommand extends Command {
     public static final String COMMAND_WORD = "addgroup";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-<<<<<<< Updated upstream
-            + ": Creates a new group. Duplicate group names "
-            + "are not allowed.\n"
-            + "Parameters: GROUP_NAME gt/ [GROUP_TYPE]\n"
-=======
             + ": Creates a new group.\n"
             + "Parameters: GROUP_NAME gt/[GROUP_TYPE]\n"
->>>>>>> Stashed changes
             + "Example: " + COMMAND_WORD + " CS2103T-T01 "
             + "gt/ class";
 
