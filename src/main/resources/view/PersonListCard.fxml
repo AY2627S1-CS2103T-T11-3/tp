@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
 <HBox id="cardPane" fx:id="cardPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
@@ -15,34 +14,27 @@
     <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10" prefWidth="150" />
     </columnConstraints>
-    <VBox alignment="CENTER_LEFT" spacing="3" minHeight="105" maxWidth="Infinity" GridPane.columnIndex="0">
+    <VBox alignment="CENTER_LEFT" spacing="8" minHeight="120" maxWidth="Infinity" GridPane.columnIndex="0">
       <padding>
-        <Insets top="8" right="15" bottom="8" left="15" />
+        <Insets top="14" right="18" bottom="14" left="18" />
       </padding>
-      <HBox spacing="0.5" alignment="CENTER_LEFT">
-        <Label fx:id="index" styleClass="cell_big_label">
-          <minWidth>
-            <!-- Ensures that the label text is never truncated -->
-            <Region fx:constant="USE_PREF_SIZE" />
-          </minWidth>
-        </Label>
-        <Label fx:id="name" text="\$first" styleClass="cell_big_label" />
-      </HBox>
       <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label fx:id="index" styleClass="contact-index" />
+        <Label fx:id="name" text="\$first" styleClass="contact-name" />
         <Label fx:id="role" styleClass="role_badge" text="\$role" />
       </HBox>
-      <GridPane hgap="18" vgap="2">
+      <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label fx:id="yearOfStudy" styleClass="contact-meta" text="\$yearOfStudy" />
+      </HBox>
+      <GridPane hgap="24" vgap="8">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="120" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="145" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="180" />
         </columnConstraints>
-        <Label fx:id="id" styleClass="cell_small_label" text="\$id" GridPane.columnIndex="0" />
-        <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" GridPane.columnIndex="1" />
-        <Label fx:id="email" styleClass="cell_small_label" text="\$email" GridPane.columnIndex="2" />
-        <Label fx:id="yearOfStudy" styleClass="cell_small_label" text="\$yearOfStudy" GridPane.columnIndex="0"
-               GridPane.rowIndex="1"/>
-        <Label fx:id="address" styleClass="cell_small_label" wrapText="true" text="\$address"
-               GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+        <Label fx:id="phone" styleClass="contact-detail" text="\$phone" GridPane.columnIndex="0" />
+        <Label fx:id="email" styleClass="contact-detail" text="\$email" GridPane.columnIndex="1" />
+        <Label fx:id="address" styleClass="contact-detail" wrapText="true" text="\$address"
+               GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
       </GridPane>
       <Button fx:id="guardians" styleClass="guardian-button" mnemonicParsing="false" />
       <FlowPane fx:id="tags" hgap="7" vgap="3" />
