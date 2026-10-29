@@ -20,6 +20,7 @@ Class Name
 Class Phone
 Class Tag
 Class PersonId
+Class Integer
 
 Class Student
 Class Guardian
@@ -55,6 +56,7 @@ Person *--> Email
 Person *--> Address
 Person *--> "*" Tag
 Person "1" *--> "1" PersonId
+Person *--> "year of study" Integer
 
 Student --|> Person
 Guardian -left-|> Person
