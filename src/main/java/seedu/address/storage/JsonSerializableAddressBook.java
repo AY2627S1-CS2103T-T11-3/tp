@@ -52,11 +52,15 @@ class JsonSerializableAddressBook {
             @JsonProperty("groups") List<JsonAdaptedGroup> groups,
             @JsonProperty("nextId") Integer nextId
     ) {
-        this.persons.addAll(persons);
+        if (persons != null) {
+            this.persons.addAll(persons);
+        }
         if (guardianLinks != null) {
             this.guardianLinks.addAll(guardianLinks);
         }
-        this.groups.addAll(groups);
+        if (groups != null) {
+            this.groups.addAll(groups);
+        }
         this.nextId = nextId;
     }
 
@@ -92,7 +96,9 @@ class JsonSerializableAddressBook {
      */
     public AddressBook toModelType() throws IllegalValueException {
         // PersonId class handles the next ID by itself
-        PersonId.setNextId(nextId);
+        if (nextId != null) {
+            PersonId.setNextId(nextId);
+        }
 
         AddressBook addressBook = new AddressBook();
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
