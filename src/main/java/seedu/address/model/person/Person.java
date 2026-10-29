@@ -45,7 +45,7 @@ public class Person {
     /** Creates a person with an optional group identifier. */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
             Role role, String groupId) {
-        requireAllNonNull(name, phone, email, address, tags, role);
+        requireAllNonNull(name, tags, role);
         this.name = name;
         this.phone = phone;
         this.email = email;

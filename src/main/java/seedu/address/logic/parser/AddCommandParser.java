@@ -9,6 +9,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR_OF_STUDY;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -40,20 +41,42 @@ public class AddCommandParser implements Parser<AddCommand> {
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
                         PREFIX_CONTACT_TYPE, PREFIX_TAG, PREFIX_YEAR_OF_STUDY);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_ADDRESS, PREFIX_PHONE, PREFIX_EMAIL,
-                PREFIX_CONTACT_TYPE)
-                || !argMultimap.getPreamble().isEmpty()) {
+        // Only name is required as the user might not have the information about the other fields when they are first
+        // adding the contact.
+        if (!arePrefixesPresent(argMultimap, PREFIX_NAME) || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
                 PREFIX_CONTACT_TYPE, PREFIX_YEAR_OF_STUDY);
+
+        // Name is always present.
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
-        Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
-        Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
-        Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
+
+        // Phone, email, and address are made optional as the users may not have the information when they are first
+        // adding the contact.
+        Phone phone = null;
+        Email email = null;
+        Address address = null;
+
+        Optional<String> phoneValue = argMultimap.getValue(PREFIX_PHONE);
+        Optional<String> emailValue = argMultimap.getValue(PREFIX_EMAIL);
+        Optional<String> addressValue = argMultimap.getValue(PREFIX_ADDRESS);
+
+        if (phoneValue.isPresent()) {
+            phone = ParserUtil.parsePhone(phoneValue.get());
+        }
+
+        if (emailValue.isPresent()) {
+            email = ParserUtil.parseEmail(emailValue.get());
+        }
+
+        if (addressValue.isPresent()) {
+            address = ParserUtil.parseAddress(addressValue.get());
+        }
+
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
-        Role role = ParserUtil.parseContactType(argMultimap.getValue(PREFIX_CONTACT_TYPE).get());
+        Role role = ParserUtil.parseContactType(argMultimap.getValue(PREFIX_CONTACT_TYPE).orElse("STUDENT"));
         Integer yearOfStudy = null;
         if (argMultimap.getValue(PREFIX_YEAR_OF_STUDY).isPresent()) {
             if (role != Role.STUDENT) {
