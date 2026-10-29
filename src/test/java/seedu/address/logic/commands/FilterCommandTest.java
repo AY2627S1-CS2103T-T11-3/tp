@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -107,7 +108,7 @@ public class FilterCommandTest {
     }
 
     /**
-     * Verifies replacement contacts are evaluated live and deleted groups are re-resolved on execution.
+     * Verifies index-based linking, relinking, and deletion keep group filtering consistent.
      *
      * @throws Exception If a valid filter or link command unexpectedly fails.
      */
@@ -121,15 +122,21 @@ public class FilterCommandTest {
                 "filter gid/" + schoolClass.getId().getRawId());
         assertFilterSuccess(command, groupModel, List.of(contacts.get(0), contacts.get(1)));
 
-        String contactName = contacts.get(4).getName().fullName;
-        new LinkGroupCommand(contactName, schoolClass.getGroupName().groupName).execute(groupModel);
+        // Show all contacts so the ungrouped contact can be selected by the link command's displayed index.
+        prepareCommand(Optional.empty(), Set.of()).execute(groupModel);
+        Index contactIndex = Index.fromZeroBased(groupModel.getFilteredPersonList().indexOf(contacts.get(4)));
+        Index classIndex = Index.fromZeroBased(groupModel.getGroupList().indexOf(schoolClass));
+        new LinkGroupCommand(contactIndex, classIndex).execute(groupModel);
         Person linkedContact = groupModel.getAddressBook().getPersonList().get(4);
-        assertEquals(List.of(contacts.get(0), contacts.get(1), linkedContact), groupModel.getFilteredPersonList());
+        assertFilterSuccess(command, groupModel, List.of(contacts.get(0), contacts.get(1), linkedContact));
 
-        new LinkGroupCommand(contactName, otherClass.getGroupName().groupName).execute(groupModel);
+        Index linkedContactIndex = Index.fromZeroBased(groupModel.getFilteredPersonList().indexOf(linkedContact));
+        Index otherClassIndex = Index.fromZeroBased(groupModel.getGroupList().indexOf(otherClass));
+        new LinkGroupCommand(linkedContactIndex, otherClassIndex).execute(groupModel);
         assertEquals(List.of(contacts.get(0), contacts.get(1)), groupModel.getFilteredPersonList());
 
         groupModel.deleteGroup(schoolClass);
+        assertTrue(groupModel.getFilteredPersonList().isEmpty());
         assertFilterSuccess(command, groupModel, List.of());
     }
 
@@ -315,7 +322,7 @@ public class FilterCommandTest {
         int colleagueId = computerScienceColleague.getId().getRawId();
         assertFilterSuccess(prepareNumericCommand(Set.of(colleagueId), Optional.empty()),
                 roleModel, List.of(computerScienceColleague));
-        Group department = new DepartmentGroup(new GroupName("Food Science"), Set.of());
+        Group department = new DepartmentGroup(new GroupName("Food Science"));
         roleModel.addGroup(department);
         assertFilterSuccess(prepareGroupCommand(department.getId().getRawId()), roleModel,
                 List.of(foodScienceColleague));
@@ -484,12 +491,12 @@ public class FilterCommandTest {
         int nextGroupId = GroupId.getNextId();
         try {
             GroupId.setNextId(128);
-            for (Group group : List.of(new ClassGroup(new GroupName("Shared School"), Set.of()),
-                    new DepartmentGroup(new GroupName("Shared School"), Set.of()),
-                    new ClassGroup(new GroupName("Other Class"), Set.of()),
-                    new ClassGroup(new GroupName("Empty Class"), Set.of()),
-                    new ClassGroup(new GroupName("shared school"), Set.of()),
-                    new ClassGroup(new GroupName("Shared School Extra"), Set.of()))) {
+            for (Group group : List.of(new ClassGroup(new GroupName("Shared School")),
+                    new DepartmentGroup(new GroupName("Shared School")),
+                    new ClassGroup(new GroupName("Other Class")),
+                    new ClassGroup(new GroupName("Empty Class")),
+                    new ClassGroup(new GroupName("shared school")),
+                    new ClassGroup(new GroupName("Shared School Extra")))) {
                 groupModel.addGroup(group);
             }
         } finally {
