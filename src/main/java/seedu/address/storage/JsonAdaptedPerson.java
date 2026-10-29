@@ -133,29 +133,47 @@ class JsonAdaptedPerson {
         }
         final Name modelName = new Name(name);
 
-        if (phone == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Phone.class.getSimpleName()));
-        }
-        if (!Phone.isValidPhone(phone)) {
-            throw new IllegalValueException(Phone.MESSAGE_CONSTRAINTS);
-        }
-        final Phone modelPhone = new Phone(phone);
+        // Phone is optional
+        final Phone modelPhone;
 
-        if (email == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Email.class.getSimpleName()));
-        }
-        if (!Email.isValidEmail(email)) {
-            throw new IllegalValueException(Email.MESSAGE_CONSTRAINTS);
-        }
-        final Email modelEmail = new Email(email);
+        // Prefer nested ifs here to make intent clearer, instead of making it sequential.
+        if (phone != null) {
+            if (!Phone.isValidPhone(phone)) {
+                throw new IllegalValueException(Phone.MESSAGE_CONSTRAINTS);
+            }
 
-        if (address == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName()));
+            modelPhone = new Phone(phone);
+        } else {
+            modelPhone = null;
         }
-        if (!Address.isValidAddress(address)) {
-            throw new IllegalValueException(Address.MESSAGE_CONSTRAINTS);
+
+        // Email is optional
+        final Email modelEmail;
+
+        // Prefer nested ifs here to make intent clearer, instead of making it sequential.
+        if (email != null) {
+            if (!Email.isValidEmail(email)) {
+                throw new IllegalValueException(Email.MESSAGE_CONSTRAINTS);
+            }
+
+            modelEmail = new Email(email);
+        } else {
+            modelEmail = null;
         }
-        final Address modelAddress = new Address(address);
+
+        // Address is optional
+        final Address modelAddress;
+
+        // Prefer nested ifs here to make intent clearer, instead of making it sequential.
+        if (email != null) {
+            if (!Address.isValidAddress(address)) {
+                throw new IllegalValueException(Address.MESSAGE_CONSTRAINTS);
+            }
+
+            modelAddress = new Address(address);
+        } else {
+            modelAddress = null;
+        }
 
         if (role == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Role.class.getSimpleName()));
