@@ -10,10 +10,7 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.group.ClassGroup;
-import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
-import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Person;
@@ -29,6 +26,8 @@ public class LinkGroupCommand extends Command {
 
     public static final String MESSAGE_INVALID_GROUP_INDEX = "The group index provided is invalid.";
     public static final String MESSAGE_MISMATCH_PERSON_ROLE_GROUP_TYPE = "Cannot link %1$s to %2$s.";
+    public static final String MESSAGE_INVALID_PERSON_ROLE =
+            "Selected contact cannot be linked to a class or department.";
     private static final String MESSAGE_LINK_GROUP_SUCCESS = "%s linked to %s: %s";
 
     private final Index personIndex;
@@ -59,22 +58,23 @@ public class LinkGroupCommand extends Command {
         Group groupToLink = shownGroupList.get(groupIndex.getZeroBased());
         GroupType groupToLinkType = groupToLink.getGroupType();
 
+        String mismatchMessage = String.format(MESSAGE_MISMATCH_PERSON_ROLE_GROUP_TYPE,
+                personToLinkRole.toString().toLowerCase(),
+                groupToLinkType.toString().toLowerCase());
         switch (personToLinkRole) {
             case STUDENT:
                 if (groupToLinkType != GroupType.CLASS) {
-                    throw new CommandException(
-                            String.format(MESSAGE_MISMATCH_PERSON_ROLE_GROUP_TYPE, personToLinkRole, groupToLinkType));
+                    throw new CommandException(mismatchMessage);
                 }
                 break;
             case COLLEAGUE:
                 if (groupToLinkType != GroupType.DEPARTMENT) {
-                    throw new CommandException(
-                            String.format(MESSAGE_MISMATCH_PERSON_ROLE_GROUP_TYPE, personToLinkRole, groupToLinkType));
+                    throw new CommandException(mismatchMessage);
                 }
                 break;
             case GUARDIAN:
             default:
-                throw new CommandException("Selected contact cannot be linked to a class or department.");
+                throw new CommandException(MESSAGE_INVALID_PERSON_ROLE);
         }
 
         Person linked;
