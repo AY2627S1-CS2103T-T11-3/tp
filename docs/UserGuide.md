@@ -229,13 +229,18 @@ Examples:
 
 ### Deleting a group: `deletegroup`
 
+Deletes a group from the address book and unassigns all contacts belonging to that group.
+
 Format: `deletegroup INDEX`
 
-* `INDEX` is the positive position in the Groups panel, counting from 1, rather than a contact index or permanent ID.
-* The current Groups panel does not display numeric labels; count the groups from the top.
-* Deleting a group keeps its contacts and removes their assignment to that group.
+* `INDEX` refers to the 1-based index displayed beside each group in the Groups panel.
+* `INDEX` must be a positive integer: 1, 2, 3, …​
+* Students assigned to a deleted class and colleagues assigned to a deleted department are unassigned.
+* A class and department may have the same name; deleting one affects only the matching group type.
 
-Example: `deletegroup 1` deletes the first group, if one exists.
+Example:
+
+* `deletegroup 1` deletes the first group shown in the Groups panel.
 
 ### Clearing all entries: `clear`
 
