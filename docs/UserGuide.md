@@ -96,6 +96,11 @@ Format: `add n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_
 A person can have any number of tags, including zero.
 </div>
 
+<div markdown="span" class="alert alert-primary">:bulb: **Tip:**
+If you don't have all the information for a contact right now, you can add them first then edit their information later.
+</div>
+
+
 Examples:
 * `add n/Alice Tan` adds a student named "Alice Tan" with no other information recorded.
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 ct/student yos/2 t/groupLeader` adds a student named "John Doe" with phone number 98765432, email address johnd@example.com, address John Street, block  123, #01-01, year of study of 2 and a tag of "groupLeader".
