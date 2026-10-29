@@ -350,11 +350,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 1a1. CaNvUS displays an error and the expected input format. 
     Use case ends.
 
-* 1b. Target ID entered is already assigned to an existing target 
-  * 1a1. CaNvUS informs the teacher that target ID must be unique
-    Use case ends.
-
-
 **Use Case: UC2 - Create a new group**
 
 **MSS**
