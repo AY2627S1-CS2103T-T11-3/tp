@@ -408,8 +408,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 * 2a. Contact of the guardian or the student does not exist.
   * 2a1. CaNvUS shows an error message.
-    
+  
     Use case ends.
+  
+* 2b. Teacher attempts to link a colleague to a class.
+  * 2b1. CaNvUS displays "Colleagues can only be linked to department groups."
+    
+  * Use case ends.
+
 
 **Use case: UC5 - Link colleague to department**
 

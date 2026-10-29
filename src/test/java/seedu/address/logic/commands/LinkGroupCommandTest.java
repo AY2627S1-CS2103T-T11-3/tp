@@ -85,6 +85,19 @@ public class LinkGroupCommandTest {
     }
 
     @Test
+    public void execute_colleagueLinkedToClass_throwsCommandException() {
+        AddressBook addressBook = new AddressBook();
+        addressBook.addGroup(new ClassGroup(new GroupName("ClassOnly"), new HashSet<>()));
+        addressBook.addPerson(new Colleague(new Name("Bob Tan"), new Phone("91234568"),
+                new Email("bob@example.com"), new Address("123, Jurong West Ave 6, #08-112"),
+                new HashSet<>(), null));
+        Model model = new ModelManager(addressBook, new UserPrefs());
+
+        assertCommandFailure(new LinkGroupCommand("Bob Tan", "ClassOnly"), model,
+                "Colleagues can only be linked to department groups.");
+    }
+
+    @Test
     public void execute_missingPerson_throwsCommandException() {
         Model model = new ModelManager(new AddressBook(), new UserPrefs());
 
