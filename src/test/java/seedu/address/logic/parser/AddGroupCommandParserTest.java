@@ -1,5 +1,6 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_FIELDS;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
@@ -47,6 +48,27 @@ public class AddGroupCommandParserTest {
         assertParseFailure(
                 parser,
                 AddGroupCommand.COMMAND_WORD + nonEmptyGroupName,
+                expectedMessage
+        );
+    }
+
+    @Test
+    public void parse_multipleGroupTypeField_failure() {
+        String expectedMessage = MESSAGE_DUPLICATE_FIELDS + PREFIX_GROUP_TYPE;
+
+        assertParseFailure(
+                parser,
+                AddGroupCommand.COMMAND_WORD + nonEmptyGroupName + " "
+                        + PREFIX_GROUP_TYPE + "class" + " "
+                        + PREFIX_GROUP_TYPE + "department",
+                expectedMessage
+        );
+
+        assertParseFailure(
+                parser,
+                AddGroupCommand.COMMAND_WORD + nonEmptyGroupName + " "
+                        + PREFIX_GROUP_TYPE + "class" + " "
+                        + PREFIX_GROUP_TYPE + "class",
                 expectedMessage
         );
     }
