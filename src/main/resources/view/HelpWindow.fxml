@@ -45,7 +45,7 @@
                 <Insets top="20" right="24" bottom="24" left="24" />
               </padding>
 
-              <Label text="UPPERCASE = value to supply   [ ] = optional   ... = repeatable"
+              <Label text="UPPERCASE = value to supply   [ ] = optional   ... = repeatable. Type literal prefixes such as n/; omit the brackets. Commands and prefixes are case-sensitive."
                      wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-notation" />
 
               <!-- Command entry template: copy this VBox for each additional command. -->
@@ -62,10 +62,9 @@
 
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
-                  <!-- Verified against AddCommandParser: all five non-tag fields are required. -->
-                  <TextArea text="add n/NAME p/PHONE e/EMAIL a/ADDRESS ct/CONTACT_TYPE [t/TAG]..."
-                            editable="false" wrapText="true" prefRowCount="2"
-                            minHeight="68" prefHeight="68" maxHeight="68" styleClass="help-syntax" />
+                  <!-- The five contact fields are required; year of study is optional for students. -->
+                  <TextArea text="add n/NAME p/PHONE e/EMAIL a/ADDRESS ct/CONTACT_TYPE [yos/YEAR_OF_STUDY] [t/TAG]..."
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
 
                 <VBox spacing="10">
@@ -112,10 +111,21 @@
                       <ColumnConstraints minWidth="136" prefWidth="136" />
                       <ColumnConstraints minWidth="0" hgrow="ALWAYS" />
                     </columnConstraints>
-                    <Label text="t/TAG" GridPane.columnIndex="0" styleClass="help-field-name" />
-                    <Label text="Tag; letters and digits only. Repeat t/ to add more tags."
+                    <Label text="yos/YEAR_OF_STUDY" GridPane.columnIndex="0" styleClass="help-field-name" />
+                    <Label text="Optional for students only. Positive integer from 1 to 2147483647; omit if unknown. Rejected for guardians and colleagues."
                            wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                    <Label text="t/TAG" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="help-field-name" />
+                    <Label text="Tag; letters and digits only. Repeat t/ to add more tags."
+                           wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
                   </GridPane>
+                </VBox>
+
+                <Label text="Use each non-tag prefix at most once. Tags are alphanumeric and repeatable. Each supplied value must not be blank." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
+
+                <VBox spacing="8">
+                  <Label text="Example" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
+                  <TextArea text="add n/Alice Tan p/91234567 e/alice@example.com a/1 Clementi Road ct/student yos/2 t/Year2" editable="false" wrapText="true"
+                            minWidth="0" maxWidth="Infinity" styleClass="help-example" />
                 </VBox>
               </VBox>
 
@@ -129,7 +139,7 @@
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]..."
-                            editable="false" wrapText="true" prefRowCount="2" minHeight="68" prefHeight="68" maxHeight="68" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
                 <Label text="Optional fields" styleClass="help-section-title" />
                 <GridPane hgap="16" vgap="10">
@@ -137,16 +147,24 @@
                   <Label text="n/NAME" styleClass="help-field-name" GridPane.columnIndex="0" />
                   <Label text="Name; case-insensitive substring matching." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
                   <Label text="ct/CONTACT_TYPE" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                  <Label text="student, guardian or colleague, or an unambiguous prefix." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                  <Label text="student, guardian or colleague, or an unambiguous prefix such as stu; case-insensitive." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
                   <Label text="d/DEPARTMENT" styleClass="help-field-name" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                  <Label text="Department; matches colleagues with that department." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                  <Label text="Case-insensitive substring of a colleague's department; other contacts do not match." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="2" GridPane.columnIndex="1" />
                   <Label text="a/ADDRESS" styleClass="help-field-name" GridPane.rowIndex="3" GridPane.columnIndex="0" />
                   <Label text="Address; case-insensitive substring matching." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="3" GridPane.columnIndex="1" />
                   <Label text="t/TAG" styleClass="help-field-name" GridPane.rowIndex="4" GridPane.columnIndex="0" />
                   <Label text="Tag; exact, case-sensitive matching. Repeat to require more tags." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="4" GridPane.columnIndex="1" />
                 </GridPane>
-                <Label text="All fields are optional. Repeat t/TAG to require multiple tags; omit all fields to show every contact."
+                <Label text="All criteria must match. Repeat t/ to require every supplied tag. Omit all fields to show all contacts. Each filter searches all contacts, replacing the previous filter."
                        wrapText="true" styleClass="help-note" />
+
+                <Label text="Use each prefix at most once except t/. Supplied values must not be blank. Text phrases match contiguous substrings; tags match the whole value." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
+
+                <VBox spacing="8">
+                  <Label text="Example" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
+                  <TextArea text="filter ct/stu a/Clementi t/Year2" editable="false" wrapText="true"
+                            minWidth="0" maxWidth="Infinity" styleClass="help-example" />
+                </VBox>
               </VBox>
 
               <!-- Add group command -->
@@ -159,18 +177,24 @@
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="addgroup GROUP_NAME gt/GROUP_TYPE"
-                            editable="false" wrapText="true" prefRowCount="1" minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
                 <Label text="Required fields" styleClass="help-section-title" />
                 <GridPane hgap="16" vgap="10">
                   <columnConstraints><ColumnConstraints minWidth="136" prefWidth="136" /><ColumnConstraints minWidth="0" hgrow="ALWAYS" /></columnConstraints>
                   <Label text="GROUP_NAME" styleClass="help-field-name" GridPane.columnIndex="0" />
-                  <Label text="Name of the new group; letters, digits, spaces and hyphens." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                  <Label text="Letters, digits and spaces; start with a letter or digit. Hyphens are not allowed." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
                   <Label text="gt/GROUP_TYPE" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
                   <Label text="class or department." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
                 </GridPane>
-                <Label text="GROUP_TYPE must be class or department. Group names must not be blank."
+                <Label text="Place the group name before gt/. The group type is case-insensitive. Group names must not be blank."
                        wrapText="true" styleClass="help-note" />
+
+                <VBox spacing="8">
+                  <Label text="Example" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
+                  <TextArea text="addgroup Class 2A gt/class" editable="false" wrapText="true"
+                            minWidth="0" maxWidth="Infinity" styleClass="help-example" />
+                </VBox>
               </VBox>
 
               <!-- Delete group command -->
@@ -183,7 +207,7 @@
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="deletegroup INDEX"
-                            editable="false" wrapText="true" prefRowCount="1" minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
                 <Label text="Required fields" styleClass="help-section-title" />
                 <GridPane hgap="16" vgap="10">
@@ -191,8 +215,14 @@
                   <Label text="INDEX" styleClass="help-field-name" GridPane.columnIndex="0" />
                   <Label text="Positive group number in the currently displayed group list." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
                 </GridPane>
-                <Label text="INDEX is a positive group number in the currently displayed group list."
+                <Label text="Count groups from 1 in the Groups panel, not the contact list. Deleting a group unassigns its members but keeps the contacts."
                        wrapText="true" styleClass="help-note" />
+
+                <VBox spacing="8">
+                  <Label text="Example: requires a group at position 1 in the Groups panel." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
+                  <TextArea text="deletegroup 1" editable="false" wrapText="true"
+                            minWidth="0" maxWidth="Infinity" styleClass="help-example" />
+                </VBox>
               </VBox>
 
               <!-- Link group command -->
@@ -205,18 +235,24 @@
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="link n/NAME d/GROUP"
-                            editable="false" wrapText="true" prefRowCount="1" minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
                 <Label text="Required fields" styleClass="help-section-title" />
                 <GridPane hgap="16" vgap="10">
                   <columnConstraints><ColumnConstraints minWidth="136" prefWidth="136" /><ColumnConstraints minWidth="0" hgrow="ALWAYS" /></columnConstraints>
                   <Label text="n/NAME" styleClass="help-field-name" GridPane.columnIndex="0" />
-                  <Label text="Name of the student or colleague." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                  <Label text="Full contact name, matched case-insensitively across all contacts. If names repeat, the first match is used." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
                   <Label text="d/GROUP" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                  <Label text="Existing class or department name." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                  <Label text="Exact existing group name, including case. Use d/ for both classes and departments." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
                 </GridPane>
-                <Label text="NAME identifies the contact; GROUP identifies the existing class or department."
+                <Label text="Students join classes; colleagues join departments; guardians cannot join groups. Linking to another group replaces the previous assignment. Use each prefix once."
                        wrapText="true" styleClass="help-note" />
+
+                <VBox spacing="8">
+                  <Label text="Example: requires student Alice Tan and class Class 2A to exist." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
+                  <TextArea text="link n/Alice Tan d/Class 2A" editable="false" wrapText="true"
+                            minWidth="0" maxWidth="Infinity" styleClass="help-example" />
+                </VBox>
               </VBox>
 
               <!-- Link guardian command -->
@@ -229,7 +265,7 @@
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX"
-                            editable="false" wrapText="true" prefRowCount="2" minHeight="68" prefHeight="68" maxHeight="68" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
                 <Label text="Required fields" styleClass="help-section-title" />
                 <GridPane hgap="16" vgap="10">
@@ -259,8 +295,7 @@
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]..."
-                            editable="false" wrapText="true" prefRowCount="2"
-                            minHeight="68" prefHeight="68" maxHeight="68" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
 
                 <VBox spacing="10">
@@ -274,7 +309,7 @@
                     <Label text="INDEX"
                            GridPane.rowIndex="0" GridPane.columnIndex="0"
                            styleClass="help-field-name" />
-                    <Label text="Positive contact number in the currently displayed list."
+                    <Label text="Positive position in the currently displayed contact list, including filtered results; not the permanent contact ID."
                            wrapText="true" minWidth="0" maxWidth="Infinity"
                            GridPane.rowIndex="0" GridPane.columnIndex="1" />
                   </GridPane>
@@ -321,8 +356,14 @@
                   </GridPane>
                 </VBox>
 
-                <Label text="Provide at least one field to edit. Use each non-tag prefix once."
+                <Label text="Provide at least one field. Use each non-tag prefix once. Editing resets the contact list to show all contacts. Contact type, year of study and group membership cannot be edited here."
                        wrapText="true" styleClass="help-note" />
+
+                <VBox spacing="8">
+                  <Label text="Example: requires a contact at position 1; also clears its tags." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
+                  <TextArea text="edit 1 p/91234567 t/" editable="false" wrapText="true"
+                            minWidth="0" maxWidth="Infinity" styleClass="help-example" />
+                </VBox>
               </VBox>
 
               <!-- Delete command -->
@@ -341,8 +382,7 @@
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="delete INDEX"
-                            editable="false" wrapText="true" prefRowCount="2"
-                            minHeight="68" prefHeight="68" maxHeight="68" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
 
                 <VBox spacing="10">
@@ -356,10 +396,18 @@
                     <Label text="INDEX"
                            GridPane.rowIndex="0" GridPane.columnIndex="0"
                            styleClass="help-field-name" />
-                    <Label text="Positive contact number in the currently displayed list."
+                    <Label text="Positive position in the currently displayed contact list, including filtered results; not the permanent contact ID."
                            wrapText="true" minWidth="0" maxWidth="Infinity"
                            GridPane.rowIndex="0" GridPane.columnIndex="1" />
                   </GridPane>
+                </VBox>
+
+                <Label text="Deleting a contact also removes guardian-student relationships involving it. There is no confirmation step." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
+
+                <VBox spacing="8">
+                  <Label text="Example: requires a contact at position 1 in the current list." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
+                  <TextArea text="delete 1" editable="false" wrapText="true"
+                            minWidth="0" maxWidth="Infinity" styleClass="help-example" />
                 </VBox>
               </VBox>
 
@@ -372,19 +420,17 @@
                 <VBox spacing="5">
                   <Label text="list"
                          styleClass="help-command-name" />
-                  <Label text="Displays all contacts."
+                  <Label text="Displays all contacts and clears the active contact filter. Groups remain in the separate Groups panel."
                          wrapText="true" styleClass="help-description" />
                 </VBox>
 
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="list"
-                            editable="false" wrapText="true" prefRowCount="1"
-                            minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
 
-                <Label text="No fields required."
-                       wrapText="true" styleClass="help-note" />
+                <Label text="No parameters required. Extra arguments are ignored." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
               </VBox>
 
               <!-- Clear command -->
@@ -403,12 +449,10 @@
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="clear"
-                            editable="false" wrapText="true" prefRowCount="1"
-                            minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
 
-                <Label text="No fields required."
-                       wrapText="true" styleClass="help-note" />
+                <Label text="This removes all entries immediately, without confirmation. No undo command is available. Extra arguments are ignored." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
               </VBox>
 
               <!-- Help command -->
@@ -429,12 +473,10 @@
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="help"
-                            editable="false" wrapText="true" prefRowCount="1"
-                            minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
 
-                <Label text="No fields required."
-                       wrapText="true" styleClass="help-note" />
+                <Label text="No parameters required; extra arguments are ignored. Opening Help restores it if minimized. Feedback: Opened help window. The reference stays available while you use the main window." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
               </VBox>
 
               <!-- Exit command -->
@@ -453,12 +495,10 @@
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
                   <TextArea text="exit"
-                            editable="false" wrapText="true" prefRowCount="1"
-                            minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
 
-                <Label text="No fields required."
-                       wrapText="true" styleClass="help-note" />
+                <Label text="No parameters required. Extra arguments are ignored. Both the main window and Help window close." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
               </VBox>
 
               <!-- Add more command-entry sections here, using the Add entry above as the template. -->
