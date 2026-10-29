@@ -87,7 +87,7 @@ public class LinkGroupCommandTest {
     @Test
     public void execute_colleagueLinkedToClass_throwsCommandException() {
         AddressBook addressBook = new AddressBook();
-        addressBook.addGroup(new ClassGroup(new GroupName("ClassOnly"), new HashSet<>()));
+        addressBook.addGroup(new ClassGroup(new GroupName("ClassOnly")));
         addressBook.addPerson(new Colleague(new Name("Bob Tan"), new Phone("91234568"),
                 new Email("bob@example.com"), new Address("123, Jurong West Ave 6, #08-112"),
                 new HashSet<>(), null));
