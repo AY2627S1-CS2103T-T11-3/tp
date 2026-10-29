@@ -136,7 +136,7 @@ Examples:
 
 Lists contacts that satisfy all supplied criteria.
 
-Format: `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...​`
+Format: `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [id/PERSON_ID]... [gid/GROUP_ID] [yos/YEAR_OF_STUDY] [t/TAG]...`
 
 | Prefix | Criterion | Matching rule |
 | ------ | --------- | ------------- |
@@ -144,18 +144,25 @@ Format: `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...
 | `ct/` | Contact type | Case-insensitive full value or unambiguous prefix of `student`, `guardian`, or `colleague` |
 | `d/` | Department | Case-insensitive, contiguous substring; only colleagues with a department can match |
 | `a/` | Address | Case-insensitive, contiguous substring |
+| `id/` | Person ID | Exact numeric value; repeat to match any supplied ID (`OR`) |
+| `gid/` | Group ID | Exact numeric value; matches members of the selected group |
+| `yos/` | Year of study | Exact numeric value; only students with a recorded year can match |
 | `t/` | Tag | Case-sensitive, complete tag |
 
 * Running `filter` without criteria shows all contacts.
-* All supplied criteria must match (`AND`). For example, `ct/colleague d/science` requires both conditions.
-* Each prefix can appear at most once, except `t/`. If multiple tags are supplied, every tag must be present.
+* Different criteria combine using `AND`. For example, `ct/colleague d/science` requires both conditions.
+* Repeated `id/` values combine using `OR`. For example, `filter id/12 id/13 yos/2` requires **(Person ID 12 or 13) AND year of study 2**.
+* Only `id/` and `t/` may repeat. Each other prefix, including `gid/` and `yos/`, may appear at most once. If multiple tags are supplied, every tag must be present (`AND`).
 * Empty values and repeated single-value prefixes are rejected. For example, `filter n/` and `filter d/Science d/Math` are invalid.
+* `id/`, `gid/`, and `yos/` values must be positive integers from `1` to `2147483647`. Leading zeros do not change the value. Numerically duplicate Person IDs are ignored: `filter id/12 id/0012` is equivalent to `filter id/12`.
+* `id/` uses permanent Person IDs, not the contacts' displayed positions. `gid/` uses the actual numeric Group ID, whereas `link gid/` uses a displayed group index. Group IDs may change after restarting the application.
+* Contacts without an address do not match an `a/` criterion. A `yos/` criterion excludes students without a recorded year, guardians, and colleagues. Omitted criteria impose no restrictions.
 * Leading and trailing whitespace is ignored. The order and whitespace inside a name, address, or department phrase are significant.
 * `ct/student` checks a contact's actual type. `t/Student` only checks for the exact tag `Student`.
 * Contact-type abbreviations start at the beginning of the type: `ct/stu`, `ct/guar`, and `ct/col` are valid. Unknown or ambiguous abbreviations are rejected.
 * Tags contain one or more letters or digits, without spaces or punctuation. For example, `Year2` is valid but `Year 2` and `Year-2` are invalid.
 * Each filter replaces the previous search and checks all contacts; successive filters are not cumulative.
-* If no contacts match, an empty list is displayed. A department criterion combined with `ct/student` or `ct/guardian` therefore produces no results.
+* Unknown Person IDs contribute no matches; other supplied Person IDs can still match. An unknown Group ID or combined criteria with no matching contacts produce an empty list. A department criterion combined with `ct/student` or `ct/guardian` therefore produces no results.
 
 Examples:
 
@@ -164,6 +171,11 @@ Examples:
 * `filter d/science` matches departments such as `Food Science` and `Computer Science`.
 * `filter ct/col d/food sci` selects colleagues whose departments contain `food sci`.
 * `filter n/ali a/clementi t/Student t/Year2` requires the name and address substrings and both exact tags.
+* `filter id/12 id/13` selects contacts whose permanent Person ID is 12 or 13.
+* `filter id/12 id/13 yos/2` selects year-2 students whose Person ID is 12 or 13.
+* `filter gid/3 yos/2 t/Year2` selects year-2 students in group ID 3 who also have the exact tag `Year2`.
+
+Use your contacts' and groups' actual IDs in the numeric examples above.
 
 ### Creating a group: `addgroup`
 
@@ -299,7 +311,7 @@ Action | Format, Examples
 **Delete group** | `deletegroup INDEX`<br> e.g., `deletegroup 1`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
-**Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`<br> e.g., `filter n/ali ct/student a/clementi t/Year2`
+**Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [id/PERSON_ID]... [gid/GROUP_ID] [yos/YEAR_OF_STUDY] [t/TAG]...`<br> e.g., `filter id/12 id/13 yos/2`
 **List** | `list`
 **Help** | `help`
 **Create group** | `addgroup GROUP_NAME gt/GROUP_TYPE`<br> e.g., `addgroup CS2103T T01 gt/class`

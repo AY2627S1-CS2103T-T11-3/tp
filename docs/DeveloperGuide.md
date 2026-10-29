@@ -157,18 +157,20 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Contact filtering
 
-The command syntax is `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]...`.
+The command syntax is `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [id/PERSON_ID]... [gid/GROUP_ID] [yos/YEAR_OF_STUDY] [t/TAG]...`.
 
 The filtering flow is:
 
-1. `FilterCommandParser` tokenizes the five supported prefixes. It rejects an unexpected preamble, empty values, and duplicate `n/`, `ct/`, `d/`, or `a/` prefixes. Repeated `t/` prefixes are permitted.
+1. `FilterCommandParser` tokenizes the eight supported prefixes. It rejects an unexpected preamble, empty values, and duplicate `n/`, `ct/`, `d/`, `a/`, `gid/`, or `yos/` prefixes. Repeated `id/` and `t/` prefixes are permitted.
 2. Contact-type input is resolved to one `Role` using case-insensitive prefix matching. Full role names are accepted, and unknown or ambiguous prefixes cause a `ParseException`. This validation is specific to filtering; adding contacts still requires a full type.
-3. `PersonFilterCriteria` holds the optional name, role, department, and address criteria and a defensive copy of the required tags. Its original address-and-tags constructor remains available.
-4. `PersonMatchesFilterPredicate` combines all supplied criteria with `AND`. Names, departments, and addresses use contiguous substring matching with `Locale.ROOT` for case conversion. Roles use enum equality, and tags use exact, case-sensitive set membership. All required tags must be present.
-5. `FilterCommand` installs the predicate through `Model#updateFilteredPersonList` and reports the result count. It replaces the previous predicate and filters the full contact list. Absent criteria impose no restrictions, so bare `filter` shows every contact.
+3. Person IDs, Group IDs, and years of study are validated using `StringUtil.isNonZeroUnsignedInteger()` before conversion to integers. Values must be in the range `1` to `Integer.MAX_VALUE`. Leading zeros are normalized by numeric conversion, and Person IDs are collected into a set so numeric duplicates are ignored.
+4. `PersonFilterCriteria` holds the optional name, role, department, address, and year-of-study criteria, together with defensive copies of the required tags and alternative Person IDs. Its earlier constructors remain available. The parser wraps these criteria in a `PersonMatchesFilterPredicate` and passes the optional Group ID separately to `FilterCommand`.
+5. `PersonMatchesFilterPredicate` combines different criteria with `AND`. Person IDs use set membership (`OR` within the supplied IDs), while years of study use exact numeric equality and only match `Student` instances with a recorded year. Names, departments, and addresses use contiguous substring matching with `Locale.ROOT` for case conversion. Roles use enum equality, and tags use exact, case-sensitive set membership. All required tags must be present (`AND`).
+6. When `gid/` is present, `FilterCommand` resolves the numeric ID against `Model#getGroupList()` using `GroupId#matches()`. It intersects the person predicate with the selected group's membership: `Person#getGroupId()` stores the group name, which must match exactly, and the contact must be a `Student` for a class or a `Colleague` for a department. An unknown Group ID matches no contacts. This numeric ID differs from the displayed group index used by `link gid/`; Group IDs may change after restarting the application.
+7. `FilterCommand` installs the combined predicate through `Model#updateFilteredPersonList` and reports the result count. It replaces the previous predicate and filters the full contact list. Absent criteria impose no restrictions, so bare `filter` shows every contact.
 
 The following sequence diagram illustrates the successful execution of
-`filter n/ali ct/stu`:
+`filter n/ali ct/stu`, without a group criterion:
 
 <a href="images/FilterSequenceDiagram.png">
   <img src="images/FilterSequenceDiagram.png"
@@ -180,6 +182,8 @@ The following sequence diagram illustrates the successful execution of
 Click the diagram to view it at full size.
 
 Department matching checks `instanceof Colleague` and a non-null department before reading the department text. A supplied department criterion excludes students, guardians, and colleagues without a department. Combining incompatible criteria, such as `ct/student d/Science`, produces an empty list rather than an exception.
+
+Address matching checks for a non-null `Person#getAddress()` before reading its value. Contacts without an address do not match a supplied address criterion; they remain eligible when that criterion is omitted.
 
 Name searches use `filter n/NAME`. The full supplied phrase is preserved and matched as a case-insensitive, contiguous substring, and can be combined with the other filter criteria.
 
@@ -506,7 +510,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 7. **Display compatibility:** The GUI shall be usable at resolutions of 1280 × 720 or higher and at screen scaling of up to 150%.
 8. **Portability:** The application shall run on Windows, Linux, and macOS with Java `25` installed.
 9. **Offline availability:** All core features shall operate without internet access.
-10. **User capacity:** The application shall support a single user.q
+10. **User capacity:** The application shall support a single user.
 
 ### Glossary
 
