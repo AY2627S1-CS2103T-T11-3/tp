@@ -1,9 +1,13 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.List;
 import java.util.Objects;
 
+import seedu.address.commons.core.index.Index;
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.group.ClassGroup;
@@ -23,25 +27,30 @@ public class LinkGroupCommand extends Command {
     public static final String MESSAGE_NOT_FOUND = "Contact not found: %s";
     public static final String MESSAGE_GROUP_NOT_FOUND = "Group not found: %s";
 
-    private final String personName;
+    private final Index personIndex;
     private final String groupName;
 
     /** Creates a command to link a named contact to a named group. */
-    public LinkGroupCommand(String personName, String groupName) {
-        this.personName = requireNonNull(personName);
+    public LinkGroupCommand(Index personIndex, String groupName) {
+        requireAllNonNull(personIndex, groupName);
+        this.personIndex = personIndex;
         this.groupName = requireNonNull(groupName);
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        Person person = model.getAddressBook().getPersonList().stream()
-                .filter(candidate -> candidate.getName().fullName.equalsIgnoreCase(personName))
-                .findFirst()
-                .orElseThrow(() -> new CommandException(String.format(MESSAGE_NOT_FOUND, personName)));
+        List<Person> lastShownList = model.getFilteredPersonList();
+        List<Group> shownGroupList = model.getGroupList();
 
-        String groupType = person instanceof Student ? "class"
-                : person instanceof Colleague ? "department" : null;
+        if (personIndex.getZeroBased() >= lastShownList.size()) {
+            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        }
+
+        Person personToLink = lastShownList.get(personIndex.getZeroBased());
+
+        String groupType = personToLink instanceof Student ? "class"
+                : personToLink instanceof Colleague ? "department" : null;
         if (groupType == null) {
             throw new CommandException("Selected contact cannot be linked to a class or department.");
         }
@@ -59,16 +68,16 @@ public class LinkGroupCommand extends Command {
         }
 
         Person linked;
-        if (person instanceof Student student) {
-            linked = new Student(person.getName(), person.getPhone(), person.getEmail(),
-                    person.getAddress(), person.getTags(), person.getId().getRawId(), groupName,
+        if (personToLink instanceof Student student) {
+            linked = new Student(personToLink.getName(), personToLink.getPhone(), personToLink.getEmail(),
+                    personToLink.getAddress(), personToLink.getTags(), personToLink.getId().getRawId(), groupName,
                     student.getYearOfStudy());
         } else {
-            linked = new Colleague(person.getName(), person.getPhone(), person.getEmail(),
-                    person.getAddress(), person.getTags(), person.getId().getRawId(), groupName);
+            linked = new Colleague(personToLink.getName(), personToLink.getPhone(), personToLink.getEmail(),
+                    personToLink.getAddress(), personToLink.getTags(), personToLink.getId().getRawId(), groupName);
         }
-        model.setPerson(person, linked);
-        return new CommandResult(String.format("%s linked to %s: %s", personName, groupType, groupName));
+        model.setPerson(personToLink, linked);
+        return new CommandResult(String.format("%s linked to %s: %s", personToLink.getName(), groupType, groupName));
     }
 
     @Override
@@ -79,11 +88,11 @@ public class LinkGroupCommand extends Command {
         if (!(other instanceof LinkGroupCommand otherCommand)) {
             return false;
         }
-        return personName.equals(otherCommand.personName) && groupName.equals(otherCommand.groupName);
+        return personIndex.equals(otherCommand.personIndex) && groupName.equals(otherCommand.groupName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(personName, groupName);
+        return Objects.hash(personIndex, groupName);
     }
 }
