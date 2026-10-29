@@ -139,9 +139,9 @@ public class Person {
         Person otherPerson = (Person) other;
 
         return name.equals(otherPerson.name)
-                && phone.equals(otherPerson.phone)
-                && email.equals(otherPerson.email)
-                && address.equals(otherPerson.address)
+                && Objects.equals(phone, otherPerson.phone)
+                && Objects.equals(email, otherPerson.email)
+                && Objects.equals(address, otherPerson.address)
                 && Objects.equals(groupId, otherPerson.groupId)
                 && role == otherPerson.role
                 && tags.equals(otherPerson.tags)
