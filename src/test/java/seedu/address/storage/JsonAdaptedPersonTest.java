@@ -8,6 +8,7 @@ import static seedu.address.testutil.TypicalPersons.BENSON;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,8 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.PersonId;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.Student;
+import seedu.address.model.tag.Tag;
 
 public class JsonAdaptedPersonTest {
     private static final String INVALID_NAME = "R@chel";
@@ -84,11 +87,20 @@ public class JsonAdaptedPersonTest {
         assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
     }
 
+    // Test whether optional phone field is handled properly
     @Test
-    public void toModelType_nullPhone_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, null, VALID_EMAIL, VALID_ADDRESS, VALID_TAGS, 1);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Phone.class.getSimpleName());
-        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+    public void toModelType_nullPhone_returnsValidPerson() throws IllegalValueException {
+        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, null, VALID_EMAIL, VALID_ADDRESS, VALID_TAGS,
+                Role.STUDENT, 1, null, null, 1);
+        Set<Tag> expectedTags = new HashSet<>();
+
+        for (JsonAdaptedTag tag : VALID_TAGS) {
+            expectedTags.add(tag.toModelType());
+        }
+
+        Student expectedPerson = new Student(new Name(VALID_NAME), null, new Email(VALID_EMAIL),
+                new Address(VALID_ADDRESS), expectedTags, 1, null, 1);
+        assertEquals(expectedPerson, person.toModelType());
     }
 
     @Test
@@ -99,11 +111,20 @@ public class JsonAdaptedPersonTest {
         assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
     }
 
+    // Test whether optional email field is handled properly
     @Test
-    public void toModelType_nullEmail_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, null, VALID_ADDRESS, VALID_TAGS, 1);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Email.class.getSimpleName());
-        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+    public void toModelType_nullEmail_returnsValidPerson() throws IllegalValueException {
+        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, null, VALID_ADDRESS, VALID_TAGS,
+                Role.STUDENT, 1, null, null, 1);
+        Set<Tag> expectedTags = new HashSet<>();
+
+        for (JsonAdaptedTag tag : VALID_TAGS) {
+            expectedTags.add(tag.toModelType());
+        }
+
+        Student expectedPerson = new Student(new Name(VALID_NAME), new Phone(VALID_PHONE), null,
+                new Address(VALID_ADDRESS), expectedTags, 1, null, 1);
+        assertEquals(expectedPerson, person.toModelType());
     }
 
     @Test
@@ -115,10 +136,18 @@ public class JsonAdaptedPersonTest {
     }
 
     @Test
-    public void toModelType_nullAddress_throwsIllegalValueException() {
-        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, null, VALID_TAGS, 1);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName());
-        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+    public void toModelType_nullAddress_returnsValidPerson() throws IllegalValueException {
+        JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, null, VALID_TAGS,
+                Role.STUDENT, 1, null, null, 1);
+        Set<Tag> expectedTags = new HashSet<>();
+
+        for (JsonAdaptedTag tag : VALID_TAGS) {
+            expectedTags.add(tag.toModelType());
+        }
+
+        Student expectedPerson = new Student(new Name(VALID_NAME), new Phone(VALID_PHONE), new Email(VALID_EMAIL),
+                null, expectedTags, 1, null, 1);
+        assertEquals(expectedPerson, person.toModelType());
     }
 
 

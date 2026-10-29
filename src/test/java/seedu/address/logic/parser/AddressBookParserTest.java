@@ -232,4 +232,19 @@ public class AddressBookParserTest {
     public void parseCommand_unknownCommand_throwsParseException() {
         assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand"));
     }
+
+    @Test
+    public void parseCommand_ignoresCase() throws Exception {
+        // Using delete as a representative command since the logic for checking command word should be the same across
+        // all commands.
+
+        // All lowercase accepted
+        assertTrue(parser.parseCommand("delete 1") instanceof DeleteCommand);
+
+        // All uppercase accepted
+        assertTrue(parser.parseCommand("DELETE 1") instanceof DeleteCommand);
+
+        // Mixed case accepted
+        assertTrue(parser.parseCommand("dElEtE 1") instanceof DeleteCommand);
+    }
 }
