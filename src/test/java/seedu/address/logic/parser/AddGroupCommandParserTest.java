@@ -1,5 +1,6 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_FIELDS;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
@@ -28,6 +29,15 @@ public class AddGroupCommandParserTest {
     }
 
     @Test
+    public void parse_departmentGroup_success() {
+        String userInput = nonEmptyGroupName + " " + PREFIX_GROUP_TYPE + "department";
+        Group group = new GroupBuilder().withName(nonEmptyGroupName)
+                .withType(GroupType.DEPARTMENT).build();
+        AddGroupCommand expectedCommand = new AddGroupCommand(group);
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
     public void parse_missingCompulsoryField_failure() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddGroupCommand.MESSAGE_USAGE);
 
@@ -38,6 +48,27 @@ public class AddGroupCommandParserTest {
         assertParseFailure(
                 parser,
                 AddGroupCommand.COMMAND_WORD + nonEmptyGroupName,
+                expectedMessage
+        );
+    }
+
+    @Test
+    public void parse_multipleGroupTypeField_failure() {
+        String expectedMessage = MESSAGE_DUPLICATE_FIELDS + PREFIX_GROUP_TYPE;
+
+        assertParseFailure(
+                parser,
+                AddGroupCommand.COMMAND_WORD + nonEmptyGroupName + " "
+                        + PREFIX_GROUP_TYPE + "class" + " "
+                        + PREFIX_GROUP_TYPE + "department",
+                expectedMessage
+        );
+
+        assertParseFailure(
+                parser,
+                AddGroupCommand.COMMAND_WORD + nonEmptyGroupName + " "
+                        + PREFIX_GROUP_TYPE + "class" + " "
+                        + PREFIX_GROUP_TYPE + "class",
                 expectedMessage
         );
     }

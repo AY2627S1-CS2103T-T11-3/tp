@@ -7,31 +7,15 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_GROUP_NAME_DEPA
 import static seedu.address.testutil.TypicalGroups.MATH_DPT;
 import static seedu.address.testutil.TypicalGroups.RESPECT_5;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.person.PersonId;
 import seedu.address.testutil.GroupBuilder;
 
 public class GroupTest {
-    @BeforeEach
-    public void setUp() {
-        PersonId.setNextId(0);
-    }
-
     @Test
     public void constructor() {
-        Set<PersonId> personIds = new HashSet<>();
-        Group group = new ClassGroup(
-                new GroupName("Computer Science"),
-                personIds
-        );
-        personIds.add(new PersonId());
-        assertFalse(personIds.equals(group.getPersonIds()));
+        Group group = new ClassGroup(new GroupName("Computer Science"));
+        assertEquals(new GroupName("Computer Science"), group.getGroupName());
     }
 
     @Test
@@ -43,9 +27,7 @@ public class GroupTest {
         assertFalse(RESPECT_5.isSameGroup(null));
 
         // same name, all other attributes different -> returns true
-        PersonId[] editedPersonIds = { new PersonId() };
-        Group editedRespect5 = new GroupBuilder(RESPECT_5)
-                .withPersonIds(new HashSet<>(Arrays.asList(editedPersonIds))).build();
+        Group editedRespect5 = new GroupBuilder(RESPECT_5).build();
         assertTrue(RESPECT_5.isSameGroup(editedRespect5));
 
         // different name, all other attributes same -> returns false
@@ -78,7 +60,7 @@ public class GroupTest {
         // different type -> returns false
         assertFalse(RESPECT_5.equals(5));
 
-        // different person -> returns false
+        // different group -> returns false
         assertFalse(RESPECT_5.equals(MATH_DPT));
 
         // different group name -> returns false
@@ -89,17 +71,14 @@ public class GroupTest {
         editedRespect5 = new GroupBuilder(RESPECT_5).withType(GroupType.DEPARTMENT).build();
         assertFalse(RESPECT_5.equals(editedRespect5));
 
-        // different group type -> returns true
-        PersonId[] editedPersonIds = { new PersonId() };
-        editedRespect5 = new GroupBuilder(RESPECT_5)
-                .withPersonIds(new HashSet<>(Arrays.asList(editedPersonIds))).build();
-        assertFalse(RESPECT_5.equals(editedRespect5));
+        // Membership is stored on Person.groupId, so it does not affect group equality.
+        editedRespect5 = new GroupBuilder(RESPECT_5).build();
+        assertTrue(RESPECT_5.equals(editedRespect5));
     }
 
     @Test
     public void toStringMethod() {
-        String expected = ClassGroup.class.getCanonicalName() + "{group name=" + RESPECT_5.getGroupName()
-                + ", person ids=" + RESPECT_5.getPersonIds() + "}";
+        String expected = ClassGroup.class.getCanonicalName() + "{group name=" + RESPECT_5.getGroupName() + "}";
         assertEquals(expected, RESPECT_5.toString());
     }
 

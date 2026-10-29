@@ -7,14 +7,12 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalGroups.MATH_DPT;
 import static seedu.address.testutil.TypicalGroups.RESPECT_5;
 
-import java.util.HashSet;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.model.group.exceptions.DuplicateGroupException;
 import seedu.address.model.group.exceptions.GroupNotFoundException;
-import seedu.address.model.person.PersonId;
 import seedu.address.testutil.GroupBuilder;
 
 public class UniqueGroupListTest {
@@ -75,8 +73,7 @@ public class UniqueGroupListTest {
     @Test
     public void setGroup_editedGroupHasSameIdentity_success() {
         uniqueGroupList.add(RESPECT_5);
-        List<PersonId> personIds = List.of(new PersonId());
-        Group editedRespect5 = new GroupBuilder(RESPECT_5).withPersonIds(new HashSet<>(personIds)).build();
+        Group editedRespect5 = new GroupBuilder(RESPECT_5).build();
         uniqueGroupList.setGroup(RESPECT_5, editedRespect5);
         UniqueGroupList expectedUniqueGroupList = new UniqueGroupList();
         expectedUniqueGroupList.add(editedRespect5);

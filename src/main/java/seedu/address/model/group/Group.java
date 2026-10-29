@@ -1,13 +1,10 @@
 package seedu.address.model.group;
 
-import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
+import static java.util.Objects.requireNonNull;
 
-import java.util.Collections;
 import java.util.Objects;
-import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.person.PersonId;
 
 /**
  * Represent a Group in the address book.
@@ -16,16 +13,14 @@ public abstract class Group {
 
     private final GroupId id;
     private final GroupName groupName;
-    private final Set<PersonId> personIds;
 
     /**
      * Constructs a {@code Group}.
      */
-    public Group(GroupName groupName, Set<PersonId> personIds) {
-        requireAllNonNull(groupName, personIds);
+    public Group(GroupName groupName) {
+        requireNonNull(groupName);
         this.id = new GroupId();
         this.groupName = groupName;
-        this.personIds = Set.copyOf(personIds);
     }
 
     public GroupId getId() {
@@ -37,14 +32,6 @@ public abstract class Group {
     }
 
     public abstract GroupType getGroupType();
-
-    /**
-     * Returns an immutable person ids set, which throws {@code UnsupportedOperationException}
-     * if modification is attempted.
-     */
-    public Set<PersonId> getPersonIds() {
-        return Collections.unmodifiableSet(personIds);
-    }
 
     /**
      * Returns true if both groups have the same name and types.
@@ -75,8 +62,7 @@ public abstract class Group {
         }
 
         return groupName.equals(otherGroup.groupName)
-                && getGroupType() == otherGroup.getGroupType()
-                && personIds.equals(otherGroup.personIds);
+                && getGroupType() == otherGroup.getGroupType();
     }
 
     @Override
@@ -88,7 +74,6 @@ public abstract class Group {
     public String toString() {
         return new ToStringBuilder(this)
                 .add("group name", groupName)
-                .add("person ids", personIds)
                 .toString();
     }
 }

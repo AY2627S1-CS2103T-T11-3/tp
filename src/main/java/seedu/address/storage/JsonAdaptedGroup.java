@@ -1,10 +1,5 @@
 package seedu.address.storage;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,7 +9,6 @@ import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
-import seedu.address.model.person.PersonId;
 
 /**
  * Jackson-friendly version of {@link Group}.
@@ -25,20 +19,19 @@ public class JsonAdaptedGroup {
 
     private final String groupName;
     private final GroupType groupType;
-    private final List<PersonId> personIds = new ArrayList<>();
 
     /**
-     * Constructs a {@code JsonAdaptedGroup} with the given person details.
+     * Constructs a {@code JsonAdaptedGroup} with the given group details.
+     * Legacy {@code personIds} fields in existing JSON files are ignored because
+     * membership is now represented by each person's {@code groupId}.
      */
     @JsonCreator
     public JsonAdaptedGroup(
             @JsonProperty("groupName") String groupName,
-            @JsonProperty("groupType") GroupType groupType,
-            @JsonProperty("personIds") List<PersonId> personIds
+            @JsonProperty("groupType") GroupType groupType
     ) {
         this.groupName = groupName;
         this.groupType = groupType;
-        this.personIds.addAll(new ArrayList<>(personIds));
     }
 
     /**
@@ -47,7 +40,6 @@ public class JsonAdaptedGroup {
     public JsonAdaptedGroup(Group source) {
         groupName = source.getGroupName().groupName;
         groupType = source.getGroupType();
-        personIds.addAll(source.getPersonIds());
     }
 
     /**
@@ -71,11 +63,9 @@ public class JsonAdaptedGroup {
         }
         final GroupType modelGroupType = groupType;
 
-        final Set<PersonId> modelPersonIds = new HashSet<>(personIds);
-
         return switch (modelGroupType) {
-            case CLASS -> new ClassGroup(modelGroupName, modelPersonIds);
-            case DEPARTMENT -> new DepartmentGroup(modelGroupName, modelPersonIds);
+            case CLASS -> new ClassGroup(modelGroupName);
+            case DEPARTMENT -> new DepartmentGroup(modelGroupName);
         };
     }
 

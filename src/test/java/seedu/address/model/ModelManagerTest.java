@@ -8,8 +8,6 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 
-import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
@@ -77,7 +75,7 @@ public class ModelManagerTest {
 
     @Test
     public void getGroupList_afterAddingGroup_containsGroup() {
-        Group group = new ClassGroup(new GroupName("CS2103T T01"), Set.of());
+        Group group = new ClassGroup(new GroupName("CS2103T T01"));
 
         modelManager.addGroup(group);
 

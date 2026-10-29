@@ -12,7 +12,9 @@ import java.util.Set;
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupType;
 import seedu.address.model.group.UniqueGroupList;
+import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Role;
@@ -164,10 +166,35 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     /**
      * Removes {@code key} from this {@code AddressBook}.
-     * {@code key} must exist in the address book.
+     * {@code key} must exist in the address book. Contacts assigned to the group are unassigned.
      */
     public void removeGroup(Group key) {
         groups.remove(key);
+        String deletedGroupName = key.getGroupName().groupName;
+        List<Person> currentPersons = List.copyOf(persons.asUnmodifiableObservableList());
+        currentPersons.stream()
+                .filter(person -> belongsToGroup(person, key.getGroupType(), deletedGroupName))
+                .forEach(person -> setPerson(person, withoutGroup(person)));
+    }
+
+    /** Returns true if {@code person} belongs to the specified group by name and type. */
+    private boolean belongsToGroup(Person person, GroupType groupType, String groupName) {
+        if (!groupName.equals(person.getGroupId())) {
+            return false;
+        }
+        return (groupType == GroupType.CLASS && person instanceof Student)
+                || (groupType == GroupType.DEPARTMENT && person instanceof Colleague);
+    }
+
+    /** Returns a copy of {@code person} with no group assignment. */
+    private Person withoutGroup(Person person) {
+        if (person instanceof Student student) {
+            return new Student(person.getName(), person.getPhone(), person.getEmail(), person.getAddress(),
+                    person.getTags(), person.getId().getRawId(), null, student.getYearOfStudy());
+        }
+        Colleague colleague = (Colleague) person;
+        return new Colleague(colleague.getName(), colleague.getPhone(), colleague.getEmail(), colleague.getAddress(),
+                colleague.getTags(), colleague.getId().getRawId(), null);
     }
 
     //// util methods

@@ -69,14 +69,12 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_link() throws Exception {
-        final String colleagueName = "Alice Pauline";
-        final String department = "Computer Science";
         LinkGroupCommand command = (LinkGroupCommand) parser.parseCommand(
                 LinkGroupCommand.COMMAND_WORD + " "
-                + CliSyntax.PREFIX_NAME + colleagueName + " "
-                + CliSyntax.PREFIX_DEPARTMENT + department
+                + CliSyntax.PREFIX_PERSON_INDEX + 1 + " "
+                + CliSyntax.PREFIX_GROUP_INDEX + 1
         );
-        assertEquals(new LinkGroupCommand(colleagueName, department), command);
+        assertEquals(new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP), command);
     }
 
     @Test
@@ -256,5 +254,20 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_unknownCommand_throwsParseException() {
         assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand"));
+    }
+
+    @Test
+    public void parseCommand_ignoresCase() throws Exception {
+        // Using delete as a representative command since the logic for checking command word should be the same across
+        // all commands.
+
+        // All lowercase accepted
+        assertTrue(parser.parseCommand("delete 1") instanceof DeleteCommand);
+
+        // All uppercase accepted
+        assertTrue(parser.parseCommand("DELETE 1") instanceof DeleteCommand);
+
+        // Mixed case accepted
+        assertTrue(parser.parseCommand("dElEtE 1") instanceof DeleteCommand);
     }
 }

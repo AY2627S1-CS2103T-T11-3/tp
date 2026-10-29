@@ -19,4 +19,6 @@ public class CliSyntax {
     public static final Prefix PREFIX_GROUP_ID = new Prefix("gid/");
     public static final Prefix PREFIX_PERSON_ID = new Prefix("id/");
     public static final Prefix PREFIX_YEAR_OF_STUDY = new Prefix("yos/");
+    public static final Prefix PREFIX_PERSON_INDEX = new Prefix("pid/");
+    public static final Prefix PREFIX_GROUP_INDEX = new Prefix("gid/");
 }
