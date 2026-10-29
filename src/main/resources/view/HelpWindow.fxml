@@ -119,6 +119,130 @@
                 </VBox>
               </VBox>
 
+              <!-- Filter command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding><Insets top="20" right="20" bottom="20" left="20" /></padding>
+                <VBox spacing="5">
+                  <Label text="filter" styleClass="help-command-name" />
+                  <Label text="Shows contacts matching all supplied criteria." wrapText="true" styleClass="help-description" />
+                </VBox>
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [t/TAG]..."
+                            editable="false" wrapText="true" prefRowCount="2" minHeight="68" prefHeight="68" maxHeight="68" styleClass="help-syntax" />
+                </VBox>
+                <Label text="Optional fields" styleClass="help-section-title" />
+                <GridPane hgap="16" vgap="10">
+                  <columnConstraints><ColumnConstraints minWidth="136" prefWidth="136" /><ColumnConstraints minWidth="0" hgrow="ALWAYS" /></columnConstraints>
+                  <Label text="n/NAME" styleClass="help-field-name" GridPane.columnIndex="0" />
+                  <Label text="Name; case-insensitive substring matching." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                  <Label text="ct/CONTACT_TYPE" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                  <Label text="student, guardian or colleague, or an unambiguous prefix." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                  <Label text="d/DEPARTMENT" styleClass="help-field-name" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                  <Label text="Department; matches colleagues with that department." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                  <Label text="a/ADDRESS" styleClass="help-field-name" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                  <Label text="Address; case-insensitive substring matching." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                  <Label text="t/TAG" styleClass="help-field-name" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                  <Label text="Tag; exact, case-sensitive matching. Repeat to require more tags." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+                </GridPane>
+                <Label text="All fields are optional. Repeat t/TAG to require multiple tags; omit all fields to show every contact."
+                       wrapText="true" styleClass="help-note" />
+              </VBox>
+
+              <!-- Add group command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding><Insets top="20" right="20" bottom="20" left="20" /></padding>
+                <VBox spacing="5">
+                  <Label text="addgroup" styleClass="help-command-name" />
+                  <Label text="Creates a class or department group." wrapText="true" styleClass="help-description" />
+                </VBox>
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="addgroup GROUP_NAME gt/GROUP_TYPE"
+                            editable="false" wrapText="true" prefRowCount="1" minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                </VBox>
+                <Label text="Required fields" styleClass="help-section-title" />
+                <GridPane hgap="16" vgap="10">
+                  <columnConstraints><ColumnConstraints minWidth="136" prefWidth="136" /><ColumnConstraints minWidth="0" hgrow="ALWAYS" /></columnConstraints>
+                  <Label text="GROUP_NAME" styleClass="help-field-name" GridPane.columnIndex="0" />
+                  <Label text="Name of the new group; letters, digits, spaces and hyphens." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                  <Label text="gt/GROUP_TYPE" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                  <Label text="class or department." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                </GridPane>
+                <Label text="GROUP_TYPE must be class or department. Group names must not be blank."
+                       wrapText="true" styleClass="help-note" />
+              </VBox>
+
+              <!-- Delete group command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding><Insets top="20" right="20" bottom="20" left="20" /></padding>
+                <VBox spacing="5">
+                  <Label text="deletegroup" styleClass="help-command-name" />
+                  <Label text="Deletes the group at the displayed group-list index." wrapText="true" styleClass="help-description" />
+                </VBox>
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="deletegroup INDEX"
+                            editable="false" wrapText="true" prefRowCount="1" minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                </VBox>
+                <Label text="Required fields" styleClass="help-section-title" />
+                <GridPane hgap="16" vgap="10">
+                  <columnConstraints><ColumnConstraints minWidth="136" prefWidth="136" /><ColumnConstraints minWidth="0" hgrow="ALWAYS" /></columnConstraints>
+                  <Label text="INDEX" styleClass="help-field-name" GridPane.columnIndex="0" />
+                  <Label text="Positive group number in the currently displayed group list." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                </GridPane>
+                <Label text="INDEX is a positive group number in the currently displayed group list."
+                       wrapText="true" styleClass="help-note" />
+              </VBox>
+
+              <!-- Link group command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding><Insets top="20" right="20" bottom="20" left="20" /></padding>
+                <VBox spacing="5">
+                  <Label text="link" styleClass="help-command-name" />
+                  <Label text="Links a student to a class or a colleague to a department." wrapText="true" styleClass="help-description" />
+                </VBox>
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="link n/NAME d/GROUP"
+                            editable="false" wrapText="true" prefRowCount="1" minHeight="48" prefHeight="48" maxHeight="48" styleClass="help-syntax" />
+                </VBox>
+                <Label text="Required fields" styleClass="help-section-title" />
+                <GridPane hgap="16" vgap="10">
+                  <columnConstraints><ColumnConstraints minWidth="136" prefWidth="136" /><ColumnConstraints minWidth="0" hgrow="ALWAYS" /></columnConstraints>
+                  <Label text="n/NAME" styleClass="help-field-name" GridPane.columnIndex="0" />
+                  <Label text="Name of the student or colleague." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                  <Label text="d/GROUP" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                  <Label text="Existing class or department name." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                </GridPane>
+                <Label text="NAME identifies the contact; GROUP identifies the existing class or department."
+                       wrapText="true" styleClass="help-note" />
+              </VBox>
+
+              <!-- Link guardian command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding><Insets top="20" right="20" bottom="20" left="20" /></padding>
+                <VBox spacing="5">
+                  <Label text="link-guardian" styleClass="help-command-name" />
+                  <Label text="Links a guardian to a student using displayed contact-list indices." wrapText="true" styleClass="help-description" />
+                </VBox>
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX"
+                            editable="false" wrapText="true" prefRowCount="2" minHeight="68" prefHeight="68" maxHeight="68" styleClass="help-syntax" />
+                </VBox>
+                <Label text="Required fields" styleClass="help-section-title" />
+                <GridPane hgap="16" vgap="10">
+                  <columnConstraints><ColumnConstraints minWidth="136" prefWidth="136" /><ColumnConstraints minWidth="0" hgrow="ALWAYS" /></columnConstraints>
+                  <Label text="s/STUDENT_INDEX" styleClass="help-field-name" GridPane.columnIndex="0" />
+                  <Label text="Positive student number in the displayed contact list." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                  <Label text="g/GUARDIAN_INDEX" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                  <Label text="Positive guardian number in the displayed contact list." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                </GridPane>
+                <Label text="Use the current displayed contact list; s/ must identify a student and g/ must identify a guardian."
+                       wrapText="true" styleClass="help-note" />
+              </VBox>
+
               <!-- Edit command -->
               <VBox spacing="14" styleClass="command-entry">
                 <padding>
