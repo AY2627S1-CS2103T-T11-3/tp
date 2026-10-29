@@ -83,23 +83,28 @@ Adds a person to the address book.
 
 Format: `add n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_OF_STUDY] [t/TAG]...​`
 
-* Only `n/NAME` is required. Phone, email, address, contact type, year of study, and tags may be omitted. The following field constraints apply when a value is supplied.
+* Only `n/NAME` is required. Phone, email, address, contact type, year of study, and tags may be omitted. Except for tags, all fields may only be given at most once. The following field constraints apply when a value is supplied.
 * `NAME` may contain letters, digits, and spaces, and must not be blank.
 * `PHONE` must contain digits only and be at least 3 digits long.
 * `EMAIL` must be a valid email address.
-* `ADDRESS` must not be blank.
+* `ADDRESS` must not be blank if supplied.
 * `CONTACT_TYPE` must be `student`, `guardian`, or `colleague` (case-insensitive); omitting it defaults to `student`.
-* `yos/YEAR_OF_STUDY` is optional for students, including when the year is unknown. If supplied, it must be a positive integer from 1 to 2147483647. It is rejected for guardians and colleagues. Use the prefix at most once.
+* `YEAR_OF_STUDY` is optional for students, including when the year is unknown. If supplied, it must be a positive integer from 1 to 2147483647. It is rejected for guardians and colleagues. 
 * `TAG` may contain letters and digits only.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags, including zero.
 </div>
 
+<div markdown="span" class="alert alert-primary">:bulb: **Tip:**
+If you don't have all the information for a contact right now, you can add them first then edit their information later.
+</div>
+
+
 Examples:
-* `add n/Alice Tan` adds a student with only a name recorded.
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 ct/student yos/2`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Jurong East p/1234567 ct/colleague`
+* `add n/Alice Tan` adds a student named "Alice Tan" with no other information recorded.
+* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 ct/student yos/2 t/groupLeader` adds a student named "John Doe" with phone number 98765432, email address johnd@example.com, address John Street, block  123, #01-01, year of study of 2 and a tag of "groupLeader".
+* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Jurong East p/1234567 ct/colleague t/neighbor` adds a colleague named "Betsy Crowe" with email betsycrowe@example.com, address Jurong East, phone number 1234567 and two tags "friend" and "neighbor".
 
 ### Listing all persons: `list`
 
@@ -280,7 +285,7 @@ _Details coming soon ..._
 
 Action | Format, Examples
 --------|------------------
-**Add** | `add n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_OF_STUDY] [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 ct/colleague t/friend`
+**Add** | `add n/NAME [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_OF_STUDY] [t/TAG]…​` <br> e.g., `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 ct/student yos/2 t/groupLeader`
 **Clear** | `clear`
 **Delete group** | `deletegroup INDEX`<br> e.g., `deletegroup 1`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
