@@ -32,6 +32,7 @@ public class AddGroupCommandParser implements Parser<AddGroupCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddGroupCommand.MESSAGE_USAGE));
         }
 
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_GROUP_TYPE);
         GroupName groupName = ParserUtil.parseGroupName(argMultimap.getPreamble());
         GroupType groupType = ParserUtil.parseGroupType(argMultimap.getValue(PREFIX_GROUP_TYPE).get());
 

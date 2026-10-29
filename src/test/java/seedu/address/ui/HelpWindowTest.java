@@ -13,8 +13,12 @@ import static seedu.address.testutil.TypicalCommands.ALL_COMMAND_NAMES;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.AfterEach;
@@ -37,15 +41,19 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.parser.AddressBookParser;
+import seedu.address.model.Model;
+import seedu.address.model.ModelManager;
+import seedu.address.model.person.Role;
 import seedu.address.testutil.FxTestUtil;
 
 /**
  * Integration tests requiring the offline Help window implementation in the tested revision.
  */
 public class HelpWindowTest {
-    private static final Map<String, String> OPTIONAL_FIELDS = Map.of(
+    private static final Map<String, String> EDIT_FIELDS = Map.of(
             "[n/NAME]", "n/NAME", "[p/PHONE]", "p/PHONE", "[e/EMAIL]", "e/EMAIL",
             "[a/ADDRESS]", "a/ADDRESS", "[t/TAG]...", "t/TAG");
     private static final Map<String, String> PLACEHOLDER_VALUES = Map.ofEntries(
@@ -53,9 +61,11 @@ public class HelpWindowTest {
             Map.entry("EMAIL", "help@example.com"), Map.entry("ADDRESS", "12 Help Street"),
             Map.entry("INDEX", "1"), Map.entry("TAG", "Friends"),
             Map.entry("CONTACT_TYPE", "student"), Map.entry("DEPARTMENT", "Science"),
-            Map.entry("GROUP", "Class"), Map.entry("GROUP_NAME", "Group"),
+            Map.entry("GROUP_NAME", "Group"), Map.entry("YEAR_OF_STUDY", "2"),
             Map.entry("GROUP_TYPE", "class"), Map.entry("STUDENT_INDEX", "1"),
-            Map.entry("GUARDIAN_INDEX", "2"));
+            Map.entry("GUARDIAN_INDEX", "2"), Map.entry("PERSON_INDEX", "1"),
+            Map.entry("GROUP_INDEX", "1"));
+    private static final Pattern OPTIONAL_FIELD = Pattern.compile("\\[[^\\]]+](?:\\.\\.\\.)?");
     private static final Pattern UNRESOLVED_PLACEHOLDER = Pattern.compile("\\b[A-Z][A-Z_]*\\b");
 
     private HelpWindow helpWindow;
@@ -98,10 +108,12 @@ public class HelpWindowTest {
     }
 
     @Test
-    public void reference_documentedCommands_haveSelectableReadOnlyFormats() throws Exception {
+    public void reference_formatsAndExamples_areSelectableReadOnly() throws Exception {
         runAndWait(() -> {
             Parent root = helpWindow.getRoot().getScene().getRoot();
-            for (TextArea syntax : documentedFormats().values()) {
+            documentedFormats(); // Also checks command coverage and duplicate entries.
+            for (Node node : root.lookupAll(".text-area")) {
+                TextArea syntax = (TextArea) node;
                 assertFalse(syntax.getText().isBlank());
                 assertFalse(syntax.isEditable());
                 assertTrue(syntax.isWrapText());
@@ -115,13 +127,52 @@ public class HelpWindowTest {
     }
 
     @Test
-    public void reference_addFormat_acceptsAllRolesAndOptionalTags() throws Exception {
+    public void reference_addFormat_acceptsNameOnlyAndEachOptionalField() throws Exception {
         runAndWait(() -> {
             String format = documentedFormats().get(AddCommand.COMMAND_WORD).getText();
-            for (String role : List.of("student", "guardian", "colleague")) {
-                assertFormatAcceptedByParser(format, role, Map.of());
-                assertFormatAcceptedByParser(format, role, Map.of("[t/TAG]...", "t/TAG"));
-                assertFormatAcceptedByParser(format, role, Map.of("[t/TAG]...", "t/TAG t/School"));
+            assertAddFormat(format, Map.of(), Role.STUDENT);
+            Map<String, String> optionalFields = Map.of(
+                    "[p/PHONE]", "p/PHONE", "[e/EMAIL]", "e/EMAIL", "[a/ADDRESS]", "a/ADDRESS",
+                    "[yos/YEAR_OF_STUDY]", "yos/YEAR_OF_STUDY", "[t/TAG]...", "t/TAG");
+            for (Map.Entry<String, String> field : optionalFields.entrySet()) {
+                assertAddFormat(format, Map.of(field.getKey(), field.getValue()), Role.STUDENT);
+            }
+        });
+    }
+
+    @Test
+    public void reference_addFormat_preservesExplicitRolesWithOptionalDetails() throws Exception {
+        runAndWait(() -> {
+            String format = documentedFormats().get(AddCommand.COMMAND_WORD).getText();
+            for (Role role : Role.values()) {
+                Map<String, String> fields = new HashMap<>();
+                fields.put("[ct/CONTACT_TYPE]", "ct/" + role.name().toLowerCase(Locale.ROOT));
+                assertAddFormat(format, fields, role);
+                fields.put("[p/PHONE]", "p/PHONE");
+                fields.put("[e/EMAIL]", "e/EMAIL");
+                fields.put("[a/ADDRESS]", "a/ADDRESS");
+                fields.put("[t/TAG]...", "t/TAG t/School");
+                if (role == Role.STUDENT) {
+                    fields.put("[yos/YEAR_OF_STUDY]", "yos/YEAR_OF_STUDY");
+                }
+                assertAddFormat(format, fields, role);
+            }
+        });
+    }
+
+    @Test
+    public void reference_displayedExamples_areAcceptedByParser() throws Exception {
+        runAndWait(() -> {
+            Parent root = helpWindow.getRoot().getScene().getRoot();
+            assertFalse(root.lookupAll(".help-example").isEmpty());
+            for (Node entry : root.lookupAll(".command-entry")) {
+                Parent card = (Parent) entry;
+                String command = ((Label) card.lookup(".help-command-name")).getText();
+                for (Node node : card.lookupAll(".help-example")) {
+                    String example = ((TextArea) node).getText();
+                    assertEquals(command, example.strip().split("\\s+", 2)[0]);
+                    assertDoesNotThrow(() -> new AddressBookParser().parseCommand(example), example);
+                }
             }
         });
     }
@@ -130,13 +181,13 @@ public class HelpWindowTest {
     public void reference_editFormat_acceptsOptionalFieldsAndRepeatedTags() throws Exception {
         runAndWait(() -> {
             String format = documentedFormats().get(EditCommand.COMMAND_WORD).getText();
-            for (Map.Entry<String, String> field : OPTIONAL_FIELDS.entrySet()) {
-                assertFormatAcceptedByParser(format, "student", Map.of(field.getKey(), field.getValue()));
+            for (Map.Entry<String, String> field : EDIT_FIELDS.entrySet()) {
+                assertFormatAcceptedByParser(format, Map.of(field.getKey(), field.getValue()));
             }
-            Map<String, String> allFields = new HashMap<>(OPTIONAL_FIELDS);
+            Map<String, String> allFields = new HashMap<>(EDIT_FIELDS);
             allFields.put("[t/TAG]...", "t/TAG t/School");
-            assertFormatAcceptedByParser(format, "student", allFields);
-            assertFormatAcceptedByParser(format, "student", Map.of("[t/TAG]...", "t/"));
+            assertFormatAcceptedByParser(format, allFields);
+            assertFormatAcceptedByParser(format, Map.of("[t/TAG]...", "t/"));
         });
     }
 
@@ -146,7 +197,7 @@ public class HelpWindowTest {
             Map<String, TextArea> formats = documentedFormats();
             for (String command : ALL_COMMAND_NAMES) {
                 if (!command.equals(AddCommand.COMMAND_WORD) && !command.equals(EditCommand.COMMAND_WORD)) {
-                    assertFormatAcceptedByParser(formats.get(command).getText(), "student", Map.of());
+                    assertFormatAcceptedByParser(formats.get(command).getText(), Map.of());
                 }
             }
         });
@@ -213,32 +264,57 @@ public class HelpWindowTest {
     }
 
     @Test
-    public void layout_minimumSize_keepsReferenceScrollableWithoutHorizontalOverflow() throws Exception {
+    public void layout_resizingAndLargerText_keepsReferenceAndWrappedTextVisible() throws Exception {
+        Stage stage = helpWindow.getRoot();
+        runAndWait(helpWindow::show);
+        for (double width : List.of(stage.getMinWidth(), 1200.0, stage.getMinWidth())) {
+            runAndWait(() -> {
+                stage.setWidth(width);
+                stage.setHeight(stage.getMinHeight());
+            });
+            waitUntil(() -> Math.abs(stage.getScene().getWidth() - width) < 40,
+                    "the Help scene to resize");
+            runAndWait(this::assertReferenceFitsViewport);
+        }
         runAndWait(() -> {
-            Stage stage = helpWindow.getRoot();
-            stage.setWidth(stage.getMinWidth());
-            stage.setHeight(stage.getMinHeight());
-            helpWindow.show();
             Parent root = stage.getScene().getRoot();
-            root.applyCss();
-            root.layout();
-            ScrollPane scroll = (ScrollPane) root.lookup("#commandScrollPane");
-            assertTrue(scroll.isFitToWidth());
-            assertEquals(ScrollPane.ScrollBarPolicy.NEVER, scroll.getHbarPolicy());
-            assertEquals(ScrollPane.ScrollBarPolicy.AS_NEEDED, scroll.getVbarPolicy());
-            assertTrue(scroll.getContent().getLayoutBounds().getHeight() > scroll.getViewportBounds().getHeight());
-            assertTrue(scroll.getContent().getLayoutBounds().getWidth() <= scroll.getViewportBounds().getWidth() + 1);
-            assertEquals(ALL_COMMAND_NAMES.size(), root.lookupAll(".command-entry").size());
-            for (Node entry : root.lookupAll(".command-entry")) {
-                assertTrue(entry.getBoundsInParent().getMaxX() <= scroll.getContent().getLayoutBounds().getWidth());
-                Bounds entryBounds = entry.localToScene(entry.getLayoutBounds());
-                for (Node label : ((Parent) entry).lookupAll(".label")) {
-                    Bounds labelBounds = label.localToScene(label.getLayoutBounds());
-                    assertTrue(labelBounds.getMinX() >= entryBounds.getMinX() - 1);
-                    assertTrue(labelBounds.getMaxX() <= entryBounds.getMaxX() + 1);
-                }
-            }
+            root.lookupAll(".text-area").forEach(node -> node.setStyle("-fx-font-size: 20px;"));
+            assertReferenceFitsViewport();
         });
+    }
+
+    private void assertReferenceFitsViewport() {
+        Parent root = helpWindow.getRoot().getScene().getRoot();
+        root.applyCss();
+        root.layout();
+        ScrollPane scroll = (ScrollPane) root.lookup("#commandScrollPane");
+        assertTrue(scroll.isFitToWidth());
+        assertEquals(ScrollPane.ScrollBarPolicy.NEVER, scroll.getHbarPolicy());
+        assertEquals(ScrollPane.ScrollBarPolicy.AS_NEEDED, scroll.getVbarPolicy());
+        assertTrue(scroll.getContent().getLayoutBounds().getHeight() > scroll.getViewportBounds().getHeight());
+        assertTrue(scroll.getContent().getLayoutBounds().getWidth() <= scroll.getViewportBounds().getWidth() + 1);
+        for (Node entry : root.lookupAll(".command-entry")) {
+            Bounds entryBounds = entry.localToScene(entry.getLayoutBounds());
+            Set<Node> controls = new HashSet<>(((Parent) entry).lookupAll(".label"));
+            controls.addAll(((Parent) entry).lookupAll(".text-area"));
+            for (Node child : controls) {
+                Bounds bounds = child.localToScene(child.getLayoutBounds());
+                assertTrue(bounds.getMinX() >= entryBounds.getMinX() - 1);
+                assertTrue(bounds.getMaxX() <= entryBounds.getMaxX() + 1);
+                assertTrue(bounds.getMinY() >= entryBounds.getMinY() - 1);
+                assertTrue(bounds.getMaxY() <= entryBounds.getMaxY() + 1);
+            }
+        }
+        for (Node node : root.lookupAll(".text-area")) {
+            TextArea area = (TextArea) node;
+            ScrollPane inner = (ScrollPane) area.lookup(".scroll-pane");
+            assertNotNull(inner);
+            Bounds content = inner.getContent().getLayoutBounds();
+            Bounds viewport = inner.getViewportBounds();
+            assertTrue(viewport.getWidth() > 0 && viewport.getHeight() > 0, area.getText());
+            assertTrue(content.getWidth() <= viewport.getWidth() + 1, "Hidden horizontal text: " + area.getText());
+            assertTrue(content.getHeight() <= viewport.getHeight() + 1, "Hidden vertical text: " + area.getText());
+        }
     }
 
     private Map<String, TextArea> documentedFormats() {
@@ -254,31 +330,31 @@ public class HelpWindowTest {
             assertEquals(command, syntax.getText().strip().split("\\s+", 2)[0]);
             assertNull(formats.put(command, syntax), "Duplicate Help entry: " + command);
         }
-        assertEquals(ALL_COMMAND_NAMES.size(), formats.size());
-        assertTrue(formats.keySet().containsAll(ALL_COMMAND_NAMES));
+        assertEquals(Set.copyOf(ALL_COMMAND_NAMES), formats.keySet());
         return formats;
     }
 
-    private void assertFormatAcceptedByParser(String format, String role, Map<String, String> optionalFields) {
+    private void assertAddFormat(String format, Map<String, String> fields, Role expectedRole) {
+        Command command = assertFormatAcceptedByParser(format, fields);
+        Model model = new ModelManager();
+        assertDoesNotThrow(() -> command.execute(model));
+        assertEquals(expectedRole, model.getAddressBook().getPersonList().getFirst().getRole());
+    }
+
+    private Command assertFormatAcceptedByParser(String format, Map<String, String> optionalFields) {
         for (String field : optionalFields.keySet()) {
             assertTrue(format.contains(field), "Missing optional field in Help format: " + field);
         }
-        String example = format;
-        for (String field : OPTIONAL_FIELDS.keySet()) {
-            example = example.replace(field, optionalFields.getOrDefault(field, ""));
-        }
-        for (String field : List.of("[ct/CONTACT_TYPE]", "[d/DEPARTMENT]", "[a/ADDRESS]")) {
-            example = example.replace(field, "");
-        }
-        example = example.replace("CONTACT_TYPE", role);
-        example = example.replace("STUDENT_INDEX", "1").replace("GUARDIAN_INDEX", "2");
-        example = example.replace("GROUP_NAME", "Group").replace("GROUP_TYPE", "class");
-        for (Map.Entry<String, String> placeholder : PLACEHOLDER_VALUES.entrySet()) {
-            example = example.replace(placeholder.getKey(), placeholder.getValue());
-        }
+        String example = OPTIONAL_FIELD.matcher(format).replaceAll(match ->
+                Matcher.quoteReplacement(optionalFields.getOrDefault(match.group(), "")));
+        example = UNRESOLVED_PLACEHOLDER.matcher(example).replaceAll(match -> {
+            String value = PLACEHOLDER_VALUES.get(match.group());
+            assertNotNull(value, "Unknown Help placeholder: " + match.group());
+            return Matcher.quoteReplacement(value);
+        });
         assertFalse(example.contains("[") || example.contains("]") || example.contains("..."), example);
         assertFalse(UNRESOLVED_PLACEHOLDER.matcher(example).find(), example);
         String command = example;
-        assertDoesNotThrow(() -> new AddressBookParser().parseCommand(command), command);
+        return assertDoesNotThrow(() -> new AddressBookParser().parseCommand(command), command);
     }
 }

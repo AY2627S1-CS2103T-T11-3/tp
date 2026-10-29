@@ -3,6 +3,8 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_GROUP;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,31 +15,31 @@ public class LinkGroupCommandParserTest {
 
     @Test
     public void parse_validArgs_returnsCommand() {
-        assertParseSuccess(parser, " n/Alice Pauline d/CS2103T T01",
-                new LinkGroupCommand("Alice Pauline", "CS2103T T01"));
+        assertParseSuccess(parser, " pid/1 gid/1",
+                new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP));
     }
 
     @Test
-    public void parse_missingName_throwsParseException() {
-        assertParseFailure(parser, " d/CS2103T T01",
+    public void parse_missingPersonIndex_throwsParseException() {
+        assertParseFailure(parser, " gid/1",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, LinkGroupCommand.MESSAGE_USAGE));
     }
 
     @Test
-    public void parse_missingGroup_throwsParseException() {
-        assertParseFailure(parser, " n/Alice Pauline",
+    public void parse_missingGroupIndex_throwsParseException() {
+        assertParseFailure(parser, " pid/1",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, LinkGroupCommand.MESSAGE_USAGE));
     }
 
     @Test
     public void parse_duplicatePrefix_throwsParseException() {
-        assertParseFailure(parser, " n/Alice n/Bob d/CS2103T T01",
-                seedu.address.logic.Messages.getErrorMessageForDuplicatePrefixes(CliSyntax.PREFIX_NAME));
+        assertParseFailure(parser, " pid/1 pid/2 gid/1",
+                seedu.address.logic.Messages.getErrorMessageForDuplicatePrefixes(CliSyntax.PREFIX_PERSON_INDEX));
     }
 
     @Test
     public void parse_preamble_throwsParseException() {
-        assertParseFailure(parser, "unexpected n/Alice d/CS2103T T01",
+        assertParseFailure(parser, "unexpected pid/1 gid/1",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, LinkGroupCommand.MESSAGE_USAGE));
     }
 }

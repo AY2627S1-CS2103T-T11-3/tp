@@ -11,7 +11,7 @@ import seedu.address.model.tag.Tag;
 
 /**
  * Stores the immutable criteria used to filter persons.
- * Absent criteria and an empty tag set impose no restrictions.
+ * Absent criteria and empty tag or person ID sets impose no restrictions.
  */
 public final class PersonFilterCriteria {
 
@@ -20,6 +20,8 @@ public final class PersonFilterCriteria {
     private final Optional<String> departmentKeyword;
     private final Optional<String> addressKeyword;
     private final Set<Tag> requiredTags;
+    private final Set<Integer> personIds;
+    private final Optional<Integer> yearOfStudy;
 
     /**
      * Constructs filter criteria with a defensive copy of the required tags.
@@ -44,12 +46,34 @@ public final class PersonFilterCriteria {
      */
     public PersonFilterCriteria(Optional<String> nameKeyword, Optional<Role> contactType,
             Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        requireAllNonNull(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags);
+        this(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
+                Set.of(), Optional.empty());
+    }
+
+    /**
+     * Constructs criteria with defensive copies of required tags and alternative person IDs.
+     *
+     * @param nameKeyword The optional name substring to match.
+     * @param contactType The optional contact type to match exactly.
+     * @param departmentKeyword The optional department substring to match.
+     * @param addressKeyword The optional address substring to match.
+     * @param requiredTags The exact, case-sensitive tags that must all be present.
+     * @param personIds The permanent person IDs to match exactly using OR, not displayed list indices.
+     * @param yearOfStudy The optional year to match exactly on students with a year of study.
+     * @throws NullPointerException If any argument, required tag, or person ID is null.
+     */
+    public PersonFilterCriteria(Optional<String> nameKeyword, Optional<Role> contactType,
+            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags,
+            Set<Integer> personIds, Optional<Integer> yearOfStudy) {
+        requireAllNonNull(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
+                personIds, yearOfStudy);
         this.nameKeyword = nameKeyword;
         this.contactType = contactType;
         this.departmentKeyword = departmentKeyword;
         this.addressKeyword = addressKeyword;
         this.requiredTags = Set.copyOf(requiredTags);
+        this.personIds = Set.copyOf(personIds);
+        this.yearOfStudy = yearOfStudy;
     }
 
     /** Returns the optional name substring to match. */
@@ -81,6 +105,16 @@ public final class PersonFilterCriteria {
         return requiredTags;
     }
 
+    /** Returns an unmodifiable set of alternative permanent person IDs to match exactly. */
+    public Set<Integer> getPersonIds() {
+        return personIds;
+    }
+
+    /** Returns the optional year of study to match exactly on students. */
+    public Optional<Integer> getYearOfStudy() {
+        return yearOfStudy;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -96,22 +130,31 @@ public final class PersonFilterCriteria {
                 && contactType.equals(otherCriteria.contactType)
                 && departmentKeyword.equals(otherCriteria.departmentKeyword)
                 && addressKeyword.equals(otherCriteria.addressKeyword)
-                && requiredTags.equals(otherCriteria.requiredTags);
+                && requiredTags.equals(otherCriteria.requiredTags)
+                && personIds.equals(otherCriteria.personIds)
+                && yearOfStudy.equals(otherCriteria.yearOfStudy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags);
+        return Objects.hash(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
+                personIds, yearOfStudy);
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
+        ToStringBuilder builder = new ToStringBuilder(this)
                 .add("nameKeyword", nameKeyword)
                 .add("contactType", contactType)
                 .add("departmentKeyword", departmentKeyword)
                 .add("addressKeyword", addressKeyword)
-                .add("requiredTags", requiredTags)
-                .toString();
+                .add("requiredTags", requiredTags);
+        if (!personIds.isEmpty()) {
+            builder.add("personIds", personIds);
+        }
+        if (yearOfStudy.isPresent()) {
+            builder.add("yearOfStudy", yearOfStudy);
+        }
+        return builder.toString();
     }
 }

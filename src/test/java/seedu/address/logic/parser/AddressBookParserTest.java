@@ -6,6 +6,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_YEAR_OF_STUDY;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_GROUP;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
@@ -43,6 +44,7 @@ import seedu.address.testutil.GroupBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
 
+/** Tests command routing and propagation of errors from individual command parsers. */
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
@@ -67,14 +69,12 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_link() throws Exception {
-        final String colleagueName = "Alice Pauline";
-        final String department = "Computer Science";
         LinkGroupCommand command = (LinkGroupCommand) parser.parseCommand(
                 LinkGroupCommand.COMMAND_WORD + " "
-                + CliSyntax.PREFIX_NAME + colleagueName + " "
-                + CliSyntax.PREFIX_DEPARTMENT + department
+                + CliSyntax.PREFIX_PERSON_INDEX + 1 + " "
+                + CliSyntax.PREFIX_GROUP_INDEX + 1
         );
-        assertEquals(new LinkGroupCommand(colleagueName, department), command);
+        assertEquals(new LinkGroupCommand(INDEX_FIRST_PERSON, INDEX_FIRST_GROUP), command);
     }
 
     @Test
@@ -183,6 +183,27 @@ public class AddressBookParserTest {
 
         assertEquals(expectedCommand,
                 parser.parseCommand(FilterCommand.COMMAND_WORD + " a/Clementi Ave t/Student t/Year2"));
+    }
+
+    /**
+     * Verifies top-level routing of repeated IDs, a year, and an existing text criterion.
+     *
+     * @throws Exception If the valid command unexpectedly cannot be parsed.
+     */
+    @Test
+    public void parseCommand_filterByNumericCriteria_returnsFilterCommand() throws Exception {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("ali"), Optional.empty(),
+                Optional.empty(), Optional.empty(), Set.of(), Set.of(12, 128), Optional.of(2));
+        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertEquals(expectedCommand, parser.parseCommand("filter id/12 yos/2 n/ali id/128"));
+    }
+
+    /** Verifies propagation of a numeric-prefix validation error through the main command parser. */
+    @Test
+    public void parseCommand_filterWithDuplicateYear_throwsParseException() {
+        assertThrows(ParseException.class, Messages.getErrorMessageForDuplicatePrefixes(PREFIX_YEAR_OF_STUDY), () ->
+                parser.parseCommand("filter id/12 yos/2 yos/2"));
     }
 
     @Test
