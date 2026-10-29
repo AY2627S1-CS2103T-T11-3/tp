@@ -13,7 +13,7 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.group.Group;
 import seedu.address.model.group.GroupType;
-import seedu.address.model.group.UniqueGroupList;
+import seedu.address.model.group.GroupList;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
@@ -28,7 +28,7 @@ import seedu.address.model.person.UniquePersonList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons = new UniquePersonList();
-    private final UniqueGroupList groups = new UniqueGroupList();
+    private final GroupList groups = new GroupList();
 
     // Each guardian maps to the students linked to that guardian.
     private final Map<Guardian, Set<Person>> guardianStudents = new HashMap<>();

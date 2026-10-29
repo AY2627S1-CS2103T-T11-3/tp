@@ -160,7 +160,11 @@ Creates a class or department group.
 Format: `create_group GROUP_NAME gt/GROUP_TYPE`
 
 * `GROUP_NAME` may contain letters, digits, and spaces, and must not be blank.
+<<<<<<< Updated upstream
 * `GROUP_TYPE` must be either `class` or `department`.
+=======
+* `GROUP_TYPE` must be either `class` or `department` (case-insensitive). Group names do not allow hyphens.
+>>>>>>> Stashed changes
 * Duplicate group names and group types are allowed.
 * New groups initially have no members and are displayed in the Groups panel.
 
