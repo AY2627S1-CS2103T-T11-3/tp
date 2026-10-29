@@ -5,6 +5,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACT_TYPE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPARTMENT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PERSON_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
@@ -27,12 +28,12 @@ import seedu.address.model.person.Role;
 import seedu.address.model.tag.Tag;
 
 /**
- * Parses optional text, contact type, tag, person ID, and year-of-study filter criteria.
+ * Parses optional text, contact type, tag, person ID, group ID, and year-of-study filter criteria.
  */
 public class FilterCommandParser implements Parser<FilterCommand> {
 
     // Normalize only separators before prefixes, preserving whitespace inside text phrases.
-    private static final Pattern PREFIX_SEPARATOR_PATTERN = Pattern.compile("\\s+(?=(n/|ct/|d/|a/|t/|id/|yos/))");
+    private static final Pattern PREFIX_SEPARATOR_PATTERN = Pattern.compile("\\s+(?=(n/|ct/|d/|a/|t/|id/|gid/|yos/))");
 
     /**
      * Parses optional criteria into a {@code FilterCommand}.
@@ -46,19 +47,20 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         String normalizedArgs = " " + PREFIX_SEPARATOR_PATTERN.matcher(args).replaceAll(" ");
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(normalizedArgs,
                 PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_ADDRESS, PREFIX_TAG,
-                PREFIX_PERSON_ID, PREFIX_YEAR_OF_STUDY);
+                PREFIX_PERSON_ID, PREFIX_GROUP_ID, PREFIX_YEAR_OF_STUDY);
 
         if (!argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_ADDRESS,
-                PREFIX_YEAR_OF_STUDY);
+                PREFIX_GROUP_ID, PREFIX_YEAR_OF_STUDY);
         Optional<String> nameKeyword = parseTextCriterion(argMultimap, PREFIX_NAME);
         Optional<String> contactTypeKeyword = parseTextCriterion(argMultimap, PREFIX_CONTACT_TYPE);
         Optional<String> departmentKeyword = parseTextCriterion(argMultimap, PREFIX_DEPARTMENT);
         Optional<String> addressKeyword = parseTextCriterion(argMultimap, PREFIX_ADDRESS);
         Set<Integer> personIds = parsePersonIds(argMultimap);
+        Optional<Integer> groupId = parseNumericCriterion(argMultimap, PREFIX_GROUP_ID);
         Optional<Integer> yearOfStudy = parseNumericCriterion(argMultimap, PREFIX_YEAR_OF_STUDY);
         Optional<Role> contactType = parseContactType(contactTypeKeyword);
         Set<Tag> requiredTags = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
@@ -66,7 +68,7 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         PersonFilterCriteria criteria = new PersonFilterCriteria(nameKeyword, contactType,
                 departmentKeyword, addressKeyword, requiredTags, personIds, yearOfStudy);
         PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(criteria);
-        return new FilterCommand(predicate);
+        return new FilterCommand(predicate, groupId);
     }
 
     /**
