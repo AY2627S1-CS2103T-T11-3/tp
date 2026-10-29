@@ -13,19 +13,27 @@ import static seedu.address.testutil.TypicalPersons.DANIEL;
 import static seedu.address.testutil.TypicalPersons.getTypicalPersons;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.group.ClassGroup;
+import seedu.address.model.group.DepartmentGroup;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
+import seedu.address.model.person.PersonId;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
 import seedu.address.model.person.Role;
 import seedu.address.model.person.Student;
@@ -45,10 +53,168 @@ public class FilterCommandTest {
     private final Colleague foodScienceColleague = prepareColleague("Alison Goh", "Food Science");
     private final Colleague computerScienceColleague = prepareColleague("Marcus Lee", "Computer Science");
     private final Colleague unlinkedColleague = prepareColleague("Priya Rao", null);
+    private final Student secondYearStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(),
+            ALICE.getAddress(), ALICE.getTags(), 128, null, 2);
+    private final Student twelfthYearStudent = new Student(BENSON.getName(), BENSON.getPhone(), BENSON.getEmail(),
+            BENSON.getAddress(), BENSON.getTags(), 256, null, 12);
+    private final Guardian numericGuardian = new Guardian(BENSON.getName(), BENSON.getPhone(), BENSON.getEmail(),
+            BENSON.getAddress(), BENSON.getTags(), 512);
 
+    /** Verifies exact membership and type separation using IDs unrelated to displayed group positions. */
     @Test
-    public void constructor_nullPredicate_throwsNullPointerException() {
+    public void execute_groupId_listsOnlyMatchingMembers() {
+        Model groupModel = prepareGroupModel();
+        List<Person> contacts = groupModel.getAddressBook().getPersonList();
+        Group schoolClass = groupModel.getGroupList().get(0);
+        Group department = groupModel.getGroupList().get(1);
+
+        assertFilterSuccess(prepareGroupCommand(schoolClass.getId().getRawId()), groupModel,
+                List.of(contacts.get(0), contacts.get(1)));
+        assertFilterSuccess(prepareGroupCommand(department.getId().getRawId()), groupModel,
+                List.of(contacts.get(2)));
+    }
+
+    /**
+     * Verifies that parsed group restrictions intersect with existing criteria and Person ID alternatives.
+     *
+     * @throws Exception If a valid combined command unexpectedly cannot be parsed.
+     */
+    @Test
+    public void execute_groupIdWithCriteria_listsIntersection() throws Exception {
+        Model groupModel = prepareGroupModel();
+        List<Person> contacts = groupModel.getAddressBook().getPersonList();
+        String classFilter = "filter gid/" + groupModel.getGroupList().get(0).getId().getRawId();
+        String departmentFilter = "filter gid/" + groupModel.getGroupList().get(1).getId().getRawId();
+
+        assertParsedFilterSuccess(classFilter + " id/128 id/256", groupModel,
+                List.of(contacts.get(0), contacts.get(1)));
+        assertParsedFilterSuccess(classFilter + " id/128 id/768", groupModel, List.of(contacts.get(0)));
+        assertParsedFilterSuccess(classFilter + " yos/2", groupModel, List.of(contacts.get(0)));
+
+        String studentFilter = classFilter
+                + " id/128 id/256 yos/2 n/ali a/CLEMENTI AVE ct/stu t/Student t/Year2";
+        assertParsedFilterSuccess(studentFilter, groupModel, List.of(contacts.get(0)));
+        for (String input : List.of(studentFilter.replace("id/128 id/256", "id/768"),
+                studentFilter.replace("yos/2", "yos/3"), studentFilter.replace("n/ali", "n/bob"),
+                studentFilter.replace("a/CLEMENTI AVE", "a/Bugis"), studentFilter.replace("ct/stu", "ct/guardian"),
+                studentFilter.replace("t/Student", "t/student"))) {
+            assertParsedFilterSuccess(input, groupModel, List.of());
+        }
+
+        assertParsedFilterSuccess(departmentFilter
+                + " id/4096 n/col ct/COL d/shared sch a/clementi t/Staff t/Committee", groupModel,
+                List.of(contacts.get(2)));
+        assertParsedFilterSuccess(departmentFilter + " yos/2", groupModel, List.of());
+    }
+
+    /**
+     * Verifies index-based linking, relinking, and deletion keep group filtering consistent.
+     *
+     * @throws Exception If a valid filter or link command unexpectedly fails.
+     */
+    @Test
+    public void execute_groupFilterAfterChanges_usesCurrentMembership() throws Exception {
+        Model groupModel = prepareGroupModel();
+        List<Person> contacts = List.copyOf(groupModel.getAddressBook().getPersonList());
+        Group schoolClass = groupModel.getGroupList().get(0);
+        Group otherClass = groupModel.getGroupList().get(2);
+        FilterCommand command = (FilterCommand) new AddressBookParser().parseCommand(
+                "filter gid/" + schoolClass.getId().getRawId());
+        assertFilterSuccess(command, groupModel, List.of(contacts.get(0), contacts.get(1)));
+
+        // Show all contacts so the ungrouped contact can be selected by the link command's displayed index.
+        prepareCommand(Optional.empty(), Set.of()).execute(groupModel);
+        Index contactIndex = Index.fromZeroBased(groupModel.getFilteredPersonList().indexOf(contacts.get(4)));
+        Index classIndex = Index.fromZeroBased(groupModel.getGroupList().indexOf(schoolClass));
+        new LinkGroupCommand(contactIndex, classIndex).execute(groupModel);
+        Person linkedContact = groupModel.getAddressBook().getPersonList().get(4);
+        assertFilterSuccess(command, groupModel, List.of(contacts.get(0), contacts.get(1), linkedContact));
+
+        Index linkedContactIndex = Index.fromZeroBased(groupModel.getFilteredPersonList().indexOf(linkedContact));
+        Index otherClassIndex = Index.fromZeroBased(groupModel.getGroupList().indexOf(otherClass));
+        new LinkGroupCommand(linkedContactIndex, otherClassIndex).execute(groupModel);
+        assertEquals(List.of(contacts.get(0), contacts.get(1)), groupModel.getFilteredPersonList());
+
+        groupModel.deleteGroup(schoolClass);
+        assertTrue(groupModel.getFilteredPersonList().isEmpty());
+        assertFilterSuccess(command, groupModel, List.of());
+    }
+
+    /**
+     * Verifies the deduplicated union using permanent IDs that differ from the displayed positions.
+     *
+     * @throws Exception If the valid command unexpectedly cannot be parsed.
+     */
+    @Test
+    public void execute_multiplePersonIds_listsUnionWithoutDuplicates() throws Exception {
+        FilterCommand command = (FilterCommand) new AddressBookParser().parseCommand("filter id/256 id/128 id/128");
+
+        assertFilterSuccess(command, prepareNumericModel(), List.of(secondYearStudent, twelfthYearStudent));
+    }
+
+    /** Verifies that numeric and existing criteria all intersect to select the matching student. */
+    @Test
+    public void execute_personIdsAndYearOfStudy_listsIntersection() {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("ali"), Optional.of(Role.STUDENT),
+                Optional.empty(), Optional.of("jurong"), Set.of(new Tag("friends")), Set.of(128, 256), Optional.of(2));
+        FilterCommand command = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+
+        assertFilterSuccess(command, prepareNumericModel(), List.of(secondYearStudent));
+    }
+
+    /** Verifies zero results for absent IDs, contradictory criteria, and groups without matching members. */
+    @Test
+    public void execute_numericCriteriaWithNoMatch_listsZeroPersons() {
+        Model numericModel = prepareNumericModel();
+
+        assertFilterSuccess(prepareNumericCommand(Set.of(999), Optional.empty()), numericModel, List.of());
+        assertFilterSuccess(prepareNumericCommand(Set.of(512), Optional.of(2)), numericModel, List.of());
+
+        Model groupModel = prepareGroupModel();
+        Group emptyGroup = groupModel.getGroupList().get(3);
+        assertFilterSuccess(prepareGroupCommand(Integer.MAX_VALUE), groupModel, List.of());
+        assertFilterSuccess(prepareGroupCommand(emptyGroup.getId().getRawId()), groupModel, List.of());
+    }
+
+    /** Verifies that numeric restrictions preserve all stored data, relationships, and both ID counters. */
+    @Test
+    public void execute_numericFiltering_preservesStateAndCounters() {
+        Model numericModel = prepareNumericModel();
+        numericModel.linkGuardianToStudent(numericGuardian, secondYearStudent);
+        int nextId = PersonId.getNextId();
+
+        assertFilterSuccess(prepareNumericCommand(Set.of(512), Optional.empty()), numericModel,
+                List.of(numericGuardian));
+        assertEquals(Map.of(numericGuardian, Set.of(secondYearStudent)),
+                numericModel.getAddressBook().getGuardianStudents());
+        assertEquals(nextId, PersonId.getNextId());
+
+        Model groupModel = prepareGroupModel();
+        List<Person> originalContacts = List.copyOf(groupModel.getAddressBook().getPersonList());
+        List<Group> originalGroups = List.copyOf(groupModel.getGroupList());
+        groupModel.linkGuardianToStudent((Guardian) originalContacts.get(5), (Student) originalContacts.get(0));
+        Map<Guardian, Set<Person>> originalLinks = groupModel.getAddressBook().getGuardianStudents();
+        int nextPersonId = PersonId.getNextId();
+        int nextGroupId = GroupId.getNextId();
+
+        assertFilterSuccess(prepareGroupCommand(originalGroups.get(0).getId().getRawId()), groupModel,
+                List.of(originalContacts.get(0), originalContacts.get(1)));
+        assertEquals(originalContacts, groupModel.getAddressBook().getPersonList());
+        assertEquals(originalGroups, groupModel.getGroupList());
+        assertEquals(originalLinks, groupModel.getAddressBook().getGuardianStudents());
+        assertEquals(nextPersonId, PersonId.getNextId());
+        assertEquals(nextGroupId, GroupId.getNextId());
+    }
+
+    /** Verifies that both constructors reject null predicates and the group Optional cannot be null. */
+    @Test
+    public void constructor_nullArguments_throwsNullPointerException() {
+        PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
+                new PersonFilterCriteria(Optional.empty(), Set.of()));
+
         assertThrows(NullPointerException.class, () -> new FilterCommand(null));
+        assertThrows(NullPointerException.class, () -> new FilterCommand(null, Optional.of(128)));
+        assertThrows(NullPointerException.class, () -> new FilterCommand(predicate, null));
     }
 
     @Test
@@ -144,6 +310,7 @@ public class FilterCommandTest {
                 Optional.of("clementi"), Set.of(new Tag("Committee"), new Tag("Missing"))), roleModel, List.of());
     }
 
+    /** Verifies that role, numeric, and group filters replace previous constraints and can still be cleared. */
     @Test
     public void execute_newCriteriaAfterDepartmentFilter_replacesFilter() {
         Model roleModel = prepareRoleModel();
@@ -152,6 +319,13 @@ public class FilterCommandTest {
                 Optional.empty(), Set.of()), roleModel, List.of(foodScienceColleague));
         assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.STUDENT), Optional.empty(),
                 Optional.empty(), Set.of()), roleModel, List.of(student));
+        int colleagueId = computerScienceColleague.getId().getRawId();
+        assertFilterSuccess(prepareNumericCommand(Set.of(colleagueId), Optional.empty()),
+                roleModel, List.of(computerScienceColleague));
+        Group department = new DepartmentGroup(new GroupName("Food Science"));
+        roleModel.addGroup(department);
+        assertFilterSuccess(prepareGroupCommand(department.getId().getRawId()), roleModel,
+                List.of(foodScienceColleague));
         assertFilterSuccess(prepareCommand(Optional.empty(), Set.of()), roleModel,
                 List.of(student, guardian, foodScienceColleague, computerScienceColleague, unlinkedColleague));
     }
@@ -211,15 +385,19 @@ public class FilterCommandTest {
                 List.of(ALICE, BENSON, DANIEL));
     }
 
+    /** Verifies unrestricted, numeric, and group queries against the same empty address book. */
     @Test
     public void execute_emptyAddressBook_listsZeroPersons() {
         Model emptyModel = new ModelManager();
-        FilterCommand command = prepareCommand(Optional.empty(), Set.of());
 
-        assertCommandSuccess(command, emptyModel,
-                getPersonsFoundMessage(0), new ModelManager());
+        for (FilterCommand command : List.of(prepareCommand(Optional.empty(), Set.of()),
+                prepareNumericCommand(Set.of(128, 256), Optional.of(2)), prepareGroupCommand(128))) {
+            assertCommandSuccess(command, emptyModel,
+                    String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0), new ModelManager());
+        }
     }
 
+    /** Verifies equality includes group restrictions and preserves compatibility between constructors. */
     @Test
     public void equals() {
         FilterCommand command = prepareCommand(Optional.of("Clementi"), Set.of(new Tag("Student")));
@@ -231,8 +409,17 @@ public class FilterCommandTest {
         assertFalse(command.equals(1));
         assertFalse(command.equals(prepareCommand(Optional.of("Bugis"), Set.of(new Tag("Student")))));
         assertFalse(command.equals(prepareCommand(Optional.of("Clementi"), Set.of(new Tag("student")))));
+
+        PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
+                new PersonFilterCriteria(Optional.of("Clementi"), Set.of(new Tag("Student"))));
+        FilterCommand groupedCommand = new FilterCommand(predicate, Optional.of(128));
+        assertTrue(command.equals(new FilterCommand(predicate, Optional.empty())));
+        assertTrue(groupedCommand.equals(new FilterCommand(predicate, Optional.of(128))));
+        assertFalse(groupedCommand.equals(new FilterCommand(predicate, Optional.of(256))));
+        assertFalse(groupedCommand.equals(command));
     }
 
+    /** Verifies equal commands have equal hashes with or without a supplied group ID. */
     @Test
     public void hashCode_equalCommands_returnsSameHashCode() {
         FilterCommand command = prepareCommand(Optional.of("ali"), Optional.of(Role.COLLEAGUE), Optional.of("science"),
@@ -241,8 +428,12 @@ public class FilterCommandTest {
                 Optional.of("Clementi"), Set.of(new Tag("Student")));
 
         assertEquals(command.hashCode(), copy.hashCode());
+        FilterCommand groupedCommand = prepareGroupCommand(128);
+        FilterCommand groupedCopy = prepareGroupCommand(128);
+        assertEquals(groupedCommand.hashCode(), groupedCopy.hashCode());
     }
 
+    /** Verifies the original representation is preserved and a supplied group ID is included. */
     @Test
     public void toStringMethod() {
         PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("Clementi"), Set.of(new Tag("Student")));
@@ -251,6 +442,10 @@ public class FilterCommandTest {
         String expected = FilterCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
 
         assertEquals(expected, command.toString());
+        FilterCommand groupedCommand = new FilterCommand(predicate, Optional.of(128));
+        String expectedGrouped = FilterCommand.class.getCanonicalName() + "{predicate=" + predicate
+                + ", groupId=Optional[128]}";
+        assertEquals(expectedGrouped, groupedCommand.toString());
     }
 
     /**
@@ -268,6 +463,77 @@ public class FilterCommandTest {
         PersonFilterCriteria criteria = new PersonFilterCriteria(nameKeyword, contactType, departmentKeyword,
                 addressKeyword, requiredTags);
         return new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+    }
+
+    /** Constructs a command for the exact numeric criteria without involving parser validation. */
+    private FilterCommand prepareNumericCommand(Set<Integer> personIds, Optional<Integer> yearOfStudy) {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Set.of(), personIds, yearOfStudy);
+        return new FilterCommand(new PersonMatchesFilterPredicate(criteria));
+    }
+
+    /** Constructs an unrestricted person predicate with an exact numeric group restriction. */
+    private FilterCommand prepareGroupCommand(int groupId) {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Set.of());
+        return new FilterCommand(new PersonMatchesFilterPredicate(criteria), Optional.of(groupId));
+    }
+
+    /** Parses a complete command through the main parser and reuses the existing result assertions. */
+    private void assertParsedFilterSuccess(String input, Model actualModel, List<Person> expectedPersons)
+            throws Exception {
+        FilterCommand command = (FilterCommand) new AddressBookParser().parseCommand(input);
+        assertFilterSuccess(command, actualModel, expectedPersons);
+    }
+
+    /** Creates isolated groups above the Integer cache range, restoring the allocation counter afterwards. */
+    private Model prepareGroupModel() {
+        Model groupModel = new ModelManager();
+        int nextGroupId = GroupId.getNextId();
+        try {
+            GroupId.setNextId(128);
+            for (Group group : List.of(new ClassGroup(new GroupName("Shared School")),
+                    new DepartmentGroup(new GroupName("Shared School")),
+                    new ClassGroup(new GroupName("Other Class")),
+                    new ClassGroup(new GroupName("Empty Class")),
+                    new ClassGroup(new GroupName("shared school")),
+                    new ClassGroup(new GroupName("Shared School Extra")))) {
+                groupModel.addGroup(group);
+            }
+        } finally {
+            GroupId.setNextId(nextGroupId);
+        }
+
+        Person colleagueDetails = new PersonBuilder().withName("Colin Lee").withAddress("311, Clementi Ave 2")
+                .withTags("Staff", "Committee").build();
+        Colleague colleague = new Colleague(colleagueDetails.getName(), colleagueDetails.getPhone(),
+                colleagueDetails.getEmail(), colleagueDetails.getAddress(), colleagueDetails.getTags(), 4096,
+                "Shared School");
+        for (Person contact : List.of(prepareGroupedStudent("Alice Goh", 128, "Shared School", 2),
+                prepareGroupedStudent("Bob Tan", 256, "Shared School", 3), colleague,
+                prepareGroupedStudent("Cara Lee", 768, "Other Class", 2),
+                prepareGroupedStudent("Dana Lee", 1024, null, 2), numericGuardian,
+                prepareGroupedStudent("Finn Tan", 1536, "shared school", 2),
+                prepareGroupedStudent("Grace Tan", 1792, "Shared School Extra", 2))) {
+            groupModel.addPerson(contact);
+        }
+        return groupModel;
+    }
+
+    /** Constructs a student with an explicit ID, group assignment, and year-specific tags. */
+    private Student prepareGroupedStudent(String name, int personId, String groupName, int yearOfStudy) {
+        Person details = new PersonBuilder().withName(name).withAddress("311, Clementi Ave 2")
+                .withTags("Student", "Year" + yearOfStudy).build();
+        return new Student(details.getName(), details.getPhone(), details.getEmail(), details.getAddress(),
+                details.getTags(), personId, groupName, yearOfStudy);
+    }
+
+    /** Creates in-memory contacts with explicit IDs unrelated to their displayed positions. */
+    private Model prepareNumericModel() {
+        Model numericModel = new ModelManager();
+        for (Person contact : List.of(secondYearStudent, twelfthYearStudent, numericGuardian)) {
+            numericModel.addPerson(contact);
+        }
+        return numericModel;
     }
 
     /**

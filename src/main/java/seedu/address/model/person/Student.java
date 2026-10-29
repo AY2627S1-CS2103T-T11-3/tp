@@ -3,6 +3,7 @@ package seedu.address.model.person;
 import java.util.Objects;
 import java.util.Set;
 
+import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -65,5 +66,18 @@ public class Student extends Person {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), yearOfStudy);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .add("name", getName())
+                .add("phone", getPhone())
+                .add("email", getEmail())
+                .add("address", getAddress())
+                .add("id", getId())
+                .add("tags", getTags())
+                .add("yearOfStudy", getYearOfStudy())
+                .toString();
     }
 }

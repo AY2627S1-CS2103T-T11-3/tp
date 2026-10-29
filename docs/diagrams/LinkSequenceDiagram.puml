@@ -1,0 +1,66 @@
+@startuml
+!include /Users/jyo/my-projects/tp/docs/diagrams/style.puml
+skinparam ArrowFontStyle plain
+
+Actor User as user USER_COLOR
+Participant ":UI" as ui UI_COLOR
+Participant ":Logic" as logic LOGIC_COLOR
+Participant "AddressBookParser" as parser LOGIC_COLOR
+Participant "LinkGroupCommandParser" as linkParser LOGIC_COLOR
+Participant "LinkGroupCommand" as command LOGIC_COLOR
+Participant ":Model" as model MODEL_COLOR
+Participant "AddressBook" as addressBook MODEL_COLOR
+Participant ":Storage" as storage STORAGE_COLOR
+
+user -[USER_COLOR]> ui : "link n/NAME d/GROUP"
+activate ui UI_COLOR
+ui -[UI_COLOR]> logic : execute(commandText)
+activate logic LOGIC_COLOR
+logic -[LOGIC_COLOR]> parser : parseCommand(commandText)
+activate parser LOGIC_COLOR
+parser -[LOGIC_COLOR]> linkParser : parse(arguments)
+activate linkParser LOGIC_COLOR
+linkParser --[LOGIC_COLOR]> parser : LinkGroupCommand
+deactivate linkParser
+parser --[LOGIC_COLOR]> logic : LinkGroupCommand
+deactivate parser
+logic -[LOGIC_COLOR]> command : execute(model)
+activate command LOGIC_COLOR
+
+command -[LOGIC_COLOR]> model : getAddressBook()
+model --[MODEL_COLOR]> command : AddressBook
+command -[LOGIC_COLOR]> addressBook : find person by name
+addressBook --[MODEL_COLOR]> command : Person
+command -[LOGIC_COLOR]> model : getGroupList()
+model --[MODEL_COLOR]> command : group list
+
+alt Person is a Student
+    command -[LOGIC_COLOR]> command : create ClassGroup(groupName)
+    command -[LOGIC_COLOR]> command : create updated Student with class
+else Person is a Colleague
+    command -[LOGIC_COLOR]> command : create DepartmentGroup(groupName)
+    command -[LOGIC_COLOR]> command : create updated Colleague with department
+end
+
+command -[LOGIC_COLOR]> model : setPerson(person, updatedPerson)
+activate model MODEL_COLOR
+model -[MODEL_COLOR]> addressBook : setPerson(person, updatedPerson)
+addressBook --[MODEL_COLOR]> model : person updated
+deactivate model
+command --[LOGIC_COLOR]> logic : CommandResult
+deactivate command
+
+logic -[LOGIC_COLOR]> storage : saveAddressBook(model.getAddressBook())
+activate storage STORAGE_COLOR
+storage -[STORAGE_COLOR]> storage : Save to file
+activate storage STORAGE_COLOR_T1
+storage --[STORAGE_COLOR]> storage
+deactivate storage
+deactivate storage
+
+logic --[LOGIC_COLOR]> ui : CommandResult
+deactivate logic
+ui --[UI_COLOR]> user : Success message
+deactivate ui
+
+@enduml
