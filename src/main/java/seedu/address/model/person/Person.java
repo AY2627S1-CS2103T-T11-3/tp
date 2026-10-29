@@ -61,7 +61,7 @@ public class Person {
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Role role, Integer rawPersonId,
                   String groupId) {
-        requireAllNonNull(name, phone, email, address, tags, role, rawPersonId);
+        requireAllNonNull(name, tags, role, rawPersonId);
         this.name = name;
         this.phone = phone;
         this.email = email;
