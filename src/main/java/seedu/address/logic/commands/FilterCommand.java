@@ -36,48 +36,13 @@ public class FilterCommand extends Command {
     public static final String MESSAGE_INVALID_NUMERIC_CRITERION =
             "Filter criterion %s must be a positive integer from 1 to " + Integer.MAX_VALUE + ".";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Lists persons who satisfy all supplied filter criteria.\n"
-            + "Names, addresses, and departments use case-insensitive substring matching.\n"
-            + "Contact types accept a full value or unambiguous prefix of student, guardian, or colleague "
-            + "(case-insensitive). Tags use case-sensitive exact matching.\n"
-            + "Person IDs, group IDs, and years of study use exact numeric matching. "
-            + "Person IDs are permanent contact IDs, not displayed list indices.\n"
-            + "Repeat " + PREFIX_PERSON_ID + " to match any supplied person ID (OR); duplicate IDs are ignored.\n"
-            + "Use a group's numeric ID, not its displayed list index. Supply at most one "
-            + PREFIX_GROUP_ID + " value.\n"
-            + "Unknown group IDs list no persons. Group IDs may change after an application restart.\n"
-            + "All criteria must match (AND). Omit all criteria to list all persons.\n"
-            + "Department criteria only match colleagues with a department.\n"
-            + "Year-of-study criteria only match students with a recorded year.\n"
-            + "Each prefix except " + PREFIX_TAG + " and " + PREFIX_PERSON_ID + " may appear at most once; repeat "
-            + PREFIX_TAG + " to require all supplied tags (AND). Supplied values must not be empty.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists matching contacts.\n"
             + "Parameters: [" + PREFIX_NAME + "NAME] [" + PREFIX_CONTACT_TYPE + "CONTACT_TYPE] ["
             + PREFIX_DEPARTMENT + "DEPARTMENT] [" + PREFIX_ADDRESS + "ADDRESS] ["
             + PREFIX_PERSON_ID + "PERSON_ID]... [" + PREFIX_GROUP_ID + "GROUP_ID] ["
             + PREFIX_YEAR_OF_STUDY + "YEAR_OF_STUDY] ["
             + PREFIX_TAG + "TAG]...\n"
-            + "Examples:\n"
-            + COMMAND_WORD + "\n"
-            + COMMAND_WORD + " " + PREFIX_NAME + "ali\n"
-            + COMMAND_WORD + " " + PREFIX_CONTACT_TYPE + "stu\n"
-            + COMMAND_WORD + " " + PREFIX_CONTACT_TYPE + "col " + PREFIX_DEPARTMENT + "food sci\n"
-            + COMMAND_WORD + " " + PREFIX_PERSON_ID + "12\n"
-            + COMMAND_WORD + " " + PREFIX_PERSON_ID + "12 " + PREFIX_PERSON_ID + "13\n"
-            + COMMAND_WORD + " " + PREFIX_GROUP_ID + "3\n"
-            + COMMAND_WORD + " " + PREFIX_GROUP_ID + "3 " + PREFIX_YEAR_OF_STUDY + "2\n"
-            + COMMAND_WORD + " " + PREFIX_GROUP_ID + "3 " + PREFIX_PERSON_ID + "12 "
-            + PREFIX_PERSON_ID + "13 " + PREFIX_YEAR_OF_STUDY + "2\n"
-            + COMMAND_WORD + " " + PREFIX_YEAR_OF_STUDY + "2\n"
-            + COMMAND_WORD + " " + PREFIX_PERSON_ID + "12 " + PREFIX_YEAR_OF_STUDY + "2\n"
-            + COMMAND_WORD + " " + PREFIX_PERSON_ID + "12 " + PREFIX_PERSON_ID + "13 "
-            + PREFIX_YEAR_OF_STUDY + "2\n"
-            + COMMAND_WORD + " " + PREFIX_CONTACT_TYPE + "student " + PREFIX_YEAR_OF_STUDY + "2\n"
-            + COMMAND_WORD + " " + PREFIX_ADDRESS + "Clementi\n"
-            + COMMAND_WORD + " " + PREFIX_TAG + "Student\n"
-            + COMMAND_WORD + " " + PREFIX_TAG + "Student " + PREFIX_TAG + "Year2\n"
-            + COMMAND_WORD + " " + PREFIX_NAME + "ali " + PREFIX_CONTACT_TYPE + "student "
-            + PREFIX_ADDRESS + "Clementi " + PREFIX_TAG + "Student";
+            + "Example: " + COMMAND_WORD + " " + PREFIX_NAME + "Alice " + PREFIX_CONTACT_TYPE + "student";
 
     private final PersonMatchesFilterPredicate predicate;
     private final Optional<Integer> groupId;

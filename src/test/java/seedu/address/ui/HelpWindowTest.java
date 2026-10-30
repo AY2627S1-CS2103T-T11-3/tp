@@ -202,13 +202,15 @@ public class HelpWindowTest {
                     "Exact numeric Group ID, not its position in the Groups panel",
                     "only students with a recorded year match", "numeric duplicates are ignored",
                     "Different criteria combine using AND", "Repeated id/ values are alternatives (OR)",
-                    "repeated t/ values must all match (AND)", "Only id/ and t/ may repeat",
+                    "repeated t/ values must all match (AND)", "Provide at least one criterion",
+                    "Only id/ and t/ may repeat",
                     "including gid/ and yos/, may appear at most once", "positive integers from 1 to 2147483647",
-                    "leading zeros do not change their value", "Omit all fields to show all contacts",
+                    "leading zeros do not change their value",
                     "replacing the previous filter", "filter gid/ selects an actual numeric Group ID",
                     "link gid/ selects a displayed group-list index", "Group IDs may change after restarting")) {
                 assertTrue(reference.contains(explanation), "Missing filter explanation: " + explanation);
             }
+            assertFalse(reference.contains("Omit all fields to show all contacts"));
             assertFalse(reference.contains("Use each prefix at most once except t/."));
             assertTrue(documentedEntryText(LinkGroupCommand.COMMAND_WORD).contains("not a permanent group ID"));
         });
