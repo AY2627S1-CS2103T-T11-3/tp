@@ -76,6 +76,9 @@ Format: `help`
 
 Opening Help again reuses the existing window and restores it if minimized. The feedback is `Opened help window.`
 
+You should see the following help window open:
+
+![HelpWindow](images/HelpWindow.png)
 
 ### Adding a person: `add`
 
