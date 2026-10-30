@@ -113,12 +113,9 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_filterWithoutCriteria_returnsFilterCommand() throws Exception {
-        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Set.of());
-        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
-
-        assertEquals(expectedCommand, parser.parseCommand(FilterCommand.COMMAND_WORD));
-        assertEquals(expectedCommand, parser.parseCommand("  " + FilterCommand.COMMAND_WORD + "  "));
+    public void parseCommand_filterWithoutCriteria_throwsParseException() {
+        assertThrows(ParseException.class, () -> parser.parseCommand(FilterCommand.COMMAND_WORD));
+        assertThrows(ParseException.class, () -> parser.parseCommand("  " + FilterCommand.COMMAND_WORD + "  "));
     }
 
     @Test

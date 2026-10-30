@@ -44,6 +44,9 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     @Override
     public FilterCommand parse(String args) throws ParseException {
         requireNonNull(args);
+        if (args.isBlank()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
+        }
         String normalizedArgs = " " + PREFIX_SEPARATOR_PATTERN.matcher(args).replaceAll(" ");
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(normalizedArgs,
                 PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_ADDRESS, PREFIX_TAG,

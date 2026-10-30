@@ -139,11 +139,11 @@ public class FilterCommandParserTest {
     }
 
     @Test
-    public void parse_emptyArgs_returnsUnrestrictedFilter() {
-        FilterCommand expectedCommand = prepareCommand(Optional.empty(), Set.of());
+    public void parse_emptyArgs_throwsParseException() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE);
 
-        assertParseSuccess(parser, "", expectedCommand);
-        assertParseSuccess(parser, " \t \r \n ", expectedCommand);
+        assertParseFailure(parser, "", expectedMessage);
+        assertParseFailure(parser, " \t \r \n ", expectedMessage);
     }
 
     @Test
