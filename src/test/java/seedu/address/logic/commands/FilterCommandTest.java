@@ -393,7 +393,7 @@ public class FilterCommandTest {
         for (FilterCommand command : List.of(prepareCommand(Optional.empty(), Set.of()),
                 prepareNumericCommand(Set.of(128, 256), Optional.of(2)), prepareGroupCommand(128))) {
             assertCommandSuccess(command, emptyModel,
-                    String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0), new ModelManager());
+                    getPersonsFoundMessage(0), new ModelManager());
         }
     }
 

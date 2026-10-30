@@ -67,7 +67,8 @@ public class HelpWindowTest {
             Map.entry("GROUP_NAME", "Group"), Map.entry("YEAR_OF_STUDY", "2"),
             Map.entry("GROUP_TYPE", "class"), Map.entry("STUDENT_INDEX", "1"),
             Map.entry("GUARDIAN_INDEX", "2"), Map.entry("PERSON_INDEX", "1"),
-            Map.entry("GROUP_INDEX", "1"), Map.entry("PERSON_ID", "1"), Map.entry("GROUP_ID", "3"));
+            Map.entry("GROUP_INDEX", "1"), Map.entry("NEW_GROUP_NAME", "New Group"),
+            Map.entry("PERSON_ID", "1"), Map.entry("GROUP_ID", "3"));
     private static final Pattern OPTIONAL_FIELD = Pattern.compile("\\[[^\\]]+](?:\\.\\.\\.)?");
     private static final Pattern UNRESOLVED_PLACEHOLDER = Pattern.compile("\\b[A-Z][A-Z_]*\\b");
 
@@ -201,13 +202,15 @@ public class HelpWindowTest {
                     "Exact numeric Group ID, not its position in the Groups panel",
                     "only students with a recorded year match", "numeric duplicates are ignored",
                     "Different criteria combine using AND", "Repeated id/ values are alternatives (OR)",
-                    "repeated t/ values must all match (AND)", "Only id/ and t/ may repeat",
+                    "repeated t/ values must all match (AND)", "Provide at least one criterion",
+                    "Only id/ and t/ may repeat",
                     "including gid/ and yos/, may appear at most once", "positive integers from 1 to 2147483647",
-                    "leading zeros do not change their value", "Omit all fields to show all contacts",
+                    "leading zeros do not change their value",
                     "replacing the previous filter", "filter gid/ selects an actual numeric Group ID",
                     "link gid/ selects a displayed group-list index", "Group IDs may change after restarting")) {
                 assertTrue(reference.contains(explanation), "Missing filter explanation: " + explanation);
             }
+            assertFalse(reference.contains("Omit all fields to show all contacts"));
             assertFalse(reference.contains("Use each prefix at most once except t/."));
             assertTrue(documentedEntryText(LinkGroupCommand.COMMAND_WORD).contains("not a permanent group ID"));
         });
@@ -249,7 +252,8 @@ public class HelpWindowTest {
         runAndWait(() -> {
             Map<String, TextArea> formats = documentedFormats();
             for (String command : ALL_COMMAND_NAMES) {
-                if (!command.equals(AddCommand.COMMAND_WORD) && !command.equals(EditCommand.COMMAND_WORD)) {
+                if (!command.equals(AddCommand.COMMAND_WORD) && !command.equals(EditCommand.COMMAND_WORD)
+                        && !command.equals(FilterCommand.COMMAND_WORD)) {
                     assertFormatAcceptedByParser(formats.get(command).getText(), Map.of());
                 }
             }
