@@ -328,6 +328,24 @@ public class PersonMatchesFilterPredicateTest {
         assertTrue(predicate.test(person));
     }
 
+    /** Verifies that missing addresses are excluded without preventing addressed contacts from matching. */
+    @Test
+    public void test_addressCriterionWithMissingAddress_listsOnlyMatchingContacts() {
+        Person addresslessPerson = new Person(person.getName(), null, null, null, person.getTags());
+        PersonMatchesFilterPredicate predicate = preparePredicate(Optional.of("Clementi"), Set.of());
+
+        assertEquals(List.of(person), List.of(addresslessPerson, person).stream().filter(predicate).toList());
+    }
+
+    /** Verifies that omitting the address criterion allows contacts without an address to match. */
+    @Test
+    public void test_missingAddressWithoutAddressCriterion_returnsTrue() {
+        Person addresslessPerson = new Person(person.getName(), null, null, null, person.getTags());
+        PersonMatchesFilterPredicate predicate = preparePredicate(Optional.empty(), Set.of());
+
+        assertTrue(predicate.test(addresslessPerson));
+    }
+
     @Test
     public void test_partialAddress_returnsTrue() {
         assertTrue(preparePredicate(Optional.of("Clementi Ave"), Set.of()).test(person));

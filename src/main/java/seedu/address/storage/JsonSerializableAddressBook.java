@@ -24,7 +24,6 @@ import seedu.address.model.person.Student;
 class JsonSerializableAddressBook {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
-    public static final String MESSAGE_DUPLICATE_GROUP = "Group list contains duplicate groups(s).";
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
     private final List<JsonAdaptedGroup> groups = new ArrayList<>();
@@ -52,11 +51,15 @@ class JsonSerializableAddressBook {
             @JsonProperty("groups") List<JsonAdaptedGroup> groups,
             @JsonProperty("nextId") Integer nextId
     ) {
-        this.persons.addAll(persons);
+        if (persons != null) {
+            this.persons.addAll(persons);
+        }
         if (guardianLinks != null) {
             this.guardianLinks.addAll(guardianLinks);
         }
-        this.groups.addAll(groups);
+        if (groups != null) {
+            this.groups.addAll(groups);
+        }
         this.nextId = nextId;
     }
 
@@ -92,11 +95,15 @@ class JsonSerializableAddressBook {
      */
     public AddressBook toModelType() throws IllegalValueException {
         // PersonId class handles the next ID by itself
-        PersonId.setNextId(nextId);
+        if (nextId != null) {
+            PersonId.setNextId(nextId);
+        }
 
         AddressBook addressBook = new AddressBook();
         for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
-            Person person = jsonAdaptedPerson.toModelType();
+            Person person = nextId == null
+                    ? jsonAdaptedPerson.toLegacyModelType()
+                    : jsonAdaptedPerson.toModelType();
             if (addressBook.hasPerson(person)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
             }
@@ -139,9 +146,6 @@ class JsonSerializableAddressBook {
 
         for (JsonAdaptedGroup jsonAdaptedGroup : groups) {
             Group group = jsonAdaptedGroup.toModelType();
-            if (addressBook.hasGroup(group)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_GROUP);
-            }
             addressBook.addGroup(group);
         }
         return addressBook;

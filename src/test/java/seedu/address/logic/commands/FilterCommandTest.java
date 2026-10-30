@@ -3,7 +3,7 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.Messages.MESSAGE_PERSONS_LISTED_OVERVIEW;
+import static seedu.address.logic.Messages.getPersonsFoundMessage;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalAddressBook.getTypicalAddressBook;
@@ -549,7 +549,7 @@ public class FilterCommandTest {
     private void assertFilterSuccess(FilterCommand command, Model actualModel, List<Person> expectedPersons) {
         Model expectedModel = new ModelManager(actualModel.getAddressBook(), actualModel.getUserPrefs());
         expectedModel.updateFilteredPersonList(expectedPersons::contains);
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, expectedPersons.size());
+        String expectedMessage = getPersonsFoundMessage(expectedPersons.size());
 
         assertCommandSuccess(command, actualModel, expectedMessage, expectedModel);
         assertEquals(expectedPersons, actualModel.getFilteredPersonList());

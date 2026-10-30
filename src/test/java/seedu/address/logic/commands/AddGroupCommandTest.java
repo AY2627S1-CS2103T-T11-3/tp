@@ -29,6 +29,17 @@ public class AddGroupCommandTest {
     }
 
     @Test
+    public void execute_duplicateGroup_acceptsDuplicate() {
+        Group validGroup = new GroupBuilder().build();
+        AddGroupCommand addGroupCommand = new AddGroupCommand(validGroup);
+
+        addGroupCommand.execute(model);
+        addGroupCommand.execute(model);
+
+        assertEquals(2, model.getGroupList().size());
+    }
+
+    @Test
     public void equals() {
         Group validGroupAmy = new GroupBuilder().withName(VALID_GROUP_NAME_CLASS)
                 .withType(GroupType.CLASS).build();

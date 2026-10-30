@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.group.exceptions.DuplicateGroupException;
 import seedu.address.model.group.exceptions.GroupNotFoundException;
 import seedu.address.testutil.GroupBuilder;
 
@@ -41,9 +40,10 @@ public class UniqueGroupListTest {
     }
 
     @Test
-    public void add_duplicateGroup_throwsDuplicateGroupException() {
+    public void add_duplicateGroup_acceptsDuplicateGroup() {
         uniqueGroupList.add(RESPECT_5);
-        assertThrows(DuplicateGroupException.class, () -> uniqueGroupList.add(RESPECT_5));
+        uniqueGroupList.add(RESPECT_5);
+        assertEquals(List.of(RESPECT_5, RESPECT_5), uniqueGroupList.asUnmodifiableObservableList());
     }
 
     @Test
@@ -90,10 +90,11 @@ public class UniqueGroupListTest {
     }
 
     @Test
-    public void setGroup_editedGroupHasNonUniqueIdentity_throwsDuplicateGroupException() {
+    public void setGroup_editedGroupHasNonUniqueIdentity_acceptsDuplicateGroup() {
         uniqueGroupList.add(RESPECT_5);
         uniqueGroupList.add(MATH_DPT);
-        assertThrows(DuplicateGroupException.class, () -> uniqueGroupList.setGroup(RESPECT_5, MATH_DPT));
+        uniqueGroupList.setGroup(RESPECT_5, MATH_DPT);
+        assertEquals(List.of(MATH_DPT, MATH_DPT), uniqueGroupList.asUnmodifiableObservableList());
     }
 
     @Test
@@ -144,9 +145,10 @@ public class UniqueGroupListTest {
     }
 
     @Test
-    public void setGroups_listWithDuplicateGroups_throwsDuplicateGroupException() {
+    public void setGroups_listWithDuplicateGroups_acceptsDuplicateGroups() {
         List<Group> listWithDuplicateGroups = List.of(RESPECT_5, RESPECT_5);
-        assertThrows(DuplicateGroupException.class, () -> uniqueGroupList.setGroups(listWithDuplicateGroups));
+        uniqueGroupList.setGroups(listWithDuplicateGroups);
+        assertEquals(listWithDuplicateGroups, uniqueGroupList.asUnmodifiableObservableList());
     }
 
     @Test

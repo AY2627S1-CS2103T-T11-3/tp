@@ -202,6 +202,14 @@
     -fx-padding: 8;
 }
 
+.group_list_index {
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 12px;
+    -fx-text-fill: #8fb9c7;
+    -fx-min-width: 20px;
+    -fx-alignment: center-right;
+}
+
 .group_list_name {
     -fx-font-family: "Segoe UI Semibold";
     -fx-font-size: 14px;
