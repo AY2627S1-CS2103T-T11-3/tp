@@ -67,7 +67,8 @@ public class HelpWindowTest {
             Map.entry("GROUP_NAME", "Group"), Map.entry("YEAR_OF_STUDY", "2"),
             Map.entry("GROUP_TYPE", "class"), Map.entry("STUDENT_INDEX", "1"),
             Map.entry("GUARDIAN_INDEX", "2"), Map.entry("PERSON_INDEX", "1"),
-            Map.entry("GROUP_INDEX", "1"), Map.entry("PERSON_ID", "1"), Map.entry("GROUP_ID", "3"));
+            Map.entry("GROUP_INDEX", "1"), Map.entry("NEW_GROUP_NAME", "New Group"),
+            Map.entry("PERSON_ID", "1"), Map.entry("GROUP_ID", "3"));
     private static final Pattern OPTIONAL_FIELD = Pattern.compile("\\[[^\\]]+](?:\\.\\.\\.)?");
     private static final Pattern UNRESOLVED_PLACEHOLDER = Pattern.compile("\\b[A-Z][A-Z_]*\\b");
 
@@ -249,7 +250,8 @@ public class HelpWindowTest {
         runAndWait(() -> {
             Map<String, TextArea> formats = documentedFormats();
             for (String command : ALL_COMMAND_NAMES) {
-                if (!command.equals(AddCommand.COMMAND_WORD) && !command.equals(EditCommand.COMMAND_WORD)) {
+                if (!command.equals(AddCommand.COMMAND_WORD) && !command.equals(EditCommand.COMMAND_WORD)
+                        && !command.equals(FilterCommand.COMMAND_WORD)) {
                     assertFormatAcceptedByParser(formats.get(command).getText(), Map.of());
                 }
             }

@@ -232,6 +232,35 @@
                 </VBox>
               </VBox>
 
+              <!-- Edit group command -->
+              <VBox spacing="14" styleClass="command-entry">
+                <padding><Insets top="20" right="20" bottom="20" left="20" /></padding>
+                <VBox spacing="5">
+                  <Label text="editgroup" styleClass="help-command-name" />
+                  <Label text="Renames the group at the displayed group-list index." wrapText="true" styleClass="help-description" />
+                </VBox>
+                <VBox spacing="8">
+                  <Label text="Format" styleClass="help-section-title" />
+                  <TextArea text="editgroup GROUP_INDEX NEW_GROUP_NAME"
+                            editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
+                </VBox>
+                <Label text="Required fields" styleClass="help-section-title" />
+                <GridPane hgap="16" vgap="10">
+                  <columnConstraints><ColumnConstraints minWidth="136" prefWidth="136" /><ColumnConstraints minWidth="0" hgrow="ALWAYS" /></columnConstraints>
+                  <Label text="GROUP_INDEX" styleClass="help-field-name" GridPane.columnIndex="0" />
+                  <Label text="Positive group number in the currently displayed group list." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
+                  <Label text="NEW_GROUP_NAME" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                  <Label text="Replacement name made of letters, digits and spaces; start with a letter or digit. Hyphens are not allowed." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                </GridPane>
+                <Label text="Count groups from 1 in the Groups panel. The new name replaces the old name while preserving whether the group is a class or department." wrapText="true" styleClass="help-note" />
+
+                <VBox spacing="8">
+                  <Label text="Example: renames the first group to CS2103T T02." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
+                  <TextArea text="editgroup 1 CS2103T T02" editable="false" wrapText="true"
+                            minWidth="0" maxWidth="Infinity" styleClass="help-example" />
+                </VBox>
+              </VBox>
+
               <!-- Link group command -->
               <VBox spacing="14" styleClass="command-entry">
                 <padding><Insets top="20" right="20" bottom="20" left="20" /></padding>

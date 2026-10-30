@@ -108,7 +108,7 @@ public class FilterCommand extends Command {
         requireNonNull(model);
         model.updateFilteredPersonList(createCombinedPredicate(model));
         return new CommandResult(
-                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, model.getFilteredPersonList().size()));
+                Messages.getPersonsFoundMessage(model.getFilteredPersonList().size()));
     }
 
     /** Combines the person criteria with membership of the existing group identified by its numeric ID. */
