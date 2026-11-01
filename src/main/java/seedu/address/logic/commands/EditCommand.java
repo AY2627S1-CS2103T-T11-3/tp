@@ -113,13 +113,13 @@ public class EditCommand extends Command {
 
         if (personToEdit instanceof Colleague personToEditColleague) {
             return new Colleague(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
-                    personToEditColleague.getDepartment());
+                    personToEditColleague.getGroupId().getRawId());
         }
 
         Student student = (Student) personToEdit;
         Integer updatedYearOfStudy = editPersonDescriptor.getYearOfStudy().orElse(student.getYearOfStudy());
         return new Student(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
-                student.getGroupId(), updatedYearOfStudy);
+                student.getGroupId().getRawId(), updatedYearOfStudy);
     }
 
     @Override

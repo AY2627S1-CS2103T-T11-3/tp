@@ -17,7 +17,6 @@ public final class PersonFilterCriteria {
 
     private final Optional<String> nameKeyword;
     private final Optional<Role> contactType;
-    private final Optional<String> departmentKeyword;
     private final Optional<String> addressKeyword;
     private final Set<Tag> requiredTags;
     private final Set<Integer> personIds;
@@ -31,7 +30,7 @@ public final class PersonFilterCriteria {
      * @throws NullPointerException If either argument or any required tag is null.
      */
     public PersonFilterCriteria(Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        this(Optional.empty(), Optional.empty(), Optional.empty(), addressKeyword, requiredTags);
+        this(Optional.empty(), Optional.empty(), addressKeyword, requiredTags);
     }
 
     /**
@@ -39,14 +38,13 @@ public final class PersonFilterCriteria {
      *
      * @param nameKeyword The optional name substring to match.
      * @param contactType The optional contact type to match exactly.
-     * @param departmentKeyword The optional department substring to match.
      * @param addressKeyword The optional address substring to match.
      * @param requiredTags The exact, case-sensitive tags that must all be present.
      * @throws NullPointerException If any argument or required tag is null.
      */
     public PersonFilterCriteria(Optional<String> nameKeyword, Optional<Role> contactType,
-            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        this(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
+            Optional<String> addressKeyword, Set<Tag> requiredTags) {
+        this(nameKeyword, contactType, addressKeyword, requiredTags,
                 Set.of(), Optional.empty());
     }
 
@@ -63,13 +61,12 @@ public final class PersonFilterCriteria {
      * @throws NullPointerException If any argument, required tag, or person ID is null.
      */
     public PersonFilterCriteria(Optional<String> nameKeyword, Optional<Role> contactType,
-            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags,
-            Set<Integer> personIds, Optional<Integer> yearOfStudy) {
-        requireAllNonNull(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
+            Optional<String> addressKeyword, Set<Tag> requiredTags, Set<Integer> personIds,
+            Optional<Integer> yearOfStudy) {
+        requireAllNonNull(nameKeyword, contactType, addressKeyword, requiredTags,
                 personIds, yearOfStudy);
         this.nameKeyword = nameKeyword;
         this.contactType = contactType;
-        this.departmentKeyword = departmentKeyword;
         this.addressKeyword = addressKeyword;
         this.requiredTags = Set.copyOf(requiredTags);
         this.personIds = Set.copyOf(personIds);
@@ -84,11 +81,6 @@ public final class PersonFilterCriteria {
     /** Returns the optional resolved contact type to match. */
     public Optional<Role> getContactType() {
         return contactType;
-    }
-
-    /** Returns the optional department substring to match. */
-    public Optional<String> getDepartmentKeyword() {
-        return departmentKeyword;
     }
 
     /**
@@ -128,7 +120,6 @@ public final class PersonFilterCriteria {
 
         return nameKeyword.equals(otherCriteria.nameKeyword)
                 && contactType.equals(otherCriteria.contactType)
-                && departmentKeyword.equals(otherCriteria.departmentKeyword)
                 && addressKeyword.equals(otherCriteria.addressKeyword)
                 && requiredTags.equals(otherCriteria.requiredTags)
                 && personIds.equals(otherCriteria.personIds)
@@ -137,8 +128,7 @@ public final class PersonFilterCriteria {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
-                personIds, yearOfStudy);
+        return Objects.hash(nameKeyword, contactType, addressKeyword, requiredTags, personIds, yearOfStudy);
     }
 
     @Override
@@ -146,7 +136,6 @@ public final class PersonFilterCriteria {
         ToStringBuilder builder = new ToStringBuilder(this)
                 .add("nameKeyword", nameKeyword)
                 .add("contactType", contactType)
-                .add("departmentKeyword", departmentKeyword)
                 .add("addressKeyword", addressKeyword)
                 .add("requiredTags", requiredTags);
         if (!personIds.isEmpty()) {
