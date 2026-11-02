@@ -7,6 +7,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.group.ClassGroup;
 import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
 
@@ -52,6 +53,12 @@ public class JsonAdaptedGroup {
      * @throws IllegalValueException if there were any data constraints violated in the adapted group.
      */
     public Group toModelType() throws IllegalValueException {
+        if (groupId == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    GroupId.class.getSimpleName()));
+        }
+        final GroupId modelGroupId = GroupId.createFromRawId(groupId);
+
         if (groupName == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     GroupName.class.getSimpleName()));
@@ -68,9 +75,8 @@ public class JsonAdaptedGroup {
         final GroupType modelGroupType = groupType;
 
         return switch (modelGroupType) {
-            case CLASS -> groupId == null ? new ClassGroup(modelGroupName) : new ClassGroup(modelGroupName, groupId);
-            case DEPARTMENT -> groupId == null
-                    ? new DepartmentGroup(modelGroupName) : new DepartmentGroup(modelGroupName, groupId);
+            case CLASS -> new ClassGroup(modelGroupName, groupId);
+            case DEPARTMENT -> new DepartmentGroup(modelGroupName, groupId);
         };
     }
 
