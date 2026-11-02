@@ -138,6 +138,12 @@
     -fx-text-fill: #9ca9b0;
 }
 
+.person-id {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-text-fill: #8fb9c7;
+}
+
 .contact-detail {
     -fx-font-family: "Segoe UI Symbol", "Segoe UI";
     -fx-font-size: 13px;
@@ -225,6 +231,12 @@
     -fx-font-family: "Segoe UI Semibold";
     -fx-font-size: 14px;
     -fx-text-fill: white;
+}
+
+.group_list_id {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-text-fill: #8fb9c7;
 }
 
 .group_list_details {
