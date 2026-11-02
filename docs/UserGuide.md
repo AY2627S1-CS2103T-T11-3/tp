@@ -225,11 +225,11 @@ Examples:
 * `link pid/1 gid/1`
 * `link pid/2 gid/3`
 
-### Linking a guardian to a student: `link-guardian`
+### Linking a guardian to a student: `linkguardian`
 
 Links a guardian to a student using their indices in the currently displayed contact list.
 
-Format: `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`
+Format: `linkguardian s/STUDENT_INDEX g/GUARDIAN_INDEX`
 
 * Both indices must refer to contacts in the currently displayed list, which may be filtered.
 * The selected contacts must be a student and a guardian respectively.
@@ -237,7 +237,7 @@ Format: `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`
 * Linked relationships are displayed on the relevant contact cards.
 
 Example:
-* `link-guardian s/1 g/2`
+* `linkguardian s/1 g/2`
 
 ### Deleting a person: `delete`
 
@@ -331,6 +331,6 @@ Action | Format, Examples
 **List** | `list`
 **Help** | `help`
 **Link contact to group** | `link pid/PERSON_INDEX gid/GROUP_INDEX`<br> e.g., `link pid/1 gid/2`
-**Link guardian to student** | `link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX`<br> e.g., `link-guardian s/1 g/2`
+**Link guardian to student** | `linkguardian s/STUDENT_INDEX g/GUARDIAN_INDEX`<br> e.g., `linkguardian s/1 g/2`
 **List** | `list`
 **Exit** | `exit`
