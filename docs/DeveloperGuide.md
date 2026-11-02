@@ -51,9 +51,9 @@ The bulk of the app's work is done by the following four components:
 
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact when a user links a guardian to a student using `linkguardian s/1 g/2`.
+The *Sequence Diagram* below shows how the components interact when a user links a guardian to a student using `link-guardian s/1 g/2`.
 
-<img src="images/LinkGuardianSequence.png" width="574" />
+<img src="images/ArchitectureSequenceDiagram.png" width="574" />
 
 Each of the four main components (also shown in the diagram above),
 
