@@ -159,7 +159,7 @@
 
                 <Label text="Only id/ and t/ may repeat; each other prefix, including gid/ and yos/, may appear at most once. Supplied values must not be blank. Text phrases match contiguous substrings; tags match the whole value." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
                 <Label text="Numeric values must be positive integers from 1 to 2147483647; leading zeros do not change their value. Unknown Person IDs contribute no matches; other supplied Person IDs can still match. An unknown Group ID matches no contacts." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
-                <Label text="filter gid/ selects an actual numeric Group ID; link gid/ selects a displayed group-list index. Group IDs may change after restarting the application." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
+                <Label text="filter gid/ selects an actual numeric Group ID; link gid/ selects a displayed group-list index." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
 
                 <VBox spacing="8">
                   <Label text="Examples: use your contacts' and groups' actual IDs." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
