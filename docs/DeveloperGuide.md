@@ -167,7 +167,7 @@ The filtering flow is:
 4. `PersonFilterCriteria` holds the optional name, role, department, address, and year-of-study criteria, together with defensive copies of the required tags and alternative Person IDs. Its earlier constructors remain available. The parser wraps these criteria in a `PersonMatchesFilterPredicate` and passes the optional Group ID separately to `FilterCommand`.
 5. `PersonMatchesFilterPredicate` combines different criteria with `AND`. Person IDs use set membership (`OR` within the supplied IDs), while years of study use exact numeric equality and only match `Student` instances with a recorded year. Names, departments, and addresses use contiguous substring matching with `Locale.ROOT` for case conversion. Roles use enum equality, and tags use exact, case-sensitive set membership. All required tags must be present (`AND`).
 6. When `gid/` is present, `FilterCommand` resolves the numeric ID against `Model#getGroupList()` using `GroupId#matches()`. It intersects the person predicate with the selected group's membership: `Person#getGroupId()` stores the group name, which must match exactly, and the contact must be a `Student` for a class or a `Colleague` for a department. An unknown Group ID matches no contacts. This numeric ID differs from the displayed group index used by `link gid/`; Group IDs may change after restarting the application.
-7. `FilterCommand` installs the combined predicate through `Model#updateFilteredPersonList` and reports the result count. It replaces the previous predicate and filters the full contact list. Absent criteria impose no restrictions, so bare `filter` shows every contact.
+7. `FilterCommand` installs the combined predicate through `Model#updateFilteredPersonList` and reports the result count. It replaces the previous predicate and filters the full contact list. At least one criterion is required; users should use `list` to show every contact.
 
 The following sequence diagram illustrates the successful execution of
 `filter n/ali ct/stu`, without a group criterion:
@@ -444,11 +444,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 2a1. CaNvUS shows an error message.
   
     Use case ends.
-  
-* 2b. Teacher attempts to link a colleague to a class.
-  * 2b1. CaNvUS displays "Colleagues can only be linked to department groups."
-    
-  * Use case ends.
 
 
 **Use case: UC6 - Link colleague to department**
@@ -466,6 +461,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 2a1. CaNvUS shows an error message.
     Use case ends.
 
+* 2b. Teacher attempts to link a colleague to a class.
+  * 2b1. CaNvUS displays "Cannot link colleague to class."
+
+    Use case ends.
+
 **Use case: UC7 -  List all contacts**
 
 **MSS**
@@ -479,7 +479,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 2a. There are no contacts stored.
-  * 2a1. CaNvUS informs the teacher that there are no contacts stored.
+  * 2a1. CaNvUS displays an empty contact list and the normal `Listed all persons.` success message.
     Use case ends.
 
 **Use case: UC8 -  Filter contacts**
@@ -501,7 +501,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 * 2b. No criteria was provided.
-  * 2b1. CaNvUS <u>lists all contacts (UC6)</u>.
+  * 2b1. CaNvUS displays an invalid-format error. The teacher can use `list` to display all contacts.
 
     Use case ends.
 

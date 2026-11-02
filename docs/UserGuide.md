@@ -154,7 +154,7 @@ Format: `filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [id/PERSON
 | `yos/` | Year of study | Exact numeric value; only students with a recorded year can match |
 | `t/` | Tag | Case-sensitive, complete tag |
 
-* Running `filter` without criteria shows all contacts.
+* Running `filter` without criteria is invalid. Use `list` to show all contacts.
 * Different criteria combine using `AND`. For example, `ct/colleague d/science` requires both conditions.
 * Repeated `id/` values combine using `OR`. For example, `filter id/12 id/13 yos/2` requires **(Person ID 12 or 13) AND year of study 2**.
 * Only `id/` and `t/` may repeat. Each other prefix, including `gid/` and `yos/`, may appear at most once. If multiple tags are supplied, every tag must be present (`AND`).
