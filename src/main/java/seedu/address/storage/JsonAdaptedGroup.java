@@ -17,6 +17,7 @@ public class JsonAdaptedGroup {
 
     public static final String MISSING_FIELD_MESSAGE_FORMAT = "Group's %s field is missing!";
 
+    private final Integer groupId;
     private final String groupName;
     private final GroupType groupType;
 
@@ -27,9 +28,11 @@ public class JsonAdaptedGroup {
      */
     @JsonCreator
     public JsonAdaptedGroup(
+            @JsonProperty("groupId") Integer groupId,
             @JsonProperty("groupName") String groupName,
             @JsonProperty("groupType") GroupType groupType
     ) {
+        this.groupId = groupId;
         this.groupName = groupName;
         this.groupType = groupType;
     }
@@ -38,6 +41,7 @@ public class JsonAdaptedGroup {
      * Converts a given {@code Group} into this class for Jackson use.
      */
     public JsonAdaptedGroup(Group source) {
+        groupId = source.getId().getRawId();
         groupName = source.getGroupName().groupName;
         groupType = source.getGroupType();
     }
@@ -64,8 +68,9 @@ public class JsonAdaptedGroup {
         final GroupType modelGroupType = groupType;
 
         return switch (modelGroupType) {
-            case CLASS -> new ClassGroup(modelGroupName);
-            case DEPARTMENT -> new DepartmentGroup(modelGroupName);
+            case CLASS -> groupId == null ? new ClassGroup(modelGroupName) : new ClassGroup(modelGroupName, groupId);
+            case DEPARTMENT -> groupId == null
+                    ? new DepartmentGroup(modelGroupName) : new DepartmentGroup(modelGroupName, groupId);
         };
     }
 
