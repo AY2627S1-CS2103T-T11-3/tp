@@ -56,11 +56,11 @@ Person *--> Email
 Person *--> Address
 Person *--> "*" Tag
 Person "1" *--> "1" PersonId
-Person *--> "year of study" Integer
 
 Student --|> Person
 Guardian -left-|> Person
 Colleague --|> Person
+Student *--> "year of study" Integer
 
 Person -[hidden]left-> Group
 Student -[hidden]down-> Guardian
