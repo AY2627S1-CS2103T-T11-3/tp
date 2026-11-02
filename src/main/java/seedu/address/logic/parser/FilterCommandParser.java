@@ -35,10 +35,11 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     private static final Pattern PREFIX_SEPARATOR_PATTERN = Pattern.compile("\\s+(?=(n/|ct/|a/|t/|id/|gid/|yos/))");
 
     /**
-     * Parses optional criteria into a {@code FilterCommand}.
-     * Empty arguments produce criteria that match all persons.
+     * Parses one or more supplied criteria into a {@code FilterCommand}.
+     * Empty or blank arguments are rejected.
      *
-     * @throws ParseException If arguments contain a preamble, duplicate single-value prefixes, or invalid criteria.
+     * @throws ParseException If arguments are blank or contain a preamble, duplicate single-value prefixes,
+     *     or invalid criteria.
      */
     @Override
     public FilterCommand parse(String args) throws ParseException {

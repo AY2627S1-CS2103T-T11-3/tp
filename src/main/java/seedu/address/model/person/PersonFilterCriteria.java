@@ -53,7 +53,6 @@ public final class PersonFilterCriteria {
      *
      * @param nameKeyword The optional name substring to match.
      * @param contactType The optional contact type to match exactly.
-     * @param departmentKeyword The optional department substring to match.
      * @param addressKeyword The optional address substring to match.
      * @param requiredTags The exact, case-sensitive tags that must all be present.
      * @param personIds The permanent person IDs to match exactly using OR, not displayed list indices.
