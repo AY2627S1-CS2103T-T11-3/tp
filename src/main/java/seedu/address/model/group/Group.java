@@ -71,7 +71,8 @@ public abstract class Group {
             return false;
         }
 
-        return groupName.equals(otherGroup.groupName)
+        return id.equals(otherGroup.id)
+                && groupName.equals(otherGroup.groupName)
                 && getGroupType() == otherGroup.getGroupType();
     }
 

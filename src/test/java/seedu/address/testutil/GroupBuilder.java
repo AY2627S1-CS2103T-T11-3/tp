@@ -3,6 +3,7 @@ package seedu.address.testutil;
 import seedu.address.model.group.ClassGroup;
 import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.group.GroupType;
 
@@ -14,6 +15,7 @@ public class GroupBuilder {
     public static final String DEFAULT_GROUP_NAME = "Math";
     public static final GroupType DEFAULT_GROUP_TYPE = GroupType.CLASS;
 
+    private GroupId groupId;
     private GroupName groupName;
     private GroupType groupType;
 
@@ -21,6 +23,7 @@ public class GroupBuilder {
      * Creates a {@code GroupBuilder} with the default details.
      */
     public GroupBuilder() {
+        groupId = new GroupId();
         groupName = new GroupName(DEFAULT_GROUP_NAME);
         groupType = DEFAULT_GROUP_TYPE;
     }
@@ -29,8 +32,17 @@ public class GroupBuilder {
      * Initializes the GroupBuilder with the data of {@code groupToCopy}.
      */
     public GroupBuilder(Group groupToCopy) {
+        groupId = GroupId.createFromRawId(groupToCopy.getId().getRawId());
         groupName = groupToCopy.getGroupName();
         groupType = groupToCopy.getGroupType();
+    }
+
+    /**
+     * Sets the {@code GroupName} of the {@code Group} that we are building.
+     */
+    public GroupBuilder withGroupId(Integer groupId) {
+        this.groupId = GroupId.createFromRawId(groupId);
+        return this;
     }
 
     /**
@@ -54,8 +66,8 @@ public class GroupBuilder {
      */
     public Group build() {
         return switch (groupType) {
-            case CLASS -> new ClassGroup(groupName);
-            case DEPARTMENT -> new DepartmentGroup(groupName);
+            case CLASS -> new ClassGroup(groupName, groupId.getRawId());
+            case DEPARTMENT -> new DepartmentGroup(groupName, groupId.getRawId());
         };
     }
 

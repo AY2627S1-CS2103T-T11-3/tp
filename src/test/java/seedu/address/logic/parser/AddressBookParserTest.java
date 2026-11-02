@@ -32,6 +32,7 @@ import seedu.address.logic.commands.LinkGroupCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
@@ -52,6 +53,11 @@ public class AddressBookParserTest {
     @BeforeEach
     public void setUp() {
         PersonId.setNextId(1);
+    }
+
+    @BeforeEach
+    public void resetGroupId() {
+        GroupId.setNextId(1);
     }
 
     @Test
@@ -228,7 +234,7 @@ public class AddressBookParserTest {
                 AddGroupCommand.COMMAND_WORD + " "
                 + groupName + " " + PREFIX_GROUP_TYPE + groupType
         );
-        final Group group = new GroupBuilder().withName(groupName)
+        final Group group = new GroupBuilder().withGroupId(1).withName(groupName)
                 .withType(GroupType.valueOf(groupType.toUpperCase())).build();
         assertEquals(new AddGroupCommand(group), command);
     }
