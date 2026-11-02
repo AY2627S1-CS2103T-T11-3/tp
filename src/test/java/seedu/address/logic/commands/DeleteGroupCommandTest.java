@@ -12,6 +12,7 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_GROUP;
 
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -22,6 +23,7 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.group.ClassGroup;
 import seedu.address.model.group.DepartmentGroup;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.group.GroupName;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Colleague;
@@ -37,6 +39,11 @@ import seedu.address.model.person.Student;
 public class DeleteGroupCommandTest {
 
     private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+
+    @BeforeEach
+    public void resetGroupId() {
+        GroupId.setNextId(0);
+    }
 
     @Test
     public void execute_validIndex_success() {
@@ -59,7 +66,7 @@ public class DeleteGroupCommandTest {
         Group group = new ClassGroup(new GroupName("CS2103T T01"));
         Student student = new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), Set.of(),
-                "CS2103T T01", 2);
+                group.getId().getRawId(), 2);
         Student unassignedStudent = new Student(new Name("Carol Lim"), new Phone("91234569"),
                 new Email("carol@example.com"), new Address("123, Jurong West Ave 6, #08-113"), Set.of(),
                 null, 2);
@@ -88,10 +95,10 @@ public class DeleteGroupCommandTest {
         Group departmentGroup = new DepartmentGroup(new GroupName("Shared"));
         Student student = new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), Set.of(),
-                "Shared", 2);
+                classGroup.getId().getRawId(), 2);
         Colleague colleague = new Colleague(new Name("Bob Tan"), new Phone("91234568"),
                 new Email("bob@example.com"), new Address("123, Jurong West Ave 6, #08-112"), Set.of(),
-                "Shared");
+                departmentGroup.getId().getRawId());
         addressBook.addGroup(classGroup);
         addressBook.addGroup(departmentGroup);
         addressBook.addPerson(student);
@@ -103,7 +110,7 @@ public class DeleteGroupCommandTest {
         deleteGroupCommand.execute(memberModel);
 
         assertNull(memberModel.getAddressBook().getPersonList().get(0).getGroupId());
-        assertEquals("Shared", memberModel.getAddressBook().getPersonList().get(1).getGroupId());
+        assertEquals(1, memberModel.getAddressBook().getPersonList().get(1).getGroupId().getRawId());
         assertEquals(1, memberModel.getGroupList().size());
         assertTrue(memberModel.getGroupList().contains(departmentGroup));
 
@@ -120,10 +127,10 @@ public class DeleteGroupCommandTest {
         Group departmentGroup = new DepartmentGroup(new GroupName("Shared"));
         Student student = new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), Set.of(),
-                "Shared", 2);
+                departmentGroup.getId().getRawId(), 2);
         Colleague colleague = new Colleague(new Name("Bob Tan"), new Phone("91234568"),
                 new Email("bob@example.com"), new Address("123, Jurong West Ave 6, #08-112"), Set.of(),
-                "Shared");
+                departmentGroup.getId().getRawId());
         addressBook.addGroup(departmentGroup);
         addressBook.addPerson(student);
         addressBook.addPerson(colleague);
@@ -131,7 +138,7 @@ public class DeleteGroupCommandTest {
 
         new DeleteGroupCommand(Index.fromOneBased(1)).execute(memberModel);
 
-        assertEquals("Shared", memberModel.getAddressBook().getPersonList().get(0).getGroupId());
+        assertEquals(0, memberModel.getAddressBook().getPersonList().get(0).getGroupId().getRawId());
         assertNull(memberModel.getAddressBook().getPersonList().get(1).getGroupId());
     }
 

@@ -12,6 +12,7 @@ import java.util.Set;
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.group.GroupList;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Colleague;
@@ -170,16 +171,16 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removeGroup(Group key) {
         groups.remove(key);
-        String deletedGroupName = key.getGroupName().groupName;
+        GroupId deletedGroupId = key.getId();
         List<Person> currentPersons = List.copyOf(persons.asUnmodifiableObservableList());
         currentPersons.stream()
-                .filter(person -> belongsToGroup(person, key.getGroupType(), deletedGroupName))
+                .filter(person -> belongsToGroup(person, key.getGroupType(), deletedGroupId))
                 .forEach(person -> setPerson(person, withoutGroup(person)));
     }
 
     /** Returns true if {@code person} belongs to the specified group by name and type. */
-    private boolean belongsToGroup(Person person, GroupType groupType, String groupName) {
-        if (!groupName.equals(person.getGroupId())) {
+    private boolean belongsToGroup(Person person, GroupType groupType, GroupId groupId) {
+        if (!groupId.equals(person.getGroupId())) {
             return false;
         }
         return (groupType == GroupType.CLASS && person instanceof Student)

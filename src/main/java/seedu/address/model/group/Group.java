@@ -1,6 +1,7 @@
 package seedu.address.model.group;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Objects;
 
@@ -20,6 +21,15 @@ public abstract class Group {
     public Group(GroupName groupName) {
         requireNonNull(groupName);
         this.id = new GroupId();
+        this.groupName = groupName;
+    }
+
+    /**
+     * Creates a group with a specified group ID instead of an automatically assigned one.
+     */
+    public Group(GroupName groupName, Integer rawGroupId) {
+        requireAllNonNull(groupName);
+        this.id = GroupId.createFromRawId(rawGroupId);
         this.groupName = groupName;
     }
 
@@ -61,7 +71,8 @@ public abstract class Group {
             return false;
         }
 
-        return groupName.equals(otherGroup.groupName)
+        return id.equals(otherGroup.id)
+                && groupName.equals(otherGroup.groupName)
                 && getGroupType() == otherGroup.getGroupType();
     }
 

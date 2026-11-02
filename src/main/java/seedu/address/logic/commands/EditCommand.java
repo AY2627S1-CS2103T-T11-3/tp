@@ -22,6 +22,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Email;
@@ -106,6 +107,8 @@ public class EditCommand extends Command {
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
         int personId = personToEdit.getId().getRawId();
+        GroupId groupId = personToEdit.getGroupId();
+        Integer rawGroupId = groupId == null ? null : groupId.getRawId();
 
         if (personToEdit instanceof Guardian) {
             return new Guardian(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId);
@@ -113,13 +116,13 @@ public class EditCommand extends Command {
 
         if (personToEdit instanceof Colleague personToEditColleague) {
             return new Colleague(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
-                    personToEditColleague.getDepartment());
+                    rawGroupId);
         }
 
         Student student = (Student) personToEdit;
         Integer updatedYearOfStudy = editPersonDescriptor.getYearOfStudy().orElse(student.getYearOfStudy());
         return new Student(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
-                student.getGroupId(), updatedYearOfStudy);
+                rawGroupId, updatedYearOfStudy);
     }
 
     @Override

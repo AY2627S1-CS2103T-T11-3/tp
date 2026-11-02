@@ -32,6 +32,7 @@ import seedu.address.logic.commands.LinkGroupCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonFilterCriteria;
@@ -52,6 +53,11 @@ public class AddressBookParserTest {
     @BeforeEach
     public void setUp() {
         PersonId.setNextId(1);
+    }
+
+    @BeforeEach
+    public void resetGroupId() {
+        GroupId.setNextId(1);
     }
 
     @Test
@@ -121,7 +127,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_filterByName_returnsFilterCommand() throws Exception {
         PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("ali"), Optional.empty(),
-                Optional.empty(), Optional.empty(), Set.of());
+                Optional.empty(), Set.of());
         FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
 
         assertEquals(expectedCommand, parser.parseCommand("filter n/ali"));
@@ -130,29 +136,20 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_filterByContactType_returnsFilterCommand() throws Exception {
         PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Optional.of(Role.STUDENT),
-                Optional.empty(), Optional.empty(), Set.of());
+                Optional.empty(), Set.of());
         FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
 
         assertEquals(expectedCommand, parser.parseCommand("filter ct/stu"));
     }
 
     @Test
-    public void parseCommand_filterByDepartment_returnsFilterCommand() throws Exception {
-        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Optional.empty(),
-                Optional.of("science"), Optional.empty(), Set.of());
-        FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
-
-        assertEquals(expectedCommand, parser.parseCommand("filter d/science"));
-    }
-
-    @Test
     public void parseCommand_filterByAllCriteria_returnsFilterCommand() throws Exception {
         PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
-                Optional.of("science"), Optional.of("clementi"), Set.of(new Tag("Committee")));
+                Optional.of("clementi"), Set.of(new Tag("Committee")));
         FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
 
         assertEquals(expectedCommand,
-                parser.parseCommand("filter n/ali ct/col d/science a/clementi t/Committee"));
+                parser.parseCommand("filter n/ali ct/col a/clementi t/Committee"));
     }
 
     @Test
@@ -190,7 +187,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_filterByNumericCriteria_returnsFilterCommand() throws Exception {
         PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("ali"), Optional.empty(),
-                Optional.empty(), Optional.empty(), Set.of(), Set.of(12, 128), Optional.of(2));
+                Optional.empty(), Set.of(), Set.of(12, 128), Optional.of(2));
         FilterCommand expectedCommand = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
 
         assertEquals(expectedCommand, parser.parseCommand("filter id/12 yos/2 n/ali id/128"));
@@ -237,7 +234,7 @@ public class AddressBookParserTest {
                 AddGroupCommand.COMMAND_WORD + " "
                 + groupName + " " + PREFIX_GROUP_TYPE + groupType
         );
-        final Group group = new GroupBuilder().withName(groupName)
+        final Group group = new GroupBuilder().withGroupId(1).withName(groupName)
                 .withType(GroupType.valueOf(groupType.toUpperCase())).build();
         assertEquals(new AddGroupCommand(group), command);
     }

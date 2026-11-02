@@ -12,6 +12,10 @@ public class DepartmentGroup extends Group {
         super(groupName);
     }
 
+    public DepartmentGroup(GroupName groupName, Integer groupId) {
+        super(groupName, groupId);
+    }
+
     @Override
     public GroupType getGroupType() {
         return GroupType.DEPARTMENT;

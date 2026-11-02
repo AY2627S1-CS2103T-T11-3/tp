@@ -41,9 +41,9 @@ public class AddGroupCommandTest {
 
     @Test
     public void equals() {
-        Group validGroupAmy = new GroupBuilder().withName(VALID_GROUP_NAME_CLASS)
+        Group validGroupAmy = new GroupBuilder().withGroupId(1).withName(VALID_GROUP_NAME_CLASS)
                 .withType(GroupType.CLASS).build();
-        Group validGroupBob = new GroupBuilder().withName(VALID_GROUP_NAME_DEPARTMENT)
+        Group validGroupBob = new GroupBuilder().withGroupId(2).withName(VALID_GROUP_NAME_DEPARTMENT)
                 .withType(GroupType.DEPARTMENT).build();
         AddGroupCommand addGroupCommandAlice = new AddGroupCommand(validGroupAmy);
         AddGroupCommand addGroupCommandBob = new AddGroupCommand(validGroupBob);
@@ -52,7 +52,8 @@ public class AddGroupCommandTest {
         assertTrue(addGroupCommandAlice.equals(addGroupCommandAlice));
 
         // same values -> returns true
-        Group validGroupAmyCopy = new GroupBuilder().withName(VALID_GROUP_NAME_CLASS).withType(GroupType.CLASS).build();
+        Group validGroupAmyCopy = new GroupBuilder().withGroupId(1).withName(VALID_GROUP_NAME_CLASS)
+                .withType(GroupType.CLASS).build();
         AddGroupCommand addGroupCommandAliceCopy = new AddGroupCommand(validGroupAmyCopy);
         assertTrue(addGroupCommandAlice.equals(addGroupCommandAliceCopy));
 

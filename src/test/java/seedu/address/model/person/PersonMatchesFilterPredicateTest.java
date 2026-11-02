@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
+import seedu.address.model.group.DepartmentGroup;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
@@ -22,13 +25,14 @@ import seedu.address.testutil.PersonBuilder;
  */
 public class PersonMatchesFilterPredicateTest {
 
+    private final Group foodScience = new DepartmentGroup(new GroupName("Food Science"));
     private final Person person = new PersonBuilder().withName("Alice Tan").withAddress("311, Clementi Ave 2")
             .withTags("Student", "Year2").build();
     private final Student student = new Student(person.getName(), person.getPhone(), person.getEmail(),
             person.getAddress(), person.getTags(), null);
     private final Guardian guardian = new Guardian(person.getName(), person.getPhone(), person.getEmail(),
             person.getAddress(), person.getTags());
-    private final Colleague colleague = prepareColleague("Food Science");
+    private final Colleague colleague = prepareColleague(foodScience.getId().getRawId());
 
     /** Verifies exact ID matching rather than textual-prefix matching. */
     @Test
@@ -54,11 +58,12 @@ public class PersonMatchesFilterPredicateTest {
     /** Verifies that permanent IDs identify contacts independently of their runtime category. */
     @Test
     public void test_personIds_matchAllContactTypes() {
+        Group group = new DepartmentGroup(new GroupName("Food Science"));
         Person numericStudent = new PersonBuilder(person).withPersonId(128).build();
         Guardian numericGuardian = new Guardian(person.getName(), person.getPhone(), person.getEmail(),
                 person.getAddress(), person.getTags(), 129);
         Colleague numericColleague = new Colleague(person.getName(), person.getPhone(), person.getEmail(),
-                person.getAddress(), person.getTags(), 130, "Food Science");
+                person.getAddress(), person.getTags(), 130, group.getId().getRawId());
         PersonMatchesFilterPredicate predicate = prepareNumericPredicate(Set.of(128, 129, 130), Optional.empty());
 
         for (Person contact : List.of(numericStudent, numericGuardian, numericColleague)) {
@@ -110,11 +115,11 @@ public class PersonMatchesFilterPredicateTest {
     public void test_personIdsAndExistingFields_requireEveryCriterion() {
         Set<Integer> ids = Set.of(1, 10);
 
-        assertFalse(preparePredicate(Optional.of("Bob"), Optional.empty(), Optional.empty(),
+        assertFalse(preparePredicate(Optional.of("Bob"), Optional.empty(),
                 Optional.empty(), Set.of(), ids, Optional.empty()).test(person));
-        assertFalse(preparePredicate(Optional.empty(), Optional.of(Role.GUARDIAN), Optional.empty(),
+        assertFalse(preparePredicate(Optional.empty(), Optional.of(Role.GUARDIAN),
                 Optional.empty(), Set.of(), ids, Optional.empty()).test(person));
-        assertFalse(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(),
+        assertFalse(preparePredicate(Optional.empty(), Optional.empty(),
                 Optional.of("Bugis"), Set.of(), ids, Optional.empty()).test(person));
     }
 
@@ -124,38 +129,12 @@ public class PersonMatchesFilterPredicateTest {
         Person secondYearStudent = new PersonBuilder(person).withYearOfStudy(2).build();
         Set<Integer> ids = Set.of(1, 10);
 
-        assertTrue(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+        assertTrue(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(),
                 Set.of(new Tag("Student"), new Tag("Year2")), ids, Optional.of(2)).test(secondYearStudent));
-        assertFalse(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+        assertFalse(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(),
                 Set.of(new Tag("Student"), new Tag("Missing")), ids, Optional.of(2)).test(secondYearStudent));
-        assertFalse(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+        assertFalse(preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(),
                 Set.of(new Tag("student"), new Tag("Year2")), ids, Optional.of(2)).test(secondYearStudent));
-    }
-
-    /** Verifies that an ID alternative cannot make a student satisfy a colleague department criterion. */
-    @Test
-    public void test_personIdsAndDepartment_matchOnlyLinkedColleagues() {
-        Colleague linkedColleague = new Colleague(person.getName(), person.getPhone(), person.getEmail(),
-                person.getAddress(), person.getTags(), 128, "Food Science");
-        Person numericStudent = new PersonBuilder(person).withPersonId(129).build();
-        PersonMatchesFilterPredicate predicate = preparePredicate(Optional.empty(), Optional.empty(),
-                Optional.of("food sci"), Optional.empty(), Set.of(), Set.of(128, 129), Optional.empty());
-
-        assertTrue(predicate.test(linkedColleague));
-        assertFalse(predicate.test(numericStudent));
-    }
-
-    /** Verifies that the valid but incompatible department and year criteria cannot match either subtype. */
-    @Test
-    public void test_yearOfStudyAndDepartment_returnsFalse() {
-        Person secondYearStudent = new PersonBuilder(person).withPersonId(128).withYearOfStudy(2).build();
-        Colleague linkedColleague = new Colleague(person.getName(), person.getPhone(), person.getEmail(),
-                person.getAddress(), person.getTags(), 129, "Food Science");
-        PersonMatchesFilterPredicate predicate = preparePredicate(Optional.empty(), Optional.empty(),
-                Optional.of("science"), Optional.empty(), Set.of(), Set.of(128, 129), Optional.of(2));
-
-        assertFalse(predicate.test(secondYearStudent));
-        assertFalse(predicate.test(linkedColleague));
     }
 
     @Test
@@ -182,28 +161,28 @@ public class PersonMatchesFilterPredicateTest {
 
     @Test
     public void test_fullName_returnsTrue() {
-        assertTrue(preparePredicate(Optional.of("Alice Tan"), Optional.empty(), Optional.empty(),
+        assertTrue(preparePredicate(Optional.of("Alice Tan"), Optional.empty(),
                 Optional.empty(), Set.of()).test(person));
     }
 
     @Test
     public void test_partialNameAtBeginningMiddleAndEnd_returnsTrue() {
         for (String keyword : List.of("Ali", "lice", "Tan", "ce Ta")) {
-            assertTrue(preparePredicate(Optional.of(keyword), Optional.empty(), Optional.empty(),
+            assertTrue(preparePredicate(Optional.of(keyword), Optional.empty(),
                     Optional.empty(), Set.of()).test(person));
         }
     }
 
     @Test
     public void test_nameDiffersInCase_returnsTrue() {
-        assertTrue(preparePredicate(Optional.of("aLiCe tAn"), Optional.empty(), Optional.empty(),
+        assertTrue(preparePredicate(Optional.of("aLiCe tAn"), Optional.empty(),
                 Optional.empty(), Set.of()).test(person));
     }
 
     @Test
     public void test_nonContiguousOrNonMatchingName_returnsFalse() {
         for (String keyword : List.of("tan alice", "ali tan", "alice  tan", "Bob")) {
-            assertFalse(preparePredicate(Optional.of(keyword), Optional.empty(), Optional.empty(),
+            assertFalse(preparePredicate(Optional.of(keyword), Optional.empty(),
                     Optional.empty(), Set.of()).test(person));
         }
     }
@@ -213,7 +192,7 @@ public class PersonMatchesFilterPredicateTest {
         Person otherPerson = new PersonBuilder().withName("Bob Lim").withEmail("alice@example.com")
                 .withAddress("Alice Road").withTags("Alice").build();
 
-        assertFalse(preparePredicate(Optional.of("alice"), Optional.empty(), Optional.empty(),
+        assertFalse(preparePredicate(Optional.of("alice"), Optional.empty(),
                 Optional.empty(), Set.of()).test(otherPerson));
     }
 
@@ -221,7 +200,7 @@ public class PersonMatchesFilterPredicateTest {
     public void test_contactType_matchesOnlyActualRole() {
         for (Role role : Role.values()) {
             PersonMatchesFilterPredicate predicate = preparePredicate(Optional.empty(), Optional.of(role),
-                    Optional.empty(), Optional.empty(), Set.of());
+                    Optional.empty(), Set.of());
 
             for (Person contact : List.of(student, guardian, colleague)) {
                 assertEquals(role == contact.getRole(), predicate.test(contact));
@@ -232,52 +211,13 @@ public class PersonMatchesFilterPredicateTest {
     @Test
     public void test_contactTypeUsesRole_notTagsOrSubclass() {
         PersonMatchesFilterPredicate studentPredicate = preparePredicate(Optional.empty(), Optional.of(Role.STUDENT),
-                Optional.empty(), Optional.empty(), Set.of());
+                Optional.empty(), Set.of());
         PersonMatchesFilterPredicate colleaguePredicate = preparePredicate(Optional.empty(),
-                Optional.of(Role.COLLEAGUE), Optional.empty(), Optional.empty(), Set.of());
+                Optional.of(Role.COLLEAGUE), Optional.empty(), Set.of());
 
         assertTrue(preparePredicate(Optional.empty(), Set.of(new Tag("Student"))).test(guardian));
         assertFalse(studentPredicate.test(guardian));
         assertTrue(colleaguePredicate.test(new PersonBuilder().withRole(Role.COLLEAGUE).build()));
-    }
-
-    @Test
-    public void test_fullAndPartialDepartment_returnsTrue() {
-        for (String keyword : List.of("Food Science", "Food", "food sci", "ood Sci", "Science", "fOoD sCiEnCe")) {
-            assertTrue(preparePredicate(Optional.empty(), Optional.empty(), Optional.of(keyword),
-                    Optional.empty(), Set.of()).test(colleague));
-        }
-    }
-
-    @Test
-    public void test_nonContiguousOrNonMatchingDepartment_returnsFalse() {
-        for (String keyword : List.of("Computer Science", "Science Food", "Food  Science")) {
-            assertFalse(preparePredicate(Optional.empty(), Optional.empty(), Optional.of(keyword),
-                    Optional.empty(), Set.of()).test(colleague));
-        }
-    }
-
-    @Test
-    public void test_departmentOnContactsWithoutDepartment_returnsFalse() {
-        PersonMatchesFilterPredicate predicate = preparePredicate(Optional.empty(), Optional.empty(),
-                Optional.of("science"), Optional.empty(), Set.of());
-
-        assertFalse(predicate.test(student));
-        assertFalse(predicate.test(guardian));
-        assertFalse(predicate.test(prepareColleague(null)));
-        assertFalse(predicate.test(prepareColleague("")));
-        assertFalse(predicate.test(new PersonBuilder().withRole(Role.COLLEAGUE).build()));
-    }
-
-    @Test
-    public void test_departmentKeywordOnlyInOtherFields_returnsFalse() {
-        Person details = new PersonBuilder().withName("Science Teacher").withAddress("Science Road")
-                .withEmail("science@example.com").withTags("Science").build();
-        Colleague otherColleague = new Colleague(details.getName(), details.getPhone(), details.getEmail(),
-                details.getAddress(), details.getTags(), "Mathematics");
-
-        assertFalse(preparePredicate(Optional.empty(), Optional.empty(), Optional.of("science"),
-                Optional.empty(), Set.of()).test(otherColleague));
     }
 
     @Test
@@ -288,9 +228,9 @@ public class PersonMatchesFilterPredicateTest {
             Locale.setDefault(Locale.forLanguageTag("tr-TR"));
             Person details = new PersonBuilder().withName("IRIS Tan").build();
             Colleague iris = new Colleague(details.getName(), details.getPhone(), details.getEmail(),
-                    details.getAddress(), details.getTags(), "FOOD SCIENCE");
+                    details.getAddress(), details.getTags(), foodScience.getId().getRawId());
 
-            assertTrue(preparePredicate(Optional.of("iris"), Optional.of(Role.COLLEAGUE), Optional.of("science"),
+            assertTrue(preparePredicate(Optional.of("iris"), Optional.of(Role.COLLEAGUE),
                     Optional.empty(), Set.of()).test(iris));
         } finally {
             Locale.setDefault(originalLocale);
@@ -300,7 +240,7 @@ public class PersonMatchesFilterPredicateTest {
     @Test
     public void test_allCriteriaMatch_returnsTrue() {
         PersonMatchesFilterPredicate predicate = preparePredicate(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
-                Optional.of("food sci"), Optional.of("clementi ave"), Set.of(new Tag("Student"), new Tag("Year2")));
+                Optional.of("clementi ave"), Set.of(new Tag("Student"), new Tag("Year2")));
 
         assertTrue(predicate.test(colleague));
     }
@@ -309,15 +249,13 @@ public class PersonMatchesFilterPredicateTest {
     public void test_anySingleCriterionFails_returnsFalse() {
         Set<Tag> tags = Set.of(new Tag("Student"), new Tag("Year2"));
 
-        assertFalse(preparePredicate(Optional.of("Bob"), Optional.of(Role.COLLEAGUE), Optional.of("food sci"),
+        assertFalse(preparePredicate(Optional.of("Bob"), Optional.of(Role.COLLEAGUE),
                 Optional.of("clementi ave"), tags).test(colleague));
-        assertFalse(preparePredicate(Optional.of("ali"), Optional.of(Role.STUDENT), Optional.of("food sci"),
+        assertFalse(preparePredicate(Optional.of("ali"), Optional.of(Role.STUDENT),
                 Optional.of("clementi ave"), tags).test(colleague));
-        assertFalse(preparePredicate(Optional.of("ali"), Optional.of(Role.COLLEAGUE), Optional.of("mathematics"),
-                Optional.of("clementi ave"), tags).test(colleague));
-        assertFalse(preparePredicate(Optional.of("ali"), Optional.of(Role.COLLEAGUE), Optional.of("food sci"),
+        assertFalse(preparePredicate(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
                 Optional.of("Bedok"), tags).test(colleague));
-        assertFalse(preparePredicate(Optional.of("ali"), Optional.of(Role.COLLEAGUE), Optional.of("food sci"),
+        assertFalse(preparePredicate(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
                 Optional.of("clementi ave"), Set.of(new Tag("Student"), new Tag("Year3"))).test(colleague));
     }
 
@@ -467,10 +405,10 @@ public class PersonMatchesFilterPredicateTest {
     @Test
     public void hashCode_equalPredicates_returnsSameHashCode() {
         PersonMatchesFilterPredicate predicate =
-                preparePredicate(Optional.of("ali"), Optional.of(Role.COLLEAGUE), Optional.of("food sci"),
+                preparePredicate(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
                         Optional.of("Clementi"), Set.of(new Tag("Student")));
         PersonMatchesFilterPredicate copy =
-                preparePredicate(Optional.of("ali"), Optional.of(Role.COLLEAGUE), Optional.of("food sci"),
+                preparePredicate(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
                         Optional.of("Clementi"), Set.of(new Tag("Student")));
 
         assertEquals(predicate.hashCode(), copy.hashCode());
@@ -489,38 +427,38 @@ public class PersonMatchesFilterPredicateTest {
      * Constructs a predicate from the supplied address and tag criteria.
      */
     private PersonMatchesFilterPredicate preparePredicate(Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        return preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(), addressKeyword, requiredTags);
+        return preparePredicate(Optional.empty(), Optional.empty(), addressKeyword, requiredTags);
     }
 
     /**
      * Constructs a predicate from all supported criteria without parsing command input.
      */
     private PersonMatchesFilterPredicate preparePredicate(Optional<String> nameKeyword, Optional<Role> contactType,
-            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        return preparePredicate(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
+            Optional<String> addressKeyword, Set<Tag> requiredTags) {
+        return preparePredicate(nameKeyword, contactType, addressKeyword, requiredTags,
                 Set.of(), Optional.empty());
     }
 
     /** Constructs a predicate including ID alternatives and an optional exact year. */
     private PersonMatchesFilterPredicate preparePredicate(Optional<String> nameKeyword, Optional<Role> contactType,
-            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags,
+            Optional<String> addressKeyword, Set<Tag> requiredTags,
             Set<Integer> personIds, Optional<Integer> yearOfStudy) {
-        return new PersonMatchesFilterPredicate(new PersonFilterCriteria(nameKeyword, contactType, departmentKeyword,
+        return new PersonMatchesFilterPredicate(new PersonFilterCriteria(nameKeyword, contactType,
                 addressKeyword, requiredTags, personIds, yearOfStudy));
     }
 
     /** Constructs numeric predicates without adding unrelated matching restrictions. */
     private PersonMatchesFilterPredicate prepareNumericPredicate(Set<Integer> personIds,
             Optional<Integer> yearOfStudy) {
-        return preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Set.of(),
+        return preparePredicate(Optional.empty(), Optional.empty(), Optional.empty(), Set.of(),
                 personIds, yearOfStudy);
     }
 
     /**
      * Constructs a colleague with the shared contact details and an optional department.
      */
-    private Colleague prepareColleague(String department) {
+    private Colleague prepareColleague(Integer groupId) {
         return new Colleague(person.getName(), person.getPhone(), person.getEmail(), person.getAddress(),
-                person.getTags(), department);
+                person.getTags(), groupId);
     }
 }

@@ -55,8 +55,7 @@ public class JsonAdaptedPersonTest {
                 VALID_ADDRESS,
                 VALID_TAGS,
                 null,
-                1,
-                null);
+                1);
         String expectedMessage = String.format(
                 MISSING_FIELD_MESSAGE_FORMAT,
                 Role.class.getSimpleName());
@@ -91,7 +90,7 @@ public class JsonAdaptedPersonTest {
     @Test
     public void toModelType_nullPhone_returnsValidPerson() throws IllegalValueException {
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, null, VALID_EMAIL, VALID_ADDRESS, VALID_TAGS,
-                Role.STUDENT, 1, null, null, 1);
+                Role.STUDENT, 1, null, 1);
         Set<Tag> expectedTags = new HashSet<>();
 
         for (JsonAdaptedTag tag : VALID_TAGS) {
@@ -115,7 +114,7 @@ public class JsonAdaptedPersonTest {
     @Test
     public void toModelType_nullEmail_returnsValidPerson() throws IllegalValueException {
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, null, VALID_ADDRESS, VALID_TAGS,
-                Role.STUDENT, 1, null, null, 1);
+                Role.STUDENT, 1, null, 1);
         Set<Tag> expectedTags = new HashSet<>();
 
         for (JsonAdaptedTag tag : VALID_TAGS) {
@@ -138,7 +137,7 @@ public class JsonAdaptedPersonTest {
     @Test
     public void toModelType_nullAddress_returnsValidPerson() throws IllegalValueException {
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, null, VALID_TAGS,
-                Role.STUDENT, 1, null, null, 1);
+                Role.STUDENT, 1, null, 1);
         Set<Tag> expectedTags = new HashSet<>();
 
         for (JsonAdaptedTag tag : VALID_TAGS) {
@@ -171,7 +170,7 @@ public class JsonAdaptedPersonTest {
     @Test
     public void toModelType_validColleague_returnsColleague() throws Exception {
         Colleague charlie = new Colleague(new Name("Charlie"), new Phone("91234567"), new Email("charlie@example.com"),
-                new Address("123, Pine Street, #01-23"), new HashSet<>(), "Computer Science");
+                new Address("123, Pine Street, #01-23"), new HashSet<>(), null);
         JsonAdaptedPerson person = new JsonAdaptedPerson(charlie);
         assertEquals(charlie, person.toModelType());
     }

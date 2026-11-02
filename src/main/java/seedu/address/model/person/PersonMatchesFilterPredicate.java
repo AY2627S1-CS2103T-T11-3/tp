@@ -31,7 +31,6 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
                 && matchesYearOfStudy(person)
                 && matchesName(person)
                 && matchesContactType(person)
-                && matchesDepartment(person)
                 && matchesAddress(person)
                 && matchesTags(person);
     }
@@ -60,15 +59,6 @@ public class PersonMatchesFilterPredicate implements Predicate<Person> {
     private boolean matchesContactType(Person person) {
         return criteria.getContactType()
                 .map(role -> person.getRole() == role)
-                .orElse(true);
-    }
-
-    /** Returns false for contacts without a department when a department criterion is supplied. */
-    private boolean matchesDepartment(Person person) {
-        return criteria.getDepartmentKeyword()
-                .map(keyword -> person instanceof Colleague colleague
-                        && colleague.getDepartment() != null
-                        && containsIgnoreCase(colleague.getDepartment(), keyword))
                 .orElse(true);
     }
 

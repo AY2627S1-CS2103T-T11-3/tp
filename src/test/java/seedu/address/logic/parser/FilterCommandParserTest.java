@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACT_TYPE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DEPARTMENT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PERSON_ID;
@@ -63,7 +62,7 @@ public class FilterCommandParserTest {
     @Test
     public void parse_numericAndExistingCriteria_acceptsOrderingAndWhitespace() {
         FilterCommand expectedCommand = prepareCommand(Optional.of("ali"), Optional.of(Role.STUDENT),
-                Optional.empty(), Optional.of("Clementi"), Set.of(new Tag("Student")), Set.of(12, 13), Optional.of(2));
+                Optional.of("Clementi"), Set.of(new Tag("Student")), Set.of(12, 13), Optional.of(2));
 
         assertParseSuccess(parser, " id/12 id/13 yos/2 n/ali ct/student a/Clementi t/Student", expectedCommand);
         assertParseSuccess(parser,
@@ -71,7 +70,7 @@ public class FilterCommandParserTest {
                 expectedCommand);
 
         FilterCommand groupedCommand = prepareCommand(Optional.of("ali"), Optional.of(Role.STUDENT),
-                Optional.empty(), Optional.of("Clementi"), Set.of(new Tag("Student")), Set.of(12, 13),
+                Optional.of("Clementi"), Set.of(new Tag("Student")), Set.of(12, 13),
                 Optional.of(2), Optional.of(128));
         assertParseSuccess(parser, " gid/128 id/12 id/13 yos/2 n/ali ct/student a/Clementi t/Student", groupedCommand);
         assertParseSuccess(parser,
@@ -149,24 +148,15 @@ public class FilterCommandParserTest {
     @Test
     public void parse_nameOnly_preservesPhraseAndTrimsWhitespace() {
         assertParseSuccess(parser, " n/ali", prepareCommand(Optional.of("ali"), Optional.empty(),
-                Optional.empty(), Optional.empty(), Set.of()));
+                Optional.empty(), Set.of()));
         assertParseSuccess(parser, " n/  Alice Tan  \t ", prepareCommand(Optional.of("Alice Tan"), Optional.empty(),
-                Optional.empty(), Optional.empty(), Set.of()));
-    }
-
-    @Test
-    public void parse_departmentOnly_preservesPhraseAndTrimsWhitespace() {
-        FilterCommand expectedCommand = prepareCommand(Optional.empty(), Optional.empty(),
-                Optional.of("food sci"), Optional.empty(), Set.of());
-
-        assertParseSuccess(parser, " d/food sci", expectedCommand);
-        assertParseSuccess(parser, " d/  food sci  \t ", expectedCommand);
+                Optional.empty(), Set.of()));
     }
 
     @Test
     public void parse_studentTypeAndPrefixes_returnsStudentFilter() {
         FilterCommand expectedCommand = prepareCommand(Optional.empty(), Optional.of(Role.STUDENT),
-                Optional.empty(), Optional.empty(), Set.of());
+                Optional.empty(), Set.of());
 
         for (String contactType : List.of("student", "stu", "s", "STUDENT", "sTu")) {
             assertParseSuccess(parser, " ct/" + contactType, expectedCommand);
@@ -176,7 +166,7 @@ public class FilterCommandParserTest {
     @Test
     public void parse_guardianTypeAndPrefixes_returnsGuardianFilter() {
         FilterCommand expectedCommand = prepareCommand(Optional.empty(), Optional.of(Role.GUARDIAN),
-                Optional.empty(), Optional.empty(), Set.of());
+                Optional.empty(), Set.of());
 
         for (String contactType : List.of("guardian", "guar", "g", "GUARDIAN", "gUaR")) {
             assertParseSuccess(parser, " ct/" + contactType, expectedCommand);
@@ -186,7 +176,7 @@ public class FilterCommandParserTest {
     @Test
     public void parse_colleagueTypeAndPrefixes_returnsColleagueFilter() {
         FilterCommand expectedCommand = prepareCommand(Optional.empty(), Optional.of(Role.COLLEAGUE),
-                Optional.empty(), Optional.empty(), Set.of());
+                Optional.empty(), Set.of());
 
         for (String contactType : List.of("colleague", "col", "c", "COLLEAGUE", "cOl")) {
             assertParseSuccess(parser, " ct/" + contactType, expectedCommand);
@@ -203,7 +193,7 @@ public class FilterCommandParserTest {
     /** Verifies that blank text, role, and numeric criteria are rejected even alongside valid tags. */
     @Test
     public void parse_emptyNewCriteria_throwsParseException() {
-        for (Prefix prefix : List.of(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT,
+        for (Prefix prefix : List.of(PREFIX_NAME, PREFIX_CONTACT_TYPE,
                 PREFIX_PERSON_ID, PREFIX_YEAR_OF_STUDY, PREFIX_GROUP_ID)) {
             String expectedMessage = String.format(FilterCommand.MESSAGE_EMPTY_CRITERION, prefix)
                     + "\n" + FilterCommand.MESSAGE_USAGE;
@@ -217,8 +207,7 @@ public class FilterCommandParserTest {
     /** Verifies that single-valued criteria reject repeated prefixes, including equivalent numeric values. */
     @Test
     public void parse_duplicateNewCriteria_throwsParseException() {
-        for (Prefix prefix : List.of(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_DEPARTMENT, PREFIX_YEAR_OF_STUDY,
-                PREFIX_GROUP_ID)) {
+        for (Prefix prefix : List.of(PREFIX_NAME, PREFIX_CONTACT_TYPE, PREFIX_YEAR_OF_STUDY, PREFIX_GROUP_ID)) {
             String expectedMessage = Messages.getErrorMessageForDuplicatePrefixes(prefix);
             String firstValue = "Alice";
             String secondValue = "Bob";
@@ -243,36 +232,36 @@ public class FilterCommandParserTest {
     @Test
     public void parse_allCriteriaInDifferentOrders_returnsSameFilterCommand() {
         FilterCommand expectedCommand = prepareCommand(Optional.of("Alice Tan"), Optional.of(Role.COLLEAGUE),
-                Optional.of("food sci"), Optional.of("Clementi Ave"), Set.of(new Tag("Committee"), new Tag("Staff")));
+                Optional.of("Clementi Ave"), Set.of(new Tag("Committee"), new Tag("Staff")));
 
         assertParseSuccess(parser,
-                " n/Alice Tan ct/cOl d/food sci a/Clementi Ave t/Committee t/Staff", expectedCommand);
+                " n/Alice Tan ct/cOl a/Clementi Ave t/Committee t/Staff", expectedCommand);
         assertParseSuccess(parser,
-                " ct/cOl t/Staff a/Clementi Ave n/Alice Tan t/Committee d/food sci", expectedCommand);
+                " ct/cOl t/Staff a/Clementi Ave n/Alice Tan t/Committee", expectedCommand);
         assertParseSuccess(parser,
-                " d/food sci n/Alice Tan t/Committee ct/cOl a/Clementi Ave t/Staff", expectedCommand);
+                " n/Alice Tan t/Committee ct/cOl a/Clementi Ave t/Staff", expectedCommand);
         assertParseSuccess(parser,
-                " a/Clementi Ave t/Staff ct/cOl d/food sci t/Committee n/Alice Tan", expectedCommand);
+                " a/Clementi Ave t/Staff ct/cOl t/Committee n/Alice Tan", expectedCommand);
         assertParseSuccess(parser,
-                " t/Committee a/Clementi Ave d/food sci t/Staff ct/cOl n/Alice Tan", expectedCommand);
+                " t/Committee a/Clementi Ave t/Staff ct/cOl n/Alice Tan", expectedCommand);
     }
 
     @Test
     public void parse_allCriteriaWithWhitespace_trimsValues() {
         FilterCommand expectedCommand = prepareCommand(Optional.of("Alice Tan"), Optional.of(Role.COLLEAGUE),
-                Optional.of("food sci"), Optional.of("Clementi Ave"), Set.of(new Tag("Committee")));
+                Optional.of("Clementi Ave"), Set.of(new Tag("Committee")));
 
         assertParseSuccess(parser,
-                " \t n/  Alice Tan \t ct/ cOl \r\n d/ food sci \n a/ Clementi Ave \t t/ Committee \t ",
+                " \t n/  Alice Tan \t ct/ cOl \r\n a/ Clementi Ave \t t/ Committee \t ",
                 expectedCommand);
     }
 
     @Test
-    public void parse_internalNameAndDepartmentWhitespace_preservesPhrases() {
+    public void parse_internalNameWhitespace_preservesPhrases() {
         FilterCommand expectedCommand = prepareCommand(Optional.of("Alice  Tan"), Optional.empty(),
-                Optional.of("Food  Science"), Optional.empty(), Set.of());
+                Optional.empty(), Set.of());
 
-        assertParseSuccess(parser, " n/Alice  Tan d/Food  Science", expectedCommand);
+        assertParseSuccess(parser, " n/Alice  Tan", expectedCommand);
     }
 
     @Test
@@ -397,45 +386,45 @@ public class FilterCommandParserTest {
      * Constructs the expected command independently of the parser.
      */
     private FilterCommand prepareCommand(Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        return prepareCommand(Optional.empty(), Optional.empty(), Optional.empty(), addressKeyword, requiredTags);
+        return prepareCommand(Optional.empty(), Optional.empty(), addressKeyword, requiredTags);
     }
 
     /**
      * Constructs the expected command from all supported criteria without calling the parser.
      */
     private FilterCommand prepareCommand(Optional<String> nameKeyword, Optional<Role> contactType,
-            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        return prepareCommand(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
+            Optional<String> addressKeyword, Set<Tag> requiredTags) {
+        return prepareCommand(nameKeyword, contactType, addressKeyword, requiredTags,
                 Set.of(), Optional.empty());
     }
 
     /** Constructs an expected command with numeric criteria independently of the parser. */
     private FilterCommand prepareCommand(Optional<String> nameKeyword, Optional<Role> contactType,
-            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags,
+            Optional<String> addressKeyword, Set<Tag> requiredTags,
             Set<Integer> personIds, Optional<Integer> yearOfStudy) {
-        return prepareCommand(nameKeyword, contactType, departmentKeyword, addressKeyword, requiredTags,
+        return prepareCommand(nameKeyword, contactType, addressKeyword, requiredTags,
                 personIds, yearOfStudy, Optional.empty());
     }
 
     /** Constructs an expected command with an optional group restriction independently of parsing. */
     private FilterCommand prepareCommand(Optional<String> nameKeyword, Optional<Role> contactType,
-            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags,
+            Optional<String> addressKeyword, Set<Tag> requiredTags,
             Set<Integer> personIds, Optional<Integer> yearOfStudy, Optional<Integer> groupId) {
-        PersonFilterCriteria criteria = new PersonFilterCriteria(nameKeyword, contactType, departmentKeyword,
+        PersonFilterCriteria criteria = new PersonFilterCriteria(nameKeyword, contactType,
                 addressKeyword, requiredTags, personIds, yearOfStudy);
         return new FilterCommand(new PersonMatchesFilterPredicate(criteria), groupId);
     }
 
     /** Constructs numeric-only expected commands without reusing parser output as the oracle. */
     private FilterCommand prepareNumericCommand(Set<Integer> personIds, Optional<Integer> yearOfStudy) {
-        return prepareCommand(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Set.of(),
+        return prepareCommand(Optional.empty(), Optional.empty(), Optional.empty(), Set.of(),
                 personIds, yearOfStudy);
     }
 
     /** Constructs numeric-only expected commands with a group ID and no parser dependency. */
     private FilterCommand prepareNumericCommand(Set<Integer> personIds, Optional<Integer> yearOfStudy,
             Optional<Integer> groupId) {
-        return prepareCommand(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Set.of(),
+        return prepareCommand(Optional.empty(), Optional.empty(), Optional.empty(), Set.of(),
                 personIds, yearOfStudy, groupId);
     }
 }
