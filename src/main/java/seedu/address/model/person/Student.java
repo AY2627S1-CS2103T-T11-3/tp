@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.group.GroupId;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -76,6 +75,7 @@ public class Student extends Person {
                 .add("phone", getPhone())
                 .add("email", getEmail())
                 .add("address", getAddress())
+                .add("groupId", getGroupId())
                 .add("id", getId())
                 .add("tags", getTags())
                 .add("yearOfStudy", getYearOfStudy())

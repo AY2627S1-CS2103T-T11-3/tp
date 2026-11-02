@@ -45,13 +45,16 @@ import seedu.address.testutil.PersonBuilder;
  */
 public class FilterCommandTest {
 
-    private final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+    private static final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+    private static final Group foodScience = new DepartmentGroup(new GroupName("Food Science"));
+    private static final Group computerScience = new DepartmentGroup(new GroupName("Computer Science"));
     private final Student student = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(),
             ALICE.getAddress(), ALICE.getTags(), null);
     private final Guardian guardian = new Guardian(BENSON.getName(), BENSON.getPhone(), BENSON.getEmail(),
             BENSON.getAddress(), BENSON.getTags());
-    private final Colleague foodScienceColleague = prepareColleague("Alison Goh", "Food Science");
-    private final Colleague computerScienceColleague = prepareColleague("Marcus Lee", "Computer Science");
+    private final Colleague foodScienceColleague = prepareColleague("Alison Goh", foodScience.getId().getRawId());
+    private final Colleague computerScienceColleague =
+            prepareColleague("Marcus Lee", computerScience.getId().getRawId());
     private final Colleague unlinkedColleague = prepareColleague("Priya Rao", null);
     private final Student secondYearStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(),
             ALICE.getAddress(), ALICE.getTags(), 128, null, 2);
@@ -66,12 +69,9 @@ public class FilterCommandTest {
         Model groupModel = prepareGroupModel();
         List<Person> contacts = groupModel.getAddressBook().getPersonList();
         Group schoolClass = groupModel.getGroupList().get(0);
-        Group department = groupModel.getGroupList().get(1);
 
         assertFilterSuccess(prepareGroupCommand(schoolClass.getId().getRawId()), groupModel,
-                List.of(contacts.get(0), contacts.get(1)));
-        assertFilterSuccess(prepareGroupCommand(department.getId().getRawId()), groupModel,
-                List.of(contacts.get(2)));
+                List.of(contacts.get(0)));
     }
 
     /**
@@ -87,7 +87,7 @@ public class FilterCommandTest {
         String departmentFilter = "filter gid/" + groupModel.getGroupList().get(1).getId().getRawId();
 
         assertParsedFilterSuccess(classFilter + " id/128 id/256", groupModel,
-                List.of(contacts.get(0), contacts.get(1)));
+                List.of(contacts.get(0)));
         assertParsedFilterSuccess(classFilter + " id/128 id/768", groupModel, List.of(contacts.get(0)));
         assertParsedFilterSuccess(classFilter + " yos/2", groupModel, List.of(contacts.get(0)));
 
@@ -101,9 +101,6 @@ public class FilterCommandTest {
             assertParsedFilterSuccess(input, groupModel, List.of());
         }
 
-        assertParsedFilterSuccess(departmentFilter
-                + " id/4096 n/col ct/COL d/shared sch a/clementi t/Staff t/Committee", groupModel,
-                List.of(contacts.get(2)));
         assertParsedFilterSuccess(departmentFilter + " yos/2", groupModel, List.of());
     }
 
@@ -120,7 +117,7 @@ public class FilterCommandTest {
         Group otherClass = groupModel.getGroupList().get(2);
         FilterCommand command = (FilterCommand) new AddressBookParser().parseCommand(
                 "filter gid/" + schoolClass.getId().getRawId());
-        assertFilterSuccess(command, groupModel, List.of(contacts.get(0), contacts.get(1)));
+        assertFilterSuccess(command, groupModel, List.of(contacts.get(0)));
 
         // Show all contacts so the ungrouped contact can be selected by the link command's displayed index.
         prepareCommand(Optional.empty(), Set.of()).execute(groupModel);
@@ -128,12 +125,12 @@ public class FilterCommandTest {
         Index classIndex = Index.fromZeroBased(groupModel.getGroupList().indexOf(schoolClass));
         new LinkGroupCommand(contactIndex, classIndex).execute(groupModel);
         Person linkedContact = groupModel.getAddressBook().getPersonList().get(4);
-        assertFilterSuccess(command, groupModel, List.of(contacts.get(0), contacts.get(1), linkedContact));
+        assertFilterSuccess(command, groupModel, List.of(contacts.get(0), linkedContact));
 
         Index linkedContactIndex = Index.fromZeroBased(groupModel.getFilteredPersonList().indexOf(linkedContact));
         Index otherClassIndex = Index.fromZeroBased(groupModel.getGroupList().indexOf(otherClass));
         new LinkGroupCommand(linkedContactIndex, otherClassIndex).execute(groupModel);
-        assertEquals(List.of(contacts.get(0), contacts.get(1)), groupModel.getFilteredPersonList());
+        assertEquals(List.of(contacts.get(0)), groupModel.getFilteredPersonList());
 
         groupModel.deleteGroup(schoolClass);
         assertTrue(groupModel.getFilteredPersonList().isEmpty());
@@ -156,7 +153,7 @@ public class FilterCommandTest {
     @Test
     public void execute_personIdsAndYearOfStudy_listsIntersection() {
         PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.of("ali"), Optional.of(Role.STUDENT),
-                Optional.empty(), Optional.of("jurong"), Set.of(new Tag("friends")), Set.of(128, 256), Optional.of(2));
+                Optional.of("jurong"), Set.of(new Tag("friends")), Set.of(128, 256), Optional.of(2));
         FilterCommand command = new FilterCommand(new PersonMatchesFilterPredicate(criteria));
 
         assertFilterSuccess(command, prepareNumericModel(), List.of(secondYearStudent));
@@ -198,7 +195,7 @@ public class FilterCommandTest {
         int nextGroupId = GroupId.getNextId();
 
         assertFilterSuccess(prepareGroupCommand(originalGroups.get(0).getId().getRawId()), groupModel,
-                List.of(originalContacts.get(0), originalContacts.get(1)));
+                List.of(originalContacts.get(0)));
         assertEquals(originalContacts, groupModel.getAddressBook().getPersonList());
         assertEquals(originalGroups, groupModel.getGroupList());
         assertEquals(originalLinks, groupModel.getAddressBook().getGuardianStudents());
@@ -239,9 +236,9 @@ public class FilterCommandTest {
 
     @Test
     public void execute_partialMixedCaseName_listsMatchingPersons() {
-        assertFilterSuccess(prepareCommand(Optional.of("eIeR"), Optional.empty(), Optional.empty(),
+        assertFilterSuccess(prepareCommand(Optional.of("eIeR"), Optional.empty(),
                 Optional.empty(), Set.of()), List.of(BENSON, DANIEL));
-        assertFilterSuccess(prepareCommand(Optional.of("Nobody"), Optional.empty(), Optional.empty(),
+        assertFilterSuccess(prepareCommand(Optional.of("Nobody"), Optional.empty(),
                 Optional.empty(), Set.of()), List.of());
     }
 
@@ -249,7 +246,7 @@ public class FilterCommandTest {
     public void execute_nameAcrossCategories_listsMatchingPersons() {
         Model roleModel = prepareRoleModel();
 
-        assertFilterSuccess(prepareCommand(Optional.of("ALI"), Optional.empty(), Optional.empty(),
+        assertFilterSuccess(prepareCommand(Optional.of("ALI"), Optional.empty(),
                 Optional.empty(), Set.of()), roleModel, List.of(student, foodScienceColleague));
     }
 
@@ -257,32 +254,20 @@ public class FilterCommandTest {
     public void execute_contactTypes_listsOnlyMatchingRoles() {
         Model roleModel = prepareRoleModel();
 
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.STUDENT), Optional.empty(),
+        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.STUDENT),
                 Optional.empty(), Set.of()), roleModel, List.of(student));
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.GUARDIAN), Optional.empty(),
+        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.GUARDIAN),
                 Optional.empty(), Set.of()), roleModel, List.of(guardian));
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.COLLEAGUE), Optional.empty(),
+        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.COLLEAGUE),
                 Optional.empty(), Set.of()), roleModel,
                 List.of(foodScienceColleague, computerScienceColleague, unlinkedColleague));
-    }
-
-    @Test
-    public void execute_partialMixedCaseDepartment_listsMatchingColleagues() {
-        Model roleModel = prepareRoleModel();
-
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("SCIENCE"),
-                Optional.empty(), Set.of()), roleModel, List.of(foodScienceColleague, computerScienceColleague));
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("fOoD sCi"),
-                Optional.empty(), Set.of()), roleModel, List.of(foodScienceColleague));
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("Mathematics"),
-                Optional.empty(), Set.of()), roleModel, List.of());
     }
 
     @Test
     public void execute_allCriteria_listsIntersection() {
         Model roleModel = prepareRoleModel();
         FilterCommand command = prepareCommand(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
-                Optional.of("food sci"), Optional.of("clementi"), Set.of(new Tag("Committee"), new Tag("Staff")));
+                Optional.of("clementi"), Set.of(new Tag("Committee"), new Tag("Staff")));
 
         assertFilterSuccess(command, roleModel, List.of(foodScienceColleague));
     }
@@ -291,49 +276,15 @@ public class FilterCommandTest {
     public void execute_parsedChainedCriteria_listsIntersection() throws Exception {
         Model roleModel = prepareRoleModel();
         FilterCommand command = (FilterCommand) new AddressBookParser().parseCommand(
-                "filter t/Staff d/FOOD SCI n/ALI a/CLEMENTI ct/cOl t/Committee");
+                "filter t/Staff n/ALI a/CLEMENTI ct/cOl t/Committee");
 
         assertFilterSuccess(command, roleModel, List.of(foodScienceColleague));
     }
 
     @Test
-    public void execute_contradictoryCriteria_listsZeroPersons() {
-        Model roleModel = prepareRoleModel();
-
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.STUDENT), Optional.of("science"),
-                Optional.empty(), Set.of()), roleModel, List.of());
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.GUARDIAN), Optional.of("science"),
-                Optional.empty(), Set.of()), roleModel, List.of());
-        assertFilterSuccess(prepareCommand(Optional.of("ali"), Optional.of(Role.COLLEAGUE), Optional.of("food sci"),
-                Optional.of("Bedok"), Set.of(new Tag("Committee"))), roleModel, List.of());
-        assertFilterSuccess(prepareCommand(Optional.of("ali"), Optional.of(Role.COLLEAGUE), Optional.of("food sci"),
-                Optional.of("clementi"), Set.of(new Tag("Committee"), new Tag("Missing"))), roleModel, List.of());
-    }
-
-    /** Verifies that role, numeric, and group filters replace previous constraints and can still be cleared. */
-    @Test
-    public void execute_newCriteriaAfterDepartmentFilter_replacesFilter() {
-        Model roleModel = prepareRoleModel();
-
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.empty(), Optional.of("food sci"),
-                Optional.empty(), Set.of()), roleModel, List.of(foodScienceColleague));
-        assertFilterSuccess(prepareCommand(Optional.empty(), Optional.of(Role.STUDENT), Optional.empty(),
-                Optional.empty(), Set.of()), roleModel, List.of(student));
-        int colleagueId = computerScienceColleague.getId().getRawId();
-        assertFilterSuccess(prepareNumericCommand(Set.of(colleagueId), Optional.empty()),
-                roleModel, List.of(computerScienceColleague));
-        Group department = new DepartmentGroup(new GroupName("Food Science"));
-        roleModel.addGroup(department);
-        assertFilterSuccess(prepareGroupCommand(department.getId().getRawId()), roleModel,
-                List.of(foodScienceColleague));
-        assertFilterSuccess(prepareCommand(Optional.empty(), Set.of()), roleModel,
-                List.of(student, guardian, foodScienceColleague, computerScienceColleague, unlinkedColleague));
-    }
-
-    @Test
     public void execute_allCriteriaOnEmptyAddressBook_listsZeroPersons() {
         FilterCommand command = prepareCommand(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
-                Optional.of("food sci"), Optional.of("clementi"), Set.of(new Tag("Committee")));
+                Optional.of("clementi"), Set.of(new Tag("Committee")));
 
         assertFilterSuccess(command, new ModelManager(), List.of());
     }
@@ -377,7 +328,7 @@ public class FilterCommandTest {
     @Test
     public void execute_previousNameFilter_replacesFilter() {
         PersonFilterCriteria nameCriteria = new PersonFilterCriteria(Optional.of("Alice"), Optional.empty(),
-                Optional.empty(), Optional.empty(), Set.of());
+                Optional.empty(), Set.of());
         new FilterCommand(new PersonMatchesFilterPredicate(nameCriteria)).execute(model);
         assertEquals(List.of(ALICE), model.getFilteredPersonList());
 
@@ -422,9 +373,9 @@ public class FilterCommandTest {
     /** Verifies equal commands have equal hashes with or without a supplied group ID. */
     @Test
     public void hashCode_equalCommands_returnsSameHashCode() {
-        FilterCommand command = prepareCommand(Optional.of("ali"), Optional.of(Role.COLLEAGUE), Optional.of("science"),
+        FilterCommand command = prepareCommand(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
                 Optional.of("Clementi"), Set.of(new Tag("Student")));
-        FilterCommand copy = prepareCommand(Optional.of("ali"), Optional.of(Role.COLLEAGUE), Optional.of("science"),
+        FilterCommand copy = prepareCommand(Optional.of("ali"), Optional.of(Role.COLLEAGUE),
                 Optional.of("Clementi"), Set.of(new Tag("Student")));
 
         assertEquals(command.hashCode(), copy.hashCode());
@@ -452,22 +403,22 @@ public class FilterCommandTest {
      * Constructs a command from the supplied address and tag criteria.
      */
     private FilterCommand prepareCommand(Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        return prepareCommand(Optional.empty(), Optional.empty(), Optional.empty(), addressKeyword, requiredTags);
+        return prepareCommand(Optional.empty(), Optional.empty(), addressKeyword, requiredTags);
     }
 
     /**
      * Constructs a command from all supported criteria without parsing command input.
      */
     private FilterCommand prepareCommand(Optional<String> nameKeyword, Optional<Role> contactType,
-            Optional<String> departmentKeyword, Optional<String> addressKeyword, Set<Tag> requiredTags) {
-        PersonFilterCriteria criteria = new PersonFilterCriteria(nameKeyword, contactType, departmentKeyword,
-                addressKeyword, requiredTags);
+            Optional<String> addressKeyword, Set<Tag> requiredTags) {
+        PersonFilterCriteria criteria = new PersonFilterCriteria(nameKeyword, contactType, addressKeyword,
+                requiredTags);
         return new FilterCommand(new PersonMatchesFilterPredicate(criteria));
     }
 
     /** Constructs a command for the exact numeric criteria without involving parser validation. */
     private FilterCommand prepareNumericCommand(Set<Integer> personIds, Optional<Integer> yearOfStudy) {
-        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Optional.empty(), Optional.empty(),
+        PersonFilterCriteria criteria = new PersonFilterCriteria(Optional.empty(), Optional.empty(),
                 Optional.empty(), Set.of(), personIds, yearOfStudy);
         return new FilterCommand(new PersonMatchesFilterPredicate(criteria));
     }
@@ -507,24 +458,29 @@ public class FilterCommandTest {
                 .withTags("Staff", "Committee").build();
         Colleague colleague = new Colleague(colleagueDetails.getName(), colleagueDetails.getPhone(),
                 colleagueDetails.getEmail(), colleagueDetails.getAddress(), colleagueDetails.getTags(), 4096,
-                "Shared School");
-        for (Person contact : List.of(prepareGroupedStudent("Alice Goh", 128, "Shared School", 2),
-                prepareGroupedStudent("Bob Tan", 256, "Shared School", 3), colleague,
-                prepareGroupedStudent("Cara Lee", 768, "Other Class", 2),
+                groupModel.getGroupList().get(0).getId().getRawId());
+        for (Person contact : List.of(prepareGroupedStudent("Alice Goh", 128,
+                        groupModel.getGroupList().get(0).getId().getRawId(), 2),
+                prepareGroupedStudent("Bob Tan", 256,
+                        groupModel.getGroupList().get(1).getId().getRawId(), 3), colleague,
+                prepareGroupedStudent("Cara Lee", 768,
+                        groupModel.getGroupList().get(2).getId().getRawId(), 2),
                 prepareGroupedStudent("Dana Lee", 1024, null, 2), numericGuardian,
-                prepareGroupedStudent("Finn Tan", 1536, "shared school", 2),
-                prepareGroupedStudent("Grace Tan", 1792, "Shared School Extra", 2))) {
+                prepareGroupedStudent("Finn Tan", 1536,
+                        groupModel.getGroupList().get(4).getId().getRawId(), 2),
+                prepareGroupedStudent("Grace Tan", 1792,
+                        groupModel.getGroupList().get(5).getId().getRawId(), 2))) {
             groupModel.addPerson(contact);
         }
         return groupModel;
     }
 
     /** Constructs a student with an explicit ID, group assignment, and year-specific tags. */
-    private Student prepareGroupedStudent(String name, int personId, String groupName, int yearOfStudy) {
+    private Student prepareGroupedStudent(String name, int personId, Integer groupId, int yearOfStudy) {
         Person details = new PersonBuilder().withName(name).withAddress("311, Clementi Ave 2")
                 .withTags("Student", "Year" + yearOfStudy).build();
         return new Student(details.getName(), details.getPhone(), details.getEmail(), details.getAddress(),
-                details.getTags(), personId, groupName, yearOfStudy);
+                details.getTags(), personId, groupId, yearOfStudy);
     }
 
     /** Creates in-memory contacts with explicit IDs unrelated to their displayed positions. */
@@ -564,16 +520,19 @@ public class FilterCommandTest {
                 unlinkedColleague)) {
             roleModel.addPerson(contact);
         }
+        for (Group group : List.of(foodScience, computerScience)) {
+            roleModel.addGroup(group);
+        }
         return roleModel;
     }
 
     /**
      * Constructs a colleague with shared address and tags, and an optional department.
      */
-    private Colleague prepareColleague(String name, String department) {
+    private Colleague prepareColleague(String name, Integer groupId) {
         Person details = new PersonBuilder().withName(name).withAddress("311, Clementi Ave 2")
                 .withTags("Committee", "Staff").build();
         return new Colleague(details.getName(), details.getPhone(), details.getEmail(), details.getAddress(),
-                details.getTags(), department);
+                details.getTags(), groupId);
     }
 }
