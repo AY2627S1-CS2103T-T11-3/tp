@@ -207,7 +207,7 @@ public class HelpWindowTest {
                     "including gid/ and yos/, may appear at most once", "positive integers from 1 to 2147483647",
                     "leading zeros do not change their value",
                     "replacing the previous filter", "filter gid/ selects an actual numeric Group ID",
-                    "link gid/ selects a displayed group-list index", "Group IDs may change after restarting")) {
+                    "link gid/ selects a displayed group-list index")) {
                 assertTrue(reference.contains(explanation), "Missing filter explanation: " + explanation);
             }
             assertFalse(reference.contains("Omit all fields to show all contacts"));

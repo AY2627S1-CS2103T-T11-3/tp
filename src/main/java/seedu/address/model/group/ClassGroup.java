@@ -12,6 +12,10 @@ public class ClassGroup extends Group {
         super(groupName);
     }
 
+    public ClassGroup(GroupName groupName, Integer groupId) {
+        super(groupName, groupId);
+    }
+
     @Override
     public GroupType getGroupType() {
         return GroupType.CLASS;

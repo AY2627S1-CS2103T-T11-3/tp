@@ -42,7 +42,9 @@ public class EditGroupCommand extends Command {
             throw new CommandException(MESSAGE_INVALID_GROUP_INDEX);
         }
         Group target = groups.get(index.getZeroBased());
-        Group edited = target instanceof ClassGroup ? new ClassGroup(newName) : new DepartmentGroup(newName);
+        Group edited = target instanceof ClassGroup
+                ? new ClassGroup(newName, target.getId().getRawId())
+                : new DepartmentGroup(newName, target.getId().getRawId());
         model.setGroup(target, edited);
         return new CommandResult(String.format(MESSAGE_SUCCESS, newName));
     }

@@ -6,10 +6,12 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_GROUP_TYPE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddGroupCommand;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.group.GroupType;
 import seedu.address.testutil.GroupBuilder;
 
@@ -19,10 +21,15 @@ public class AddGroupCommandParserTest {
     private final String nonEmptyGroupName = "Math";
     private final String nonEmptyGroupType = "class";
 
+    @BeforeEach
+    public void resetGroupId() {
+        GroupId.setNextId(0);
+    }
+
     @Test
     public void parse_allFieldsPresent_success() {
         String userInput = nonEmptyGroupName + " " + PREFIX_GROUP_TYPE + nonEmptyGroupType;
-        Group group = new GroupBuilder().withName(nonEmptyGroupName)
+        Group group = new GroupBuilder().withGroupId(1).withName(nonEmptyGroupName)
                 .withType(GroupType.valueOf(nonEmptyGroupType.toUpperCase())).build();
         AddGroupCommand expectedCommand = new AddGroupCommand(group);
         assertParseSuccess(parser, userInput, expectedCommand);
@@ -31,7 +38,7 @@ public class AddGroupCommandParserTest {
     @Test
     public void parse_departmentGroup_success() {
         String userInput = nonEmptyGroupName + " " + PREFIX_GROUP_TYPE + "department";
-        Group group = new GroupBuilder().withName(nonEmptyGroupName)
+        Group group = new GroupBuilder().withGroupId(1).withName(nonEmptyGroupName)
                 .withType(GroupType.DEPARTMENT).build();
         AddGroupCommand expectedCommand = new AddGroupCommand(group);
         assertParseSuccess(parser, userInput, expectedCommand);

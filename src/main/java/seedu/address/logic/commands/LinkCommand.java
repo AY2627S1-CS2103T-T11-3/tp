@@ -16,7 +16,7 @@ import seedu.address.model.person.Student;
 
 /** Links contacts selected from the currently displayed list. */
 public class LinkCommand extends Command {
-    public static final String COMMAND_WORD = "link-guardian";
+    public static final String COMMAND_WORD = "linkguardian";
     public static final String MESSAGE_USAGE =
             COMMAND_WORD + ": Links a guardian to a student using their "
                     + "indices in the displayed contact list.\n"

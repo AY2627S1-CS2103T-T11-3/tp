@@ -11,6 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.group.GroupType;
 import seedu.address.model.person.Colleague;
 import seedu.address.model.person.Person;
@@ -47,10 +48,11 @@ public class GroupListPanel extends UiPart<Region> {
                 return;
             }
 
+            GroupId groupId = group.getId();
             String groupName = group.getGroupName().groupName;
             String type = group.getGroupType().name().toLowerCase(Locale.ROOT);
             String members = persons.stream()
-                    .filter(person -> groupName.equals(person.getGroupId())
+                    .filter(person -> groupId.equals(person.getGroupId())
                             && belongsToGroupType(person, group.getGroupType()))
                     .map(person -> person.getName().fullName)
                     .sorted(String.CASE_INSENSITIVE_ORDER)

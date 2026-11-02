@@ -133,7 +133,7 @@
                 </VBox>
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
-                  <TextArea text="filter [n/NAME] [ct/CONTACT_TYPE] [d/DEPARTMENT] [a/ADDRESS] [id/PERSON_ID]... [gid/GROUP_ID] [yos/YEAR_OF_STUDY] [t/TAG]..."
+                  <TextArea text="filter [n/NAME] [ct/CONTACT_TYPE] [a/ADDRESS] [id/PERSON_ID]... [gid/GROUP_ID] [yos/YEAR_OF_STUDY] [t/TAG]..."
                             editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
                 <Label text="Optional fields" styleClass="help-section-title" />
@@ -143,25 +143,23 @@
                   <Label text="Name; case-insensitive substring matching." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.columnIndex="1" />
                   <Label text="ct/CONTACT_TYPE" styleClass="help-field-name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
                   <Label text="student, guardian or colleague, or an unambiguous prefix such as stu; case-insensitive." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-                  <Label text="d/DEPARTMENT" styleClass="help-field-name" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                  <Label text="Case-insensitive substring of a colleague's department; other contacts do not match." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-                  <Label text="a/ADDRESS" styleClass="help-field-name" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-                  <Label text="Address; case-insensitive substring matching." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-                  <Label text="id/PERSON_ID" styleClass="help-field-name" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-                  <Label text="Exact numeric Person ID, not a displayed contact-list index. Repeat id/ to match any supplied ID (OR); numeric duplicates are ignored." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-                  <Label text="gid/GROUP_ID" styleClass="help-field-name" GridPane.rowIndex="5" GridPane.columnIndex="0" />
-                  <Label text="Exact numeric Group ID, not its position in the Groups panel. Only members of that group match." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-                  <Label text="yos/YEAR_OF_STUDY" styleClass="help-field-name" GridPane.rowIndex="6" GridPane.columnIndex="0" />
-                  <Label text="Exact numeric year of study; only students with a recorded year match. Other contacts do not match." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-                  <Label text="t/TAG" styleClass="help-field-name" GridPane.rowIndex="7" GridPane.columnIndex="0" />
-                  <Label text="Tag; exact, case-sensitive matching. Repeat to require every supplied tag (AND)." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="7" GridPane.columnIndex="1" />
+                  <Label text="a/ADDRESS" styleClass="help-field-name" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                  <Label text="Address; case-insensitive substring matching." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                  <Label text="id/PERSON_ID" styleClass="help-field-name" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                  <Label text="Exact numeric Person ID, not a displayed contact-list index. Repeat id/ to match any supplied ID (OR); numeric duplicates are ignored." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                  <Label text="gid/GROUP_ID" styleClass="help-field-name" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                  <Label text="Exact numeric Group ID, not its position in the Groups panel. Only members of that group match." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+                  <Label text="yos/YEAR_OF_STUDY" styleClass="help-field-name" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                  <Label text="Exact numeric year of study; only students with a recorded year match. Other contacts do not match." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+                  <Label text="t/TAG" styleClass="help-field-name" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+                  <Label text="Tag; exact, case-sensitive matching. Repeat to require every supplied tag (AND)." wrapText="true" minWidth="0" maxWidth="Infinity" GridPane.rowIndex="6" GridPane.columnIndex="1" />
                 </GridPane>
                 <Label text="Provide at least one criterion. Different criteria combine using AND. Repeated id/ values are alternatives (OR), while repeated t/ values must all match (AND). Each filter searches all contacts, replacing the previous filter."
                        wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
 
                 <Label text="Only id/ and t/ may repeat; each other prefix, including gid/ and yos/, may appear at most once. Supplied values must not be blank. Text phrases match contiguous substrings; tags match the whole value." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
-                <Label text="Numeric values must be positive integers from 1 to 2147483647; leading zeros do not change their value. Unknown IDs or criteria with no matches show zero contacts." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
-                <Label text="filter gid/ selects an actual numeric Group ID; link gid/ selects a displayed group-list index. Group IDs may change after restarting the application." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
+                <Label text="Numeric values must be positive integers from 1 to 2147483647; leading zeros do not change their value. Unknown Person IDs contribute no matches; other supplied Person IDs can still match. An unknown Group ID matches no contacts." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
+                <Label text="filter gid/ selects an actual numeric Group ID; link gid/ selects a displayed group-list index." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-note" />
 
                 <VBox spacing="8">
                   <Label text="Examples: use your contacts' and groups' actual IDs." wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-section-title" />
@@ -295,12 +293,12 @@
               <VBox spacing="14" styleClass="command-entry">
                 <padding><Insets top="20" right="20" bottom="20" left="20" /></padding>
                 <VBox spacing="5">
-                  <Label text="link-guardian" styleClass="help-command-name" />
+                  <Label text="linkguardian" styleClass="help-command-name" />
                   <Label text="Links a guardian to a student using displayed contact-list indices." wrapText="true" styleClass="help-description" />
                 </VBox>
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
-                  <TextArea text="link-guardian s/STUDENT_INDEX g/GUARDIAN_INDEX"
+                  <TextArea text="linkguardian s/STUDENT_INDEX g/GUARDIAN_INDEX"
                             editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
                 <Label text="Required fields" styleClass="help-section-title" />
@@ -330,7 +328,7 @@
 
                 <VBox spacing="8">
                   <Label text="Format" styleClass="help-section-title" />
-                  <TextArea text="edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]..."
+                  <TextArea text="edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [yos/YEAR_OF_STUDY] [t/TAG]..."
                             editable="false" wrapText="true" minWidth="0" maxWidth="Infinity" styleClass="help-syntax" />
                 </VBox>
 
@@ -392,7 +390,7 @@
                   </GridPane>
                 </VBox>
 
-                <Label text="Provide at least one field. Use each non-tag prefix once. Editing resets the contact list to show all contacts. Contact type, year of study and group membership cannot be edited here."
+                <Label text="Provide at least one field. Use each non-tag prefix once. Editing resets the contact list to show all contacts. Contact type and group membership cannot be edited here."
                        wrapText="true" styleClass="help-note" />
 
                 <VBox spacing="8">

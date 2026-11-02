@@ -14,7 +14,6 @@ public class CliSyntax {
     public static final Prefix PREFIX_STUDENT = new Prefix("s/");
     public static final Prefix PREFIX_GUARDIAN = new Prefix("g/");
     public static final Prefix PREFIX_CONTACT_TYPE = new Prefix("ct/");
-    public static final Prefix PREFIX_DEPARTMENT = new Prefix("d/");
     public static final Prefix PREFIX_GROUP_TYPE = new Prefix("gt/");
     public static final Prefix PREFIX_GROUP_ID = new Prefix("gid/");
     public static final Prefix PREFIX_PERSON_ID = new Prefix("id/");

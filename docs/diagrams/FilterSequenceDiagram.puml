@@ -34,12 +34,13 @@ activate FilterCommandParser
 note right of FilterCommandParser
   Validate arguments and create
   the filter predicate.
+  groupId is Optional.empty() here.
   Criteria and predicate construction
   are omitted.
 end note
 
 create FilterCommand
-FilterCommandParser -> FilterCommand : FilterCommand(predicate)
+FilterCommandParser -> FilterCommand : FilterCommand(predicate, groupId)
 activate FilterCommand
 FilterCommand --> FilterCommandParser
 deactivate FilterCommand

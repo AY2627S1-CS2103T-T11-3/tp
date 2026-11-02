@@ -12,6 +12,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupId;
 import seedu.address.model.person.Guardian;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonId;
@@ -33,12 +34,13 @@ class JsonSerializableAddressBook {
     private final List<List<Integer>> guardianLinks = new ArrayList<>();
 
     private final Integer nextId;
+    private final Integer nextGroupId;
 
     /**
      * Constructs a {@code JsonSerializableAddressBook} with the given persons and groups
      */
     public JsonSerializableAddressBook(List<JsonAdaptedPerson> persons, List<JsonAdaptedGroup> groups) {
-        this(persons, null, groups, 1);
+        this(persons, null, groups, 1, 1);
     }
 
     /**
@@ -49,7 +51,8 @@ class JsonSerializableAddressBook {
             @JsonProperty("persons") List<JsonAdaptedPerson> persons,
             @JsonProperty("guardianLinks") List<List<Integer>> guardianLinks,
             @JsonProperty("groups") List<JsonAdaptedGroup> groups,
-            @JsonProperty("nextId") Integer nextId
+            @JsonProperty("nextId") Integer nextId,
+            @JsonProperty("nextGroupId") Integer nextGroupId
     ) {
         if (persons != null) {
             this.persons.addAll(persons);
@@ -61,6 +64,7 @@ class JsonSerializableAddressBook {
             this.groups.addAll(groups);
         }
         this.nextId = nextId;
+        this.nextGroupId = nextGroupId;
     }
 
     /**
@@ -86,6 +90,8 @@ class JsonSerializableAddressBook {
 
         // PersonId class handles the next ID by itself
         nextId = PersonId.getNextId();
+
+        nextGroupId = GroupId.getNextId();
     }
 
     /**
@@ -97,6 +103,10 @@ class JsonSerializableAddressBook {
         // PersonId class handles the next ID by itself
         if (nextId != null) {
             PersonId.setNextId(nextId);
+        }
+
+        if (nextGroupId != null) {
+            GroupId.setNextId(nextGroupId);
         }
 
         AddressBook addressBook = new AddressBook();

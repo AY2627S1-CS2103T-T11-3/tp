@@ -9,20 +9,25 @@ import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.group.ClassGroup;
+import seedu.address.model.group.Group;
+import seedu.address.model.group.GroupName;
+
 public class StudentTest {
     @Test
     public void equals() {
+        Group group = new ClassGroup(new GroupName("Computer Science"));
         Person alice = new Student(new Name("Alice Pauline"), new Phone("91234567"), new Email("alice@example.com"),
-                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1, "Computer Science", 2016);
+                new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1, group.getId().getRawId(), 2016);
         Person aliceCopy = new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1,
-                "Computer Science", 2016);
+                group.getId().getRawId(), 2016);
         Person aliceNoYearOfStudy = new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1,
-                "Computer Science", null);
+                group.getId().getRawId(), null);
         Person aliceNoYearOfStudyCopy = new Student(new Name("Alice Pauline"), new Phone("91234567"),
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"), new HashSet<>(), 1,
-                "Computer Science", null);
+                group.getId().getRawId(), null);
 
 
         Person bob = new Person(new Name("Bob"), new Phone("99887766"), new Email("bob@example.org"),
