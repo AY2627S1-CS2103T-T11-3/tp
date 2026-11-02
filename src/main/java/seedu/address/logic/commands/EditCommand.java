@@ -108,7 +108,7 @@ public class EditCommand extends Command {
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
         int personId = personToEdit.getId().getRawId();
         GroupId groupId = personToEdit.getGroupId();
-        Integer rawGroupid = groupId == null ? null : groupId.getRawId();
+        Integer rawGroupId = groupId == null ? null : groupId.getRawId();
 
         if (personToEdit instanceof Guardian) {
             return new Guardian(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId);
@@ -116,13 +116,13 @@ public class EditCommand extends Command {
 
         if (personToEdit instanceof Colleague personToEditColleague) {
             return new Colleague(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
-                    personToEditColleague.getGroupId().getRawId());
+                    rawGroupId);
         }
 
         Student student = (Student) personToEdit;
         Integer updatedYearOfStudy = editPersonDescriptor.getYearOfStudy().orElse(student.getYearOfStudy());
         return new Student(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
-                rawGroupid, updatedYearOfStudy);
+                rawGroupId, updatedYearOfStudy);
     }
 
     @Override
