@@ -710,13 +710,47 @@ testers are expected to do more *exploratory* testing.
    1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
-1. _{ more test cases …​ }_
+1. Deleting a person from filtered results
+
+   1. Prerequisites: Add at least two contacts, then run `filter n/Alice` so that the filtered list contains Alice.
+
+   1. Test case: `delete 1`<br>
+      Expected: The first contact in the filtered results is deleted. Any guardian–student relationships involving the deleted contact are also removed.
+
+   1. Run `list`.<br>
+      Expected: The deleted contact no longer appears in the full contact list.
+
+1. Deleting a person with related contacts
+
+   1. Prerequisites: Link a guardian to a student, and note both contacts' indexes.
+
+   1. Test case: `delete <guardian index>`<br>
+      Expected: The guardian is deleted and the guardian–student relationship is removed from the remaining student.
 
 ### Saving data
 
 1. Dealing with missing/corrupted data files
 
-   1. _{Explain how to simulate missing or corrupted data files and state the expected behavior.}_
+   1. Close the application, then rename `data/addressbook.json` to
+      `data/addressbook.json.bak` in the CaNvUS home folder. Relaunch the application.<br>
+      Expected: The application starts with an empty address book and creates or uses a new valid data file after a successful command.
 
-1. _{ more test cases …​ }_
+   1. Close the application and restore the backup file. Make a copy of the file,
+      then replace the contents of `data/addressbook.json` with invalid JSON such as `{invalid`.
+      Relaunch the application.<br>
+      Expected: The application starts with an empty address book. The invalid file remains unchanged until a successful command saves a new address-book state.
+
+   1. Restore the valid backup file and relaunch the application.<br>
+      Expected: The contacts from the valid file are loaded correctly.
+
+1. Verifying automatic saving
+
+   1. Add or edit a contact, then close and relaunch the application.<br>
+      Expected: The newly added or edited contact is still present with the updated details.
+
+   1. Delete a contact or group, then close and relaunch the application.<br>
+      Expected: The deleted item remains deleted after relaunch.
+
+   1. Execute an invalid command, then close and relaunch the application.<br>
+      Expected: The invalid command does not modify the saved data.
 **Value proposition**: CaNvUS keeps a teacher's students, guardians and colleagues in one place, with students grouped by class, guardians linked to their wards and colleagues linked to their departments. Teachers can find the right person quickly and conveniently.
