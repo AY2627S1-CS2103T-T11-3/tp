@@ -14,10 +14,7 @@ Class UserPrefs
 
 Class UniquePersonList
 Class Person
-Class Address
-Class Email
 Class Name
-Class Phone
 Class Tag
 Class PersonId
 Class Integer
@@ -31,7 +28,7 @@ Class "{abstract}\nGroup" as Group
 Class ClassGroup
 Class DepartmentGroup
 Class GroupName
-
+Class GroupId
 
 Class I #FFFFFF
 }
@@ -50,10 +47,7 @@ UserPrefs .up.|> ReadOnlyUserPrefs
 
 AddressBook *--> "1" UniquePersonList
 UniquePersonList --> "~* all" Person
-Person *--> Name
-Person *--> Phone
-Person *--> Email
-Person *--> Address
+Person *--> "1" Name
 Person *--> "*" Tag
 Person "1" *--> "1" PersonId
 
@@ -63,24 +57,31 @@ Colleague --|> Person
 Student *--> "year of study" Integer
 
 Person -[hidden]left-> Group
-Student -[hidden]down-> Guardian
-Student -[hidden]right-> Colleague
-Guardian -[hidden]up-> Colleague
+
+Person -[hidden]right-> Student
+Person -[hidden]right-> Colleague
+Person -[hidden]right-> Guardian
+
+UserPrefs -[hidden]down-> Colleague
+Student -[hidden]up-> Colleague
 
 UniquePersonList -[hidden]right-> I
-
-Name -[hidden]right-> Phone
-Phone -[hidden]right-> Address
-Address -[hidden]right-> Email
 
 AddressBook *--> "1" GroupList
 GroupList --> "~* all" Group
 Group *--> "1" GroupName
 Group --> "*" PersonId
+Group "1" *-right-> "1" GroupId
+
+Person -left-> "1" GroupId
 
 ClassGroup -right-|> Group
 DepartmentGroup -[hidden]up-> ClassGroup
 DepartmentGroup -right-|> Group
 
-ModelManager --> "~* filtered" Person
+ModelManager --> Person : " * filtered"
+
+note bottom of Person
+    Some fields have been omitted to reduce clutter.
+end note
 @enduml
