@@ -41,7 +41,7 @@ public final class GroupId {
     }
 
     /**
-     * Initialises the next ID to assign to a group.
+     * Initializes the next ID to assign to a group.
      *
      * @param nextId the next free ID.
      */

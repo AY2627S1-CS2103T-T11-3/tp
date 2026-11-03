@@ -7,7 +7,7 @@ title: Developer Guide
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Acknowledgements**
+## **Acknowledgments**
 
 * _{List the sources of reused or adapted ideas, code, documentation, and third-party libraries here, with links to the originals.}_
 
@@ -344,17 +344,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | * * | Teacher with many contacts | Edit a contact’s details | I can keep my records accurate when a contact’s information changes |
 | * * | Teacher with many contacts | Search for a contact by name | I can quickly find the contact I am looking for without scrolling through the entire address book |
 | * * | Teacher with many contacts | Filter contacts based on their details, e.g., name, class, relationship, etc. | I can easily search through my list of contacts to find the specific contacts I want. |
-| * * * | Teacher with many students | Assign a student to a class | I can organise students based on the classes I teach |
+| * * * | Teacher with many students | Assign a student to a class | I can organize students based on the classes I teach |
 | * * * | Teacher with many students | Add a student’s guardian’s name and relationship to student | I can easily find the contact information of a student’s guardian |
 | * * | Teacher with many students | Mark a guardian as the primary contact | I know which guardian I should contact first when necessary |
 | | Teacher who wants to tailor my teaching to each student | Notes for each student | I can more easily keep track of who needs more attention/anything to follow up |
-| * * * | Teacher who teaches multiple classes | Create a class | I can organise my students according to the classes I teach |
+| * * * | Teacher who teaches multiple classes | Create a class | I can organize my students according to the classes I teach |
 | * * * | Teacher who teaches new classes every year | Delete a class | Remove classes that are wrong or no longer needed |
 | * | Teacher who teaches multiple classes | Import students' contact details based on nominal roll | I can easily add contacts of students when I start teaching a new class |
 | | Teacher whose classes change regularly | Timed batch delete function at the end of every semester | I can easily remove contacts of students who are no longer in my classes |
 | * * * | Teacher with many students | Assign a guardian’s student to the guardian | I can easily find the contact information of a guardian’s ward. |
 | * * | Teacher with multiple colleagues | Assign a colleague to a department | Tell which department my colleague belongs to |
-| * * * | Teacher with multiple colleagues | Create a department | I can organise my colleagues according to the classes I teach |
+| * * * | Teacher with multiple colleagues | Create a department | I can organize my colleagues according to the classes I teach |
 | * * * | Teacher with multiple colleagues | Delete a department | I can remove classes that are wrong or no longer needed |
 | | Teacher with multiple colleagues | Import teachers’ contact details based on selected department | I can easily add contacts of colleagues when I join a new department |
 | * * * | Teacher who uses the app daily | Have my data saved automatically after every change | I can avoid losing my records once i close my app |
