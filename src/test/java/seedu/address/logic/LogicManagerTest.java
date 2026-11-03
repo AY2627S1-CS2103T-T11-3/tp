@@ -115,8 +115,8 @@ public class LogicManagerTest {
         model.addPerson(bobGuardian);
         assertEquals("", logic.getGuardianNames(aliceStudent));
 
-        logic.execute("link-guardian s/1 g/2");
-        logic.execute("link-guardian s/1 g/3");
+        logic.execute("linkguardian s/1 g/2");
+        logic.execute("linkguardian s/1 g/3");
         assertEquals(bobGuardian.getName().fullName + ", " + carlGuardian.getName().fullName,
                 logic.getGuardianNames(aliceStudent));
 

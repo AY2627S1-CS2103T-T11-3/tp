@@ -24,6 +24,7 @@
         <Label fx:id="role" styleClass="role_badge" text="\$role" />
       </HBox>
       <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label fx:id="personId" styleClass="person-id" />
         <Label fx:id="yearOfStudy" styleClass="contact-meta" text="\$yearOfStudy" />
       </HBox>
       <GridPane hgap="24" vgap="8">
