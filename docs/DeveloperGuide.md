@@ -303,8 +303,6 @@ The following activity diagram summarizes what happens when a user executes a ne
   * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
   * Cons: We must ensure that the implementation of each individual command is correct.
 
-_{more aspects and alternatives to be added}_
-
 ### \[Proposed\] Data archiving
 
 _{Explain here how the data archiving feature will be implemented}_
@@ -366,8 +364,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | *        | Teacher who is a first time user | See a help page | I can know how to use the app                                                                     |
 | *        | Teacher who is an experienced user | Create new keybinds | I can more efficiently use this app in my workflow                                                |
 | *        | Teacher | View a summary dashboard of total enrolled students and class counts | I can quickly verify overall roster completeness at a glance                                      |
-
-*{More to be added}*
 
 ### Use cases
 
