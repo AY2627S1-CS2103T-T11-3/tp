@@ -39,7 +39,7 @@ public final class PersonId {
     }
 
     /**
-     * Initialises the next ID to assign to a person.
+     * Initializes the next ID to assign to a person.
      *
      * @param nextId the next free ID.
      */

@@ -46,7 +46,7 @@ public class GuardianLinkTest {
         parser.parseCommand("linkguardian s/1 g/2").execute(model);
         assertEquals(Map.of(BOB_GUARDIAN, Set.of(aliceStudent)), model.getAddressBook().getGuardianStudents());
 
-        // Serialising and deserialising should preserve both contacts and their relationship.
+        // Serializing and deserializing should preserve both contacts and their relationship.
         String json = JsonUtil.toJsonString(new JsonSerializableAddressBook(model.getAddressBook()));
         AddressBook restored = JsonUtil.fromJsonString(json, JsonSerializableAddressBook.class).toModelType();
         assertEquals(model.getAddressBook(), new ModelManager(restored, new UserPrefs()).getAddressBook());
