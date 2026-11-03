@@ -14,6 +14,6 @@ CaNvUS is a **desktop application for managing contacts, optimized for use throu
 * If you are interested in developing CaNvUS, the [**Developer Guide**](DeveloperGuide.html) is a good place to start.
 
 
-**Acknowledgements**
+**Acknowledgments**
 
 * Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5)

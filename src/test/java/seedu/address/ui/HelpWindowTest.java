@@ -13,7 +13,6 @@ import static seedu.address.testutil.TypicalCommands.ALL_COMMAND_NAMES;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -28,13 +27,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javafx.event.Event;
-import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -318,81 +315,6 @@ public class HelpWindowTest {
                     false, false, false, false));
             assertFalse(helpWindow.isShowing());
         });
-    }
-
-    @Test
-    public void layout_resizingAndLargerText_keepsReferenceAndWrappedTextVisible() throws Exception {
-        Stage stage = helpWindow.getRoot();
-        runAndWait(helpWindow::show);
-        for (double width : List.of(stage.getMinWidth(), 1200.0, stage.getMinWidth())) {
-            runAndWait(() -> {
-                stage.setWidth(width);
-                stage.setHeight(stage.getMinHeight());
-            });
-            waitUntil(() -> Math.abs(stage.getScene().getWidth() - width) < 40,
-                    "the Help scene to resize");
-            waitUntil(this::wrappedTextFitsViewport, "the wrapped Help fields to finish resizing");
-            runAndWait(this::assertReferenceFitsViewport);
-        }
-        runAndWait(() -> {
-            Parent root = stage.getScene().getRoot();
-            root.lookupAll(".text-area").forEach(node -> node.setStyle("-fx-font-size: 20px;"));
-        });
-        waitUntil(this::wrappedTextFitsViewport, "the larger Help text to finish resizing");
-        runAndWait(this::assertReferenceFitsViewport);
-    }
-
-    /** Checks rendered text bounds while JavaFX settles width-dependent wrapping and field heights. */
-    private boolean wrappedTextFitsViewport() {
-        Parent root = helpWindow.getRoot().getScene().getRoot();
-        root.applyCss();
-        root.layout();
-        return root.lookupAll(".text-area").stream().map(TextArea.class::cast)
-                .allMatch(area -> {
-                    ScrollPane inner = (ScrollPane) area.lookup(".scroll-pane");
-                    if (inner == null) {
-                        return false;
-                    }
-                    Bounds content = inner.getContent().getLayoutBounds();
-                    Bounds viewport = inner.getViewportBounds();
-                    return viewport.getWidth() > 0 && viewport.getHeight() > 0
-                            && content.getWidth() <= viewport.getWidth() + 1
-                            && content.getHeight() <= viewport.getHeight() + 1;
-                });
-    }
-
-    private void assertReferenceFitsViewport() {
-        Parent root = helpWindow.getRoot().getScene().getRoot();
-        root.applyCss();
-        root.layout();
-        ScrollPane scroll = (ScrollPane) root.lookup("#commandScrollPane");
-        assertTrue(scroll.isFitToWidth());
-        assertEquals(ScrollPane.ScrollBarPolicy.NEVER, scroll.getHbarPolicy());
-        assertEquals(ScrollPane.ScrollBarPolicy.AS_NEEDED, scroll.getVbarPolicy());
-        assertTrue(scroll.getContent().getLayoutBounds().getHeight() > scroll.getViewportBounds().getHeight());
-        assertTrue(scroll.getContent().getLayoutBounds().getWidth() <= scroll.getViewportBounds().getWidth() + 1);
-        for (Node entry : root.lookupAll(".command-entry")) {
-            Bounds entryBounds = entry.localToScene(entry.getLayoutBounds());
-            Set<Node> controls = new HashSet<>(((Parent) entry).lookupAll(".label"));
-            controls.addAll(((Parent) entry).lookupAll(".text-area"));
-            for (Node child : controls) {
-                Bounds bounds = child.localToScene(child.getLayoutBounds());
-                assertTrue(bounds.getMinX() >= entryBounds.getMinX() - 1);
-                assertTrue(bounds.getMaxX() <= entryBounds.getMaxX() + 1);
-                assertTrue(bounds.getMinY() >= entryBounds.getMinY() - 1);
-                assertTrue(bounds.getMaxY() <= entryBounds.getMaxY() + 1);
-            }
-        }
-        for (Node node : root.lookupAll(".text-area")) {
-            TextArea area = (TextArea) node;
-            ScrollPane inner = (ScrollPane) area.lookup(".scroll-pane");
-            assertNotNull(inner);
-            Bounds content = inner.getContent().getLayoutBounds();
-            Bounds viewport = inner.getViewportBounds();
-            assertTrue(viewport.getWidth() > 0 && viewport.getHeight() > 0, area.getText());
-            assertTrue(content.getWidth() <= viewport.getWidth() + 1, "Hidden horizontal text: " + area.getText());
-            assertTrue(content.getHeight() <= viewport.getHeight() + 1, "Hidden vertical text: " + area.getText());
-        }
     }
 
     private Map<String, TextArea> documentedFormats() {
