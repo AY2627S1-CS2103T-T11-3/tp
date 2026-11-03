@@ -134,7 +134,7 @@ public class GuardianLinkTest {
     @Test
     public void editLinkedStudent_preservesGuardianRelationship() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
-                ALICE.getTags(), null);
+                ALICE.getTags(), 2, null, null);
 
         // Set up a student and Guardian in the displayed order used by s/1 g/2.
         AddressBook addressBook = new AddressBook();
