@@ -43,7 +43,7 @@ public class GuardianLinkTest {
         book.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
         ModelManager model = new ModelManager(book, new UserPrefs());
         AddressBookParser parser = new AddressBookParser();
-        parser.parseCommand("link-guardian s/1 g/2").execute(model);
+        parser.parseCommand("linkguardian s/1 g/2").execute(model);
         assertEquals(Map.of(BOB_GUARDIAN, Set.of(aliceStudent)), model.getAddressBook().getGuardianStudents());
 
         // Serialising and deserialising should preserve both contacts and their relationship.
@@ -74,17 +74,17 @@ public class GuardianLinkTest {
 
         // These malformed arguments should fail during parsing.
         for (String args : List.of("s/1", "s/0 g/2", "s/1 g/2 g/1", "s/x g/2")) {
-            assertThrows(ParseException.class, () -> parser.parseCommand("link-guardian " + args));
+            assertThrows(ParseException.class, () -> parser.parseCommand("linkguardian " + args));
         }
         // These validly shaped commands should fail during execution.
         for (String args : List.of("s/3 g/2", "s/1 g/3", "s/1 g/1")) {
             assertThrows(CommandException.class, () ->
-                    parser.parseCommand("link-guardian " + args).execute(model));
+                    parser.parseCommand("linkguardian " + args).execute(model));
         }
         // Prefix order is flexible, but repeating the same relationship is rejected.
-        parser.parseCommand("link-guardian g/2 s/1").execute(model);
+        parser.parseCommand("linkguardian g/2 s/1").execute(model);
         assertThrows(CommandException.class, () ->
-                parser.parseCommand("link-guardian s/1 g/2").execute(model));
+                parser.parseCommand("linkguardian s/1 g/2").execute(model));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class GuardianLinkTest {
         AddressBookParser parser = new AddressBookParser();
 
         // The command uses displayed-list indices, not contact names.
-        parser.parseCommand("link-guardian s/1 g/2")
+        parser.parseCommand("linkguardian s/1 g/2")
                 .execute(model);
 
         assertEquals(
@@ -128,20 +128,20 @@ public class GuardianLinkTest {
         AddressBookParser parser = new AddressBookParser();
 
         assertThrows(CommandException.class, () ->
-                parser.parseCommand("link-guardian s/1 g/2").execute(model));
+                parser.parseCommand("linkguardian s/1 g/2").execute(model));
     }
 
     @Test
     public void editLinkedStudent_preservesGuardianRelationship() throws Exception {
         Student aliceStudent = new Student(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(), ALICE.getAddress(),
-                ALICE.getTags(), null);
+                ALICE.getTags(), 2, null, null);
 
         // Set up a student and Guardian in the displayed order used by s/1 g/2.
         AddressBook addressBook = new AddressBook();
         addressBook.setPersons(List.of(aliceStudent, BOB_GUARDIAN));
         ModelManager model = new ModelManager(addressBook, new UserPrefs());
         AddressBookParser parser = new AddressBookParser();
-        parser.parseCommand("link-guardian s/1 g/2").execute(model);
+        parser.parseCommand("linkguardian s/1 g/2").execute(model);
 
         // Editing replaces the student object, so the relationship must point to the replacement.
         Person editedStudent = new PersonBuilder(aliceStudent)
