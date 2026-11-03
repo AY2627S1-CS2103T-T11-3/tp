@@ -117,8 +117,8 @@ How the parsing works:
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
-<img src="images/ModelClassDiagram.png" width="450" />
-
+<img src="images/ModelClassDiagram.png" width="600" />
+Some fields have been omitted to reduce clutter (optional contact details for Person).
 
 The `Model` component,
 
