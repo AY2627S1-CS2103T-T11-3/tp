@@ -97,6 +97,8 @@ Format: `add n/NAME [p/PHONE] [e/EMAIL] [a/ADDRESS] [ct/CONTACT_TYPE] [yos/YEAR_
 
 Note that only the format of emails is checked. CaNvUS does not check if the emails are valid.
 
+Year of study only appears in the contacts display if one was added/
+
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A person can have any number of tags, including zero.
 </div>
@@ -123,11 +125,12 @@ The `list` command also clears any active contact filter and displays all contac
 
 Edits an existing person in the address book.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [yos/YEAR_OF_STUDY] [t/TAG]…​`
 
 * Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
+* Year of study can only be applied to students.
 * When editing tags, all of the person's existing tags are removed; adding tags is not cumulative.
 * To remove all of a person's tags, enter `t/` without a tag after it.
 * After editing, the displayed contact list is reset to show all contacts.
@@ -302,6 +305,9 @@ _Details coming soon ..._
 
 **Q**: How do I transfer my data to another computer?<br>
 **A**: Install the app on the other computer and overwrite the data file it creates with the data file from your previous CaNvUS home folder.
+
+**Q**: Why don't I see a year of study for my students?<br>
+**A**: The year of study only appears if you have assigned one to the student.
 
 --------------------------------------------------------------------------------------------------------------------
 
