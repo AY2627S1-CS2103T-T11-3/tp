@@ -459,11 +459,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 2a1. CaNvUS shows an error message.
   
     Use case ends.
-  
-* 2b. Teacher attempts to link a colleague to a class.
-  * 2b1. CaNvUS displays "Colleagues can only be linked to department groups."
-    
-  * Use case ends.
 
 
 **Use case: UC6 - Link colleague to department**
@@ -481,6 +476,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   * 2a1. CaNvUS shows an error message.
     Use case ends.
 
+* 2b. Teacher attempts to link a colleague to a class.
+  * 2b1. CaNvUS displays "Cannot link colleague to class."
+
+    Use case ends.
+
 **Use case: UC7 -  List all contacts**
 
 **MSS**
@@ -494,7 +494,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 2a. There are no contacts stored.
-  * 2a1. CaNvUS informs the teacher that there are no contacts stored.
+  * 2a1. CaNvUS displays an empty contact list and the normal `Listed all persons.` success message.
     Use case ends.
 
 **Use case: UC8 -  Filter contacts**
@@ -516,7 +516,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 * 2b. No criteria was provided.
-  * 2b1. CaNvUS <u>lists all contacts (UC6)</u>.
+  * 2b1. CaNvUS displays an invalid-format error. The teacher can use `list` to display all contacts.
 
     Use case ends.
 
