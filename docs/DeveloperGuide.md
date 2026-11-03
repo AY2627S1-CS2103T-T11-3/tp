@@ -185,6 +185,10 @@ Address matching checks for a non-null `Person#getAddress()` before reading its 
 
 Name searches use `filter n/NAME`. The full supplied phrase is preserved and matched as a case-insensitive, contiguous substring, and can be combined with the other filter criteria.
 
+#### Design choices
+
+Substring matching lets users search names and addresses without knowing the full text. Exact tags and numeric IDs avoid matching similarly named tags or unrelated contacts. Different criteria use `AND` to narrow results; repeated IDs use `OR` to select several contacts, while repeated tags require all labels. IDs are independent of displayed positions, which can change after filtering.
+
 #### Known limitations
 
 * **Long whitespace sequences:** Unusually long runs of whitespace within filter
