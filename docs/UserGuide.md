@@ -337,10 +337,10 @@ Action | Format, Examples
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Delete group** | `deletegroup INDEX`<br> e.g., `deletegroup 1`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
+**Edit group** | `editgroup GROUP_INDEX NEW_GROUP_NAME` <br> e.g., `editgroup 1 CS2103T T02`
 **Filter** | `filter [n/NAME] [ct/CONTACT_TYPE] [a/ADDRESS] [id/PERSON_ID]... [gid/GROUP_ID] [yos/YEAR_OF_STUDY] [t/TAG]...`<br> e.g., `filter id/12 id/13 yos/2`
 **List** | `list`
 **Help** | `help`
 **Link contact to group** | `link pid/PERSON_INDEX gid/GROUP_INDEX`<br> e.g., `link pid/1 gid/2`
 **Link guardian to student** | `linkguardian s/STUDENT_INDEX g/GUARDIAN_INDEX`<br> e.g., `linkguardian s/1 g/2`
-**List** | `list`
 **Exit** | `exit`
