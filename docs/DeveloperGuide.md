@@ -7,7 +7,7 @@ title: Developer Guide
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Acknowledgements**
+## **Acknowledgments**
 
 This project was adapted from [**AB3**](https://se-education.org/addressbook-level3/DeveloperGuide.html) and made use of the following external tools and libraries during development:
 
