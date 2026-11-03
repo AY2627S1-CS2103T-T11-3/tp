@@ -98,7 +98,8 @@ public class EditCommand extends Command {
      * Creates and returns a {@code Person} with the details of {@code personToEdit}
      * edited with {@code editPersonDescriptor}.
      */
-    private static Person createEditedPerson(Person personToEdit, EditPersonDescriptor editPersonDescriptor) {
+    private static Person createEditedPerson(Person personToEdit, EditPersonDescriptor editPersonDescriptor)
+            throws CommandException {
         assert personToEdit != null;
 
         Name updatedName = editPersonDescriptor.getName().orElse(personToEdit.getName());
@@ -111,10 +112,16 @@ public class EditCommand extends Command {
         Integer rawGroupId = groupId == null ? null : groupId.getRawId();
 
         if (personToEdit instanceof Guardian) {
+            if (editPersonDescriptor.getYearOfStudy().isPresent()) {
+                throw new CommandException("Guardians cannot have a year of study.");
+            }
             return new Guardian(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId);
         }
 
-        if (personToEdit instanceof Colleague personToEditColleague) {
+        if (personToEdit instanceof Colleague) {
+            if (editPersonDescriptor.getYearOfStudy().isPresent()) {
+                throw new CommandException("Colleagues cannot have a year of study.");
+            }
             return new Colleague(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags, personId,
                     rawGroupId);
         }
