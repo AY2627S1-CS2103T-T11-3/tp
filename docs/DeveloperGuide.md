@@ -581,7 +581,119 @@ testers are expected to do more *exploratory* testing.
    1. Relaunch the app by double-clicking the JAR file.<br>
        Expected: The most recent window size and location are retained.
 
-1. _{ more test cases …​ }_
+1. Exit and relaunch
+
+   1. Test case: `exit`<br>
+      Expected: The application closes without an error.
+
+   1. Relaunch the JAR file.<br>
+      Expected: The application starts normally and previously saved contacts are loaded.
+
+### Managing persons
+
+1. Adding a person
+
+   1. Test case: `add n/Alice Tan p/91234567 e/alice@example.com a/1 Clementi Road ct/student yos/2 t/Year2`<br>
+      Expected: Alice is added with the supplied details and appears in the person list.
+
+   1. Test case: `add n/Betsy Crowe e/betsy@example.com ct/colleague t/Math`<br>
+      Expected: Betsy is added as a colleague with the supplied tag.
+
+   1. Test case: `add n/Guardian One ct/guardian`<br>
+      Expected: A guardian is added. No year of study is shown.
+
+   1. Other invalid commands to try: `add`, `add n/`, `add n/Alice p/ab12`,
+      `add n/Alice e/not-an-email`, `add n/Alice ct/unknown`, and
+      `add n/Alice ct/guardian yos/1`.<br>
+      Expected: No contact is added and an error message is shown.
+
+1. Editing a person
+
+   1. Test case: `edit 1 p/99887766 e/alice.tan@example.com`<br>
+      Expected: The first displayed contact is updated and the list shows the new phone number and email.
+
+   1. Test case: `edit 1 t/`<br>
+      Expected: All tags are removed from the first displayed contact.
+
+   1. Other incorrect commands to try: `edit`, `edit 0 n/Changed`, `edit 1`, and
+      `edit 99 n/Changed`.<br>
+      Expected: No contact is modified and an error message is shown.
+
+1. Filtering persons
+
+   1. Test case: `filter n/ali`<br>
+      Expected: Only contacts whose names contain `ali` are shown, ignoring case.
+
+   1. Test case: `filter ct/student yos/2`<br>
+      Expected: Only year-2 student contacts are shown.
+
+   1. Test case: `filter id/1 id/2`<br>
+      Expected: Contacts with either permanent Person ID 1 or 2 are shown.
+
+   1. Test case: `filter t/Year2 t/Math`<br>
+      Expected: Only contacts having both exact, case-sensitive tags are shown.
+
+   1. Test case: `filter`<br>
+      Expected: An error message is shown and the current list is unchanged. Run `list` to clear the filter.
+
+### Managing groups and relationships
+
+1. Creating and editing groups
+
+   1. Test case: `addgroup CS2103T T01 gt/class` and `addgroup Mathematics gt/department`<br>
+      Expected: A class and a department are added to the Groups panel.
+
+   1. Test case: `editgroup 1 CS2103T T02`<br>
+      Expected: The first group is renamed while retaining its group type.
+
+   1. Other incorrect commands to try: `addgroup`, `addgroup Test gt/unknown`,
+      and `editgroup 0 New Name`.<br>
+      Expected: No group is added or modified and an error message is shown.
+
+1. Linking a person to a group
+
+   1. Prerequisites: Add a student, a colleague, a class, and a department. Note their displayed person and group indexes.
+
+   1. Test case: `link pid/1 gid/1` for the student and class.<br>
+      Expected: The student is assigned to the class and the relationship is shown.
+
+   1. Test case: `link pid/2 gid/2` for the colleague and department.<br>
+      Expected: The colleague is assigned to the department.
+
+   1. Try linking a guardian to a group or a student to a department.<br>
+      Expected: The command is rejected and existing assignments are unchanged.
+
+1. Linking a guardian to a student
+
+   1. Prerequisites: Add one student and one guardian and note their indexes in the current list.
+
+   1. Test case: `linkguardian s/1 g/2`<br>
+      Expected: The guardian–student relationship is shown on the relevant contact cards.
+
+   1. Repeat the command, reverse the indexes, or use two students.<br>
+      Expected: The invalid or duplicate relationship is rejected.
+
+1. Deleting a group
+
+   1. Prerequisites: Create a group and link at least one contact to it.
+
+   1. Test case: `deletegroup 1`<br>
+      Expected: The group is deleted, its contacts remain, and their group assignments are cleared.
+
+   1. Test case: `deletegroup 0` or `deletegroup 99`<br>
+      Expected: No group is deleted and an error message is shown.
+
+### Clearing data
+
+1. Clearing the address book
+
+   1. Prerequisites: Ensure the address book contains contacts, groups, and at least one relationship.
+
+   1. Test case: `clear`<br>
+      Expected: All contacts, groups, and guardian–student relationships are removed.
+
+   1. Relaunch the application.<br>
+      Expected: The cleared state is retained; the lists remain empty.
 
 ### Deleting a person
 
