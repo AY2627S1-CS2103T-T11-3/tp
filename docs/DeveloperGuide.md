@@ -11,8 +11,8 @@ title: Developer Guide
 
 This project was adapted from [**AB3**](https://se-education.org/addressbook-level3/DeveloperGuide.html) and made use of the following external tools and libraries during development:
 
-- * Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5)
-- * Generative AI tools: OpenAI Codex was used as a development assistant to support code generation, boilerplate implementation, debugging, documentation, and general software engineering tasks. All generated suggestions were reviewed, adapted, and validated by the project team.
+- Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5)
+- Generative AI tools: OpenAI Codex was used as a development assistant to support code generation, boilerplate implementation, debugging, documentation, and general software engineering tasks. All generated suggestions were reviewed, adapted, and validated by the project team.
 
 --------------------------------------------------------------------------------------------------------------------
 
