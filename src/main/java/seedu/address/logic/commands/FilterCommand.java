@@ -86,7 +86,7 @@ public class FilterCommand extends Command {
         return predicate.and(person -> group.map(matchingGroup -> matchesGroup(person, matchingGroup)).orElse(false));
     }
 
-    /** Matches the stored group name and contact type without relying on the group's legacy member ID set. */
+    /** Returns true if the assigned group ID matches and the contact type is compatible with the group type. */
     private boolean matchesGroup(Person person, Group group) {
         if (!group.getId().equals(person.getGroupId())) {
             return false;
