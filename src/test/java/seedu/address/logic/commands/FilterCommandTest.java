@@ -69,9 +69,12 @@ public class FilterCommandTest {
         Model groupModel = prepareGroupModel();
         List<Person> contacts = groupModel.getAddressBook().getPersonList();
         Group schoolClass = groupModel.getGroupList().get(0);
+        Group department = groupModel.getGroupList().get(1);
 
         assertFilterSuccess(prepareGroupCommand(schoolClass.getId().getRawId()), groupModel,
-                List.of(contacts.get(0)));
+                List.of(contacts.get(0), contacts.get(1)));
+        assertFilterSuccess(prepareGroupCommand(department.getId().getRawId()), groupModel,
+                List.of(contacts.get(2)));
     }
 
     /**
@@ -87,7 +90,7 @@ public class FilterCommandTest {
         String departmentFilter = "filter gid/" + groupModel.getGroupList().get(1).getId().getRawId();
 
         assertParsedFilterSuccess(classFilter + " id/128 id/256", groupModel,
-                List.of(contacts.get(0)));
+                List.of(contacts.get(0), contacts.get(1)));
         assertParsedFilterSuccess(classFilter + " id/128 id/768", groupModel, List.of(contacts.get(0)));
         assertParsedFilterSuccess(classFilter + " yos/2", groupModel, List.of(contacts.get(0)));
 
@@ -101,6 +104,9 @@ public class FilterCommandTest {
             assertParsedFilterSuccess(input, groupModel, List.of());
         }
 
+        assertParsedFilterSuccess(departmentFilter
+                + " id/4096 n/col ct/COL a/clementi t/Staff t/Committee", groupModel,
+                List.of(contacts.get(2)));
         assertParsedFilterSuccess(departmentFilter + " yos/2", groupModel, List.of());
     }
 
@@ -117,7 +123,7 @@ public class FilterCommandTest {
         Group otherClass = groupModel.getGroupList().get(2);
         FilterCommand command = (FilterCommand) new AddressBookParser().parseCommand(
                 "filter gid/" + schoolClass.getId().getRawId());
-        assertFilterSuccess(command, groupModel, List.of(contacts.get(0)));
+        assertFilterSuccess(command, groupModel, List.of(contacts.get(0), contacts.get(1)));
 
         // Show all contacts so the ungrouped contact can be selected by the link command's displayed index.
         prepareCommand(Optional.empty(), Set.of()).execute(groupModel);
@@ -125,12 +131,12 @@ public class FilterCommandTest {
         Index classIndex = Index.fromZeroBased(groupModel.getGroupList().indexOf(schoolClass));
         new LinkGroupCommand(contactIndex, classIndex).execute(groupModel);
         Person linkedContact = groupModel.getAddressBook().getPersonList().get(4);
-        assertFilterSuccess(command, groupModel, List.of(contacts.get(0), linkedContact));
+        assertFilterSuccess(command, groupModel, List.of(contacts.get(0), contacts.get(1), linkedContact));
 
         Index linkedContactIndex = Index.fromZeroBased(groupModel.getFilteredPersonList().indexOf(linkedContact));
         Index otherClassIndex = Index.fromZeroBased(groupModel.getGroupList().indexOf(otherClass));
         new LinkGroupCommand(linkedContactIndex, otherClassIndex).execute(groupModel);
-        assertEquals(List.of(contacts.get(0)), groupModel.getFilteredPersonList());
+        assertEquals(List.of(contacts.get(0), contacts.get(1)), groupModel.getFilteredPersonList());
 
         groupModel.deleteGroup(schoolClass);
         assertTrue(groupModel.getFilteredPersonList().isEmpty());
@@ -195,7 +201,7 @@ public class FilterCommandTest {
         int nextGroupId = GroupId.getNextId();
 
         assertFilterSuccess(prepareGroupCommand(originalGroups.get(0).getId().getRawId()), groupModel,
-                List.of(originalContacts.get(0)));
+                List.of(originalContacts.get(0), originalContacts.get(1)));
         assertEquals(originalContacts, groupModel.getAddressBook().getPersonList());
         assertEquals(originalGroups, groupModel.getGroupList());
         assertEquals(originalLinks, groupModel.getAddressBook().getGuardianStudents());
@@ -458,11 +464,11 @@ public class FilterCommandTest {
                 .withTags("Staff", "Committee").build();
         Colleague colleague = new Colleague(colleagueDetails.getName(), colleagueDetails.getPhone(),
                 colleagueDetails.getEmail(), colleagueDetails.getAddress(), colleagueDetails.getTags(), 4096,
-                groupModel.getGroupList().get(0).getId().getRawId());
+                groupModel.getGroupList().get(1).getId().getRawId());
         for (Person contact : List.of(prepareGroupedStudent("Alice Goh", 128,
                         groupModel.getGroupList().get(0).getId().getRawId(), 2),
                 prepareGroupedStudent("Bob Tan", 256,
-                        groupModel.getGroupList().get(1).getId().getRawId(), 3), colleague,
+                        groupModel.getGroupList().get(0).getId().getRawId(), 3), colleague,
                 prepareGroupedStudent("Cara Lee", 768,
                         groupModel.getGroupList().get(2).getId().getRawId(), 2),
                 prepareGroupedStudent("Dana Lee", 1024, null, 2), numericGuardian,
