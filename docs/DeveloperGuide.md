@@ -9,8 +9,9 @@ title: Developer Guide
 
 ## **Acknowledgements**
 
-* _{List the sources of reused or adapted ideas, code, documentation, and third-party libraries here, with links to the originals.}_
+This project made use of external tools, libraries, and AI assistants during development:
 
+- **Generative AI tools:** **OpenAI Codex** was used as a development assistant to support code generation, boilerplate implementation, debugging, documentation, and general software engineering tasks. All generated suggestions were reviewed, adapted, and validated by the project team.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Setting up, getting started**
