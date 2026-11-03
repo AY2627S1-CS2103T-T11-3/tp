@@ -63,11 +63,11 @@ public class GroupListPanel extends UiPart<Region> {
             index.getStyleClass().add("group_list_index");
             Label name = new Label(groupName);
             name.getStyleClass().add("group_list_name");
-            Label groupId = new Label("GID: " + group.getId().getRawId());
-            groupId.getStyleClass().add("group_list_id");
+            Label groupIdLabel = new Label("GID: " + group.getId().getRawId());
+            groupIdLabel.getStyleClass().add("group_list_id");
             Label details = new Label(type + "  •  " + members);
             details.getStyleClass().add("group_list_details");
-            HBox heading = new HBox(8, index, name, groupId);
+            HBox heading = new HBox(8, index, name, groupIdLabel);
             heading.setAlignment(Pos.CENTER_LEFT);
             javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(2, heading, details);
             content.getStyleClass().add("group_list_card");
