@@ -16,6 +16,7 @@ Class JsonUserPrefsStorage
 package "AddressBook Storage" #F4F6F6{
 Class JsonAddressBookStorage
 Class JsonSerializableAddressBook
+Class JsonAdaptedGroup
 Class JsonAdaptedPerson
 Class JsonAdaptedTag
 }
@@ -31,6 +32,7 @@ StorageManager -down-> "1" JsonAddressBookStorage
 
 JsonAddressBookStorage ..> JsonSerializableAddressBook
 JsonSerializableAddressBook --> "*" JsonAdaptedPerson
+JsonSerializableAddressBook --> "*" JsonAdaptedGroup
 JsonAdaptedPerson --> "*" JsonAdaptedTag
 
 @enduml
