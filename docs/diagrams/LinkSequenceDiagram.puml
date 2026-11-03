@@ -1,5 +1,5 @@
 @startuml
-!include /Users/jyo/my-projects/tp/docs/diagrams/style.puml
+!include style.puml
 skinparam ArrowFontStyle plain
 
 Actor User as user USER_COLOR
